@@ -1,5 +1,6 @@
 #include <iostream>
 #include <winsock2.h>
+#include <string>
 
 using namespace std;
 
@@ -50,8 +51,61 @@ public:
     }
 };
 
+
+std::string imprimirPasillo(){
+    return "  | =======================================";
+}
+
+void imprimirAutobus(char asientos[3][20]){
+    cout<<"  |";
+    for(int i = 0; i < 29; i++){
+        if(i<18){
+            cout<<" ";
+        }
+        else if(i<28){
+            cout<<" 1";
+        }
+        else{
+            cout<<" 2"<<endl;
+        }
+    }
+    //std::string comienzo = "  |";
+    cout<<"  |";
+    int numeroAsiento = 1;
+
+    for(int i = 0 ; i < 20 ; i++){
+        if(numeroAsiento<10){
+            cout<<" "<<numeroAsiento;
+            numeroAsiento++;
+        }
+        else{
+            numeroAsiento=0;
+        }
+    }
+    cout<<" 0"<<endl;
+    cout<<"-------------------------------------------"<<endl;
+    for(int i = 0; i < 3; i++){
+        switch(i){
+            case 0: cout<<"A |";break;
+            case 1: cout<<"B |";break;
+            case 2: cout<<imprimirPasillo()<<endl;cout<<"C |";break;
+        }
+        for(int j = 0 ; j < 20 ; j++){
+            cout<<" "<<asientos[i][j];
+        }
+        cout<<""<<endl;
+    }
+
+}
+
+
 int main()
 {
+    char matriz[3][20] = {{'O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O'},
+    {'O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O'},
+    {'O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O'}};
+    imprimirAutobus(matriz);
+
   Server *Servidor = new Server();
   while(true)
   {
