@@ -2,21 +2,13 @@
 #include <winsock2.h>
 #include <conio.h>
 #include <string>
-
+#include <clocale>//es para usar ñ y acento
 
 #define TAMANIO_I  5
 #define TAMANIO_J  21
-
+#define GLOBAL_IP  "192.168.88.9"
+#define PUERTO_GLOBAL 4747
 using namespace std;
-
-void iniciarButacas(char butacas[TAMANIO_I][TAMANIO_J]);
-void mostrarButacas(char butacas[TAMANIO_I][TAMANIO_J]);
-bool verificarPosicion(char butacas[TAMANIO_I][TAMANIO_J],int pos_I, int pos_J);
-bool verificarCoordenadas(int numero,char letra);
-int asignarValorPosI_A_Letra(char letra);
-void determinarAccion_A_Seguir(char butacas[TAMANIO_I][TAMANIO_J],int posicionDisponible,int pos_I,int pos_J);
-void elegirButaca(char butacas[TAMANIO_I][TAMANIO_J]);
-
 
 class Client{
 public:
@@ -29,26 +21,32 @@ public:
         cout<<"Conectando al servidor..."<<endl<<endl;
         WSAStartup(MAKEWORD(2,0), &WSAData);
         server = socket(AF_INET, SOCK_STREAM, 0);
-        addr.sin_addr.s_addr = inet_addr("192.168.0.1");
+        addr.sin_addr.s_addr = inet_addr(GLOBAL_IP);
         addr.sin_family = AF_INET;
         addr.sin_port = htons(5555);
         connect(server, (SOCKADDR *)&addr, sizeof(addr));
         cout << "Conectado al Servidor!" << endl;
     }
-    void Enviar()
+    void Enviar(string respuesta)
     {
-        cout<<"Escribe el mensaje a enviar: ";
-        cin>>this->buffer;
+         for(int i=0;i<respuesta.length();i++){
+           this->buffer[i]= respuesta[i];
+         }
+
         send(server, buffer, sizeof(buffer), 0);
         memset(buffer, 0, sizeof(buffer));
         cout << "Mensaje enviado!" << endl;
     }
-    void Recibir()
+
+     string Recibir()
     {
-        recv(server, buffer, sizeof(buffer), 0);
-        cout << "El servidor dice: " << buffer << endl;
-        memset(buffer, 0, sizeof(buffer));
+      recv(server, buffer, sizeof(buffer), 0);
+   //   cout << "El servidor dice: " << buffer << endl;
+      string buff = buffer;
+      memset(buffer, 0, sizeof(buffer));
+      return buff;
     }
+
     void CerrarSocket()
     {
        closesocket(server);
@@ -56,6 +54,34 @@ public:
        cout << "Socket cerrado." << endl << endl;
     }
 };
+
+void iniciarButacas(char butacas[TAMANIO_I][TAMANIO_J]);
+void mostrarButacas(char butacas[TAMANIO_I][TAMANIO_J]);
+bool verificarPosicion(char butacas[TAMANIO_I][TAMANIO_J],int pos_I, int pos_J);
+bool verificarCoordenadas(int numero,char letra);
+int asignarValorPosI_A_Letra(char letra);
+void determinarAccion_A_Seguir(char butacas[TAMANIO_I][TAMANIO_J],int posicionDisponible,int pos_I,int pos_J);
+string elegirButaca(Client *&Cliente,char butacas[TAMANIO_I][TAMANIO_J]);
+void menuCliente(Client *&Cliente);
+bool verificarIpYPuerto(std::string ipReal, int puertoReal);
+void gestionarPasajes(Client *&Cliente,char butacas[TAMANIO_I][TAMANIO_J]);
+void reservarAsiento(Client *&Cliente,char butacas[TAMANIO_I][TAMANIO_J]);
+
+int main()
+{
+   setlocale(LC_CTYPE,"Spanish");// Spanish (de la librería locale.h) es para usar ñ y acento
+
+   Client *Cliente = new Client();
+    menuCliente(Cliente);
+
+   while(true)
+    {
+//        Cliente->Enviar(respuesta);
+        Cliente->Recibir();
+
+    }
+}
+
 
 
 /***********************************************************************/
@@ -76,6 +102,7 @@ void iniciarButacas(char butacas[TAMANIO_I][TAMANIO_J]){
 
 /***********************************************************************/
 void mostrarButacas(char butacas[TAMANIO_I][TAMANIO_J]){
+    cout<<endl;
     for (int i =0; i<TAMANIO_I;i++){
         if(i==2){cout <<"---------------------------------------------------------------"<< endl;}
         if(i==4){cout <<"==============================================================="<< endl;}
@@ -109,14 +136,19 @@ int asignarValorPosI_A_Letra(char letra){
 
 
 /***********************************************************************/
-void determinarAccion_A_Seguir(char butacas[TAMANIO_I][TAMANIO_J], bool posicionDisponible, int pos_I, int pos_J){
+void determinarAccion_A_Seguir(Client *&Cliente,char butacas[TAMANIO_I][TAMANIO_J], bool posicionDisponible, int pos_I, int pos_J){
 
     if (posicionDisponible){
         butacas[pos_I][pos_J] = 'X';
-        cout<<"Butaca reservada exitosamente."<<endl;
+        system("cls");
+        mostrarButacas(butacas);
+        cout<<"************************************"<<endl;
+        cout<<"** Butaca reservada exitosamente. **"<<endl;
+        cout<<"************************************"<<endl;
     }
     else{
         cout<<"ERROR: Butaca ya reservada."<<endl;
+        elegirButaca(Cliente,butacas);
     }
 }
 /***********************************************************************/
@@ -138,68 +170,82 @@ bool verificarCoordenadas(int numero,char letra){
 
 
 /***********************************************************************/
-void elegirButaca(char butacas[TAMANIO_I][TAMANIO_J]){
+string elegirButaca(Client *&Cliente,char butacas[TAMANIO_I][TAMANIO_J]){
 
     int pos_I = -1;
     int numero = -1;
     char letra = ' ';
-    bool flag = false;
+    bool noContinuar = false;
     std::string respuesta;
-
-    while(!flag){
+    std::string respuestaAux;
+    bool entradaCorrecta = false;
+    bool errorTipeo=false;
+    while(!noContinuar){//Mientras noContinuar sea fals
 
         cout<<"--- Elija la butaca a reservar (Ejemplo: A12). Para volver al menu anterior ingrese un 0.---"<<endl;
         cin>>respuesta;
+        respuestaAux = respuesta;
+        if(respuesta=="0"){
+            noContinuar = true;
+        }//Cierra el else if respuesta == "0"
+        else{
+            letra = respuesta[0];//1) guarda "B" en un supesto ingreso de "B7"
+            respuesta.erase(0,1);//2)borro la que ya guardé, en un supesto ingreso de "B7" borra "B"
+            numero=atoi(const_cast< char *>(respuesta.c_str()));//3) si no convierte da "0" (por ejemplo: si encuetra "A4" no convierte, si hay solo numero/s convierte), pero si encuentra "12a" (número/s y letra/s) tambien convierte el/los números y descarta letra/s
+            if(respuesta==to_string(numero)){//me aseguro de que despues del número/s no se hallan ingresado mas letras. Supuesto: se ingre sa "B12hj" o "B2gh", B se guarda en
+               entradaCorrecta=true;             // el paso 1, numero en el paso 2 y en if se rechaza por la/las letras que siguen al número
+            }else{
+              bool errorTipeo=true;
+              cout<<"*********** ERROR: ha ingresado datos incorrectos, vuelva a intentarlo!!!"<<endl<<"Pulse cualquier tecla para continuar."<<endl;
+              _getch();
+              system("cls");
+              mostrarButacas(butacas);
+            }//Fin if respuesta==to_string(numero)
 
-        if(respuesta.length()==2){
-            letra = respuesta[0];
-            numero = (int)respuesta[1] - 48;
-        }
-        else if(respuesta.length()==3){
-            letra = respuesta[0];
-            numero = std::stoi(respuesta.substr(1,2));
-        }
-        else if(respuesta=="0"){
-            flag = true;
-        }
+        }//Cierra el else del if respuesta == "0"
 
-        if(!flag){
+        if(noContinuar==false && entradaCorrecta==true){
             if(verificarCoordenadas(numero, letra)){
-                flag = true;
                 pos_I = asignarValorPosI_A_Letra(letra);
+                noContinuar = true;
             }
-            else{
+            else if(errorTipeo==false){
                 cout<<"ERROR: Ingreso una ubicacion no valida."<<endl;
                 _getch();
                 system("cls");
-                iniciarButacas(butacas);
                 mostrarButacas(butacas);
-            }
-        }
+            }//Cierra el if verificarCoordenadas
+        }//Cierra el if !noContinuar
 
-    }
+    }//cierra el while
 
     if(respuesta!="0"){
-        bool posicionDisponible = verificarPosicion(butacas, pos_I, numero);
-        determinarAccion_A_Seguir(butacas, posicionDisponible, pos_I, numero);
+        Cliente->Enviar(respuestaAux);
+        bool posicionDisponible = false;
+        if(Cliente->Recibir()=="true"){
+                posicionDisponible = true;
+        }
+        determinarAccion_A_Seguir(Cliente,butacas, posicionDisponible, pos_I, numero);
     }
-
+ return respuestaAux;
 }
 /***********************************************************************/
 
 
+
 /***********************************************************************/
-void reservarAsiento(char butacas[TAMANIO_I][TAMANIO_J]){
+void reservarAsiento(Client *&Cliente,char butacas[TAMANIO_I][TAMANIO_J]){
+     string respuesta = "";
     iniciarButacas(butacas);
     mostrarButacas(butacas);
-    elegirButaca(butacas);
+    respuesta = elegirButaca(Cliente,butacas);
+
 }
 /***********************************************************************/
 
 
 /***********************************************************************/
-void gestionarPasajes(char butacas[TAMANIO_I][TAMANIO_J]){
-
+void gestionarPasajes(Client *&Cliente,char butacas[TAMANIO_I][TAMANIO_J]){
     int opcionElegida = 0;
 
     while(opcionElegida!=4){
@@ -212,7 +258,7 @@ void gestionarPasajes(char butacas[TAMANIO_I][TAMANIO_J]){
 
         switch(opcionElegida){
             case 1: system("CLS");
-                    reservarAsiento(butacas);
+                   reservarAsiento(Cliente,butacas);
                     _getch();
                     system("CLS");
                     break;
@@ -250,13 +296,13 @@ bool verificarIpYPuerto(std::string ipReal, int puertoReal){
     int puertoInput = 0;
 
     while(ipInput==""){
-        cout<<"Ingrese la direccion IP"<<endl;
-        cin>>ipInput;
+        //cout<<"Ingrese la direccion IP"<<endl;
+        ipInput=GLOBAL_IP;
         system("CLS");
     }
     while(puertoInput==0){
-        cout<<"Ingrese el puerto"<<endl;
-        cin>>puertoInput;
+        //cout<<"Ingrese el puerto"<<endl;
+        puertoInput=PUERTO_GLOBAL;
         system("CLS");
     }
 
@@ -269,20 +315,20 @@ bool verificarIpYPuerto(std::string ipReal, int puertoReal){
 
 
 /***********************************************************************/
-void menuCliente(){
+void menuCliente(Client *&Cliente){
 
     //deberia ser global o pasarse por referencia.
     char matriz[TAMANIO_I][TAMANIO_J] = {{'O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O'},
     {'O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O'},
     {'O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O'}};
-
-    bool respuesta = verificarIpYPuerto("192.178.0.0",4747);
+    string respuestaCli = "";
+    bool respuesta = verificarIpYPuerto(GLOBAL_IP,PUERTO_GLOBAL);
 
     while(!respuesta){
        cout<<"Ip o puerto incorrecto. Vuelva a intentarlo."<<endl;
        _getch();
        system("CLS");
-       respuesta = verificarIpYPuerto("192.178.0.0",4747);
+       respuesta = verificarIpYPuerto(GLOBAL_IP,PUERTO_GLOBAL);
     }
 
 
@@ -303,7 +349,7 @@ void menuCliente(){
                     system("CLS");
                     break;
             case 2: system("CLS");
-                    gestionarPasajes(matriz);
+                   gestionarPasajes(Cliente,matriz);
                     break;
             case 3: system("CLS");
                     cout<<servicioElegido<<endl;
@@ -323,17 +369,5 @@ void menuCliente(){
                     break;
         }
     }
-
 }
 /***********************************************************************/
-
-int main()
-{
-    menuCliente();
-    Client *Cliente = new Client();
-    while(true)
-    {
-        Cliente->Enviar();
-        Cliente->Recibir();
-    }
-}

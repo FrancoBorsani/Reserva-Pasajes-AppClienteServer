@@ -9,3 +9,10 @@
 	<string>
 	<conio.h>
 
+1602399085 source:f:\licenciatura en sistemas\3º aÑo\2º cuatrimestre\redes y comunicaciones\tp-cuatrimestral-redes\reserva-pasajes-appclienteserver\tp-redes-server\main.cpp
+	<iostream>
+	<winsock2.h>
+	<string>
+	<conio.h>
+	<clocale>
+

@@ -7,3 +7,9 @@
 	<iostream>
 	<winsock2.h>
 
+1602369216 source:f:\licenciatura en sistemas\3º aÑo\2º cuatrimestre\redes y comunicaciones\tp-cuatrimestral-redes\reserva-pasajes-appclienteserver\tp-redes-client\main.cpp
+	<iostream>
+	<winsock2.h>
+	<conio.h>
+	<string>
+
