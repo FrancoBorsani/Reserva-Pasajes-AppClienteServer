@@ -72,11 +72,11 @@ int main()
    setlocale(LC_CTYPE,"Spanish");// Spanish (de la librería locale.h) es para usar ñ y acento
 
    Client *Cliente = new Client();
-    menuCliente(Cliente);
+   menuCliente(Cliente);
 
    while(true)
     {
-//        Cliente->Enviar(respuesta);
+//      Cliente->Enviar(respuesta);
         Cliente->Recibir();
 
     }

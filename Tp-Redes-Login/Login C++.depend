@@ -1,0 +1,9 @@
+# depslib dependency file v1.0
+1602439916 source:c:\users\franc\onedrive\desktop\login c++\main.cpp
+	<iostream>
+	<fstream>
+	<cstdlib>
+	<vector>
+	<string>
+	<stdio.h>
+
