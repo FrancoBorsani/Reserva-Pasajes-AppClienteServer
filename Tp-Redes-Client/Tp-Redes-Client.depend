@@ -13,3 +13,10 @@
 	<conio.h>
 	<string>
 
+1602442511 source:c:\users\franc\onedrive\desktop\new folder (2)\reserva-pasajes-appclienteserver\tp-redes-client\main.cpp
+	<iostream>
+	<winsock2.h>
+	<conio.h>
+	<string>
+	<clocale>
+
