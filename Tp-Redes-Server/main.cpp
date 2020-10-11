@@ -3,8 +3,8 @@
 #include <string>
 #include <conio.h>
 #include <clocale>//es para usar ñ y acento
-
-
+#include <fstream> //Lib. para trabajar con archivos
+#include <ctime> //Lib. para trabajar con fechas / tiempos
 #define TAMANIO_I  5
 #define TAMANIO_J  21
 using namespace std;
@@ -20,7 +20,7 @@ public:
     {
         WSAStartup(MAKEWORD(2,0), &WSAData);
         server = socket(AF_INET, SOCK_STREAM, 0);
-
+        string lectura;
         serverAddr.sin_addr.s_addr = INADDR_ANY;
         serverAddr.sin_family = AF_INET;
         serverAddr.sin_port = htons(5555);
@@ -33,6 +33,32 @@ public:
         if((client = accept(server, (SOCKADDR *)&clientAddr, &clientAddrSize)) != INVALID_SOCKET)
         {
             cout << "Cliente conectado!" << endl;
+         //   ofstream serverLog;
+          //  serverLog.open("server.txt", ios::out);
+         //   std::fstream serverLog ("server.txt", std::ios::ate);
+
+         std::ofstream serverLog("server.txt", std::ios::ate | std::ios::in);
+
+            if(serverLog.fail()){ //Si el archivo no se encuentra o no esta disponible o presenta errores
+                    cout<<"No se pudo abrir el archivo server log"; //Muestra el error
+                                }
+            else{
+                    time_t     now = time(0);
+                    struct tm  tstruct;
+                    char       buf[80];
+                    tstruct = *localtime(&now);
+                    strftime(buf, sizeof(buf), "%Y-%m-%d.%X", &tstruct);
+                    serverLog<<buf;
+                    serverLog<<": Cliente conectado";
+
+
+                serverLog.close();
+
+            }
+
+
+
+
         }
     }
 
