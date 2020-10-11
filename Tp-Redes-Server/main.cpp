@@ -20,7 +20,6 @@ public:
     {
         WSAStartup(MAKEWORD(2,0), &WSAData);
         server = socket(AF_INET, SOCK_STREAM, 0);
-        string lectura;
         serverAddr.sin_addr.s_addr = INADDR_ANY;
         serverAddr.sin_family = AF_INET;
         serverAddr.sin_port = htons(5555);
@@ -28,28 +27,23 @@ public:
         bind(server, (SOCKADDR *)&serverAddr, sizeof(serverAddr));
         listen(server, 0);
 
-        cout << "Escuchando para conexiones entrantes." << endl;
-        int clientAddrSize = sizeof(clientAddr);
-        if((client = accept(server, (SOCKADDR *)&clientAddr, &clientAddrSize)) != INVALID_SOCKET)
-        {
-            cout << "Cliente conectado!" << endl;
-         //   ofstream serverLog;
-          //  serverLog.open("server.txt", ios::out);
-         //   std::fstream serverLog ("server.txt", std::ios::ate);
-
-         std::ofstream serverLog("server.txt", std::ios::ate | std::ios::in);
-
-            if(serverLog.fail()){ //Si el archivo no se encuentra o no esta disponible o presenta errores
+        std::ofstream serverLog("server.txt", std::ios::ate | std::ios::in);
+        if(serverLog.fail()){ //Si el archivo no se encuentra o no esta disponible o presenta errores
                     cout<<"No se pudo abrir el archivo server log"; //Muestra el error
                                 }
-            else{
+          else{
                     time_t     now = time(0);
                     struct tm  tstruct;
                     char       buf[80];
                     tstruct = *localtime(&now);
                     strftime(buf, sizeof(buf), "%Y-%m-%d.%X", &tstruct);
                     serverLog<<buf;
-                    serverLog<<": Cliente conectado";
+                    serverLog<<": Inicia Servidor"<<endl;
+                    serverLog<<": ==================================="<<endl;
+                    serverLog<<buf;
+                    serverLog<<": Socket creado. Puerto de escucha:4747"<<endl;
+                    serverLog<<": ==================================="<<endl;
+
 
 
                 serverLog.close();
@@ -58,6 +52,21 @@ public:
 
 
 
+        cout << "Escuchando para conexiones entrantes." << endl;
+        int clientAddrSize = sizeof(clientAddr);
+        if((client = accept(server, (SOCKADDR *)&clientAddr, &clientAddrSize)) != INVALID_SOCKET)
+        {
+            cout << "Cliente conectado!" << endl;
+                    time_t     now = time(0);
+                    struct tm  tstruct;
+                    char       buf[80];
+                    tstruct = *localtime(&now);
+                    strftime(buf, sizeof(buf), "%Y-%m-%d.%X", &tstruct);
+                    serverLog<<endl<<buf;
+                    serverLog<<": Cliente conectado";
+
+
+                serverLog.close();
 
         }
     }
@@ -86,6 +95,16 @@ public:
     {
         closesocket(client);
         cout << "Socket cerrado, cliente desconectado." << endl;
+                    time_t     now = time(0);
+                    struct tm  tstruct;
+                    char       buf[80];
+                    tstruct = *localtime(&now);
+                    strftime(buf, sizeof(buf), "%Y-%m-%d.%X", &tstruct);
+        std::ofstream serverLog("server.txt", std::ios::ate | std::ios::in);
+
+                    serverLog<<endl<<buf;
+                    serverLog<<": Cliente conectado";
+                    serverLog.close();
     }
 };
 
