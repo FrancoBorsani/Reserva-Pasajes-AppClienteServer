@@ -16,3 +16,14 @@
 	<conio.h>
 	<clocale>
 
+1602714398 source:c:\users\franc\onedrive\desktop\new folder (2)\reserva-pasajes-appclienteserver\tp-redes-server\main.cpp
+	<iostream>
+	<winsock2.h>
+	<string>
+	<conio.h>
+	<clocale>
+	<fstream>
+	<cstdlib>
+	<vector>
+	<stdio.h>
+

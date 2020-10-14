@@ -3,7 +3,10 @@
 #include <string>
 #include <conio.h>
 #include <clocale>//es para usar ñ y acento
-
+#include <fstream>
+#include <cstdlib>
+#include <vector>
+#include <stdio.h>
 
 #define TAMANIO_I  5
 #define TAMANIO_J  21
@@ -69,6 +72,8 @@ int asignarValorPosI_A_Letra(char letra);
 void marcarButacaComoOcupada(char butacas[TAMANIO_I][TAMANIO_J], int pos_I, int pos_J);
 void mostrarButacas(char butacas[TAMANIO_I][TAMANIO_J]);
 void iniciarButacas(char butacas[TAMANIO_I][TAMANIO_J]);
+vector<string> getUsernameAndPassword(string str);
+void checkUser(Server *&Servidor);
 
 /************************************
          MAIN
@@ -76,15 +81,19 @@ void iniciarButacas(char butacas[TAMANIO_I][TAMANIO_J]);
 int main()
 {
     setlocale(LC_CTYPE,"Spanish");// Spanish (de la librería locale.h) es para usar ñ y acento
-
+/*
      char matriz[TAMANIO_I][TAMANIO_J] = {{'O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O'},
     {'O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O'},
     {'O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O'}};
-
+*/
     Server *Servidor = new Server();
-    iniciarButacas(matriz);
+    //iniciarButacas(matriz);
     //mostrarButacas(matriz);
-    verificarSolicitud_Y_Responder(Servidor,matriz);
+    //verificarSolicitud_Y_Responder(Servidor,matriz);
+
+    //cout<< resultado[0] <<endl << resultado[1] <<endl;
+
+    checkUser(Servidor);
 
 }
 /************************************
@@ -188,3 +197,67 @@ void marcarButacaComoOcupada(char butacas[TAMANIO_I][TAMANIO_J], int pos_I, int 
         cout<<"************************************"<<endl;
  }
 /***********************************************************************/
+
+vector<string> getUsernameAndPassword(string str) {
+
+        int posInit = 0;
+        int posFound = 0;
+        string splitted;
+        char pattern = ';';
+        vector<string> resultados;
+
+        while(posFound >= 0){
+            posFound = str.find(pattern, posInit);
+            splitted = str.substr(posInit, posFound - posInit);
+            posInit = posFound + 1;
+            resultados.push_back(splitted);
+        }
+
+        return resultados;
+}
+
+void checkUser(Server *&Servidor)
+    {
+        string usuarioEncontrado = "false";
+        char delimitador = ';';
+        vector<string> resultados;
+        vector<string> userAndPass;
+        int contador = 0;
+
+        while(contador<3 && usuarioEncontrado == "false"){
+
+            string linea;
+            fstream file;
+
+            file.open("users.dat", ios::in);
+
+            userAndPass = getUsernameAndPassword(Servidor->Recibir());
+
+            if(file.is_open())
+            {
+                while(!file.eof()){
+
+                    getline(file, linea);
+
+                    resultados = getUsernameAndPassword(linea);
+
+                    if(resultados[0] == userAndPass[0] && resultados[1] == userAndPass[1])  usuarioEncontrado = "true";
+
+                }
+            }
+
+            file.close();
+
+            usuarioEncontrado == "true" ? cout<<"Usuario Encontrado"<<endl<<endl : cout<<"Crendenciales invalidas..."<<endl<<endl<<"Por favor ingrese sus datos nuevamente (Le quedan " << " intentos)"<<endl<<endl;
+
+            contador++;
+
+            if(usuarioEncontrado == "true") {
+                contador = 4;
+            }
+
+            Servidor->Enviar(usuarioEncontrado+";"+to_string(contador));
+
+        }
+
+    }
