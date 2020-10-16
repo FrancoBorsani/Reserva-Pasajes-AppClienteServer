@@ -13,7 +13,6 @@
 #define TAMANIO_J  21
 using namespace std;
 
-void inicioServerLog();
 void registrarServerLog(string evento, string aRegistrar);
 
 
@@ -35,7 +34,7 @@ public:
         bind(server, (SOCKADDR *)&serverAddr, sizeof(serverAddr));
         listen(server, 0);
 
-        inicioServerLog(); //REGISTRA INFORMACIÓN DEL SOCKET EN EL SERVER.LOG
+        registrarServerLog("Inicia servidor", "Socket creado. Puerto de escucha:4747");
 
         cout << "Escuchando para conexiones entrantes." << endl;
 
@@ -275,26 +274,6 @@ void checkUser(Server *&Servidor)
 
     }
 
-
-
-        void inicioServerLog(){
-            std::ofstream serverLog("server.txt", std::ios::ate | std::ios::in);
-            if(serverLog.fail()){ //Si el archivo no se encuentra o no esta disponible o presenta errores
-                    cout<<"No se pudo abrir el archivo server log"; //Muestra el error
-                                }
-            time_t     now = time(0);
-            struct tm  tstruct;
-            char       buf[80];
-            tstruct = *localtime(&now);
-            strftime(buf, sizeof(buf), "%Y-%m-%d.%X", &tstruct);
-            serverLog<<buf;
-            serverLog<<": Inicia Servidor"<<endl;
-            serverLog<<": ==================================="<<endl;
-            serverLog<<buf;
-            serverLog<<": Socket creado. Puerto de escucha:4747"<<endl;
-            serverLog<<": ==================================="<<endl;
-            serverLog.close();
-        }
 
 
         void registrarServerLog(string evento, string aRegistrar){
