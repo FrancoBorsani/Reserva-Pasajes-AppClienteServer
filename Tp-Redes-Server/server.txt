@@ -4,3 +4,59 @@
 : ===================================
 2020-10-16.13:21:54: Usuario autenticado - Usuario_1
 : ===================================
+2020-10-16.13:32:42: Inicia servidor - Socket creado. Puerto de escucha:4747
+: ===================================
+2020-10-16.13:34:18: Usuario autenticado - Usuario_1
+: ===================================
+2020-10-16.13:40:46: Inicia servidor - Socket creado. Puerto de escucha:4747
+: ===================================
+2020-10-16.13:41:05: Usuario autenticado - Usuario_1
+: ===================================
+2020-10-16.13:41:22: Inicia servidor - Socket creado. Puerto de escucha:4747
+: ===================================
+2020-10-16.13:41:33: Usuario autenticado - Usuario_2
+: ===================================
+2020-10-16.13:41:53: Inicia servidor - Socket creado. Puerto de escucha:4747
+: ===================================
+2020-10-16.13:42:03: Usuario autenticado - Usuario_1
+: ===================================
+2020-10-16.13:44:32: Inicia servidor - Socket creado. Puerto de escucha:4747
+: ===================================
+2020-10-16.13:44:45: Usuario autenticado - Usuario_1
+: ===================================
+2020-10-16.13:45:53: Inicia servidor - Socket creado. Puerto de escucha:4747
+: ===================================
+2020-10-16.13:46:03: Usuario autenticado - Usuario_1
+: ===================================
+2020-10-16.13:47:37: Inicia servidor - Socket creado. Puerto de escucha:4747
+: ===================================
+2020-10-16.13:47:48: Usuario autenticado - Usuario_1
+: ===================================
+2020-10-16.13:49:12: Inicia servidor - Socket creado. Puerto de escucha:4747
+: ===================================
+2020-10-16.13:49:22: Usuario autenticado - Usuario_1
+: ===================================
+2020-10-16.13:50:05: Inicia servidor - Socket creado. Puerto de escucha:4747
+: ===================================
+2020-10-16.13:50:14: Usuario autenticado - Usuario_1
+: ===================================
+2020-10-16.13:50:52: Inicia servidor - Socket creado. Puerto de escucha:4747
+: ===================================
+2020-10-16.13:51:03: Usuario autenticado - Usuario_1
+: ===================================
+2020-10-16.13:52:25: Inicia servidor - Socket creado. Puerto de escucha:4747
+: ===================================
+2020-10-16.13:52:41: Usuario autenticado - Usuario_1
+: ===================================
+2020-10-16.14:00:13: Inicia servidor - Socket creado. Puerto de escucha:4747
+: ===================================
+2020-10-16.14:00:27: Usuario autenticado - Usuario_1
+: ===================================
+2020-10-16.14:00:41: Inicia servidor - Socket creado. Puerto de escucha:4747
+: ===================================
+2020-10-16.14:01:46: Inicia servidor - Socket creado. Puerto de escucha:4747
+: ===================================
+2020-10-16.14:01:52: Inicia servidor - Socket creado. Puerto de escucha:4747
+: ===================================
+2020-10-16.14:02:04: Usuario autenticado - Usuario_1
+: ===================================

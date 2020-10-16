@@ -82,7 +82,8 @@ void iniciarButacas(char butacas[TAMANIO_I][TAMANIO_J]);
 vector<string> getUsernameAndPassword(string str);
 void checkUser(Server *&Servidor);
 void registrarServerLog(string evento, string aRegistrar);
-
+void registrarUserLog(string evento, string aRegistrar);
+void crearArchivoUserLog(string usuario);
 
 /************************************
          MAIN
@@ -253,6 +254,8 @@ void checkUser(Server *&Servidor)
                     if(resultados[0] == userAndPass[0] && resultados[1] == userAndPass[1]){
                             usuarioEncontrado = "true";
                             registrarServerLog("Usuario autenticado", resultados[0]);
+                            crearArchivoUserLog(resultados[0]);
+                            registrarUserLog("Inicia sesion", resultados[0]);
                     }
 
                 }
@@ -292,5 +295,34 @@ void checkUser(Server *&Servidor)
             serverLog.close();
         }
 
+
+        void crearArchivoUserLog(string usuario){
+            string nombreArchivo = usuario + ".log";
+          std::ifstream userLog( nombreArchivo );
+          if(userLog.fail()){
+            //EL ARCHIVO NO EXISTE
+            std::ofstream userLogCrear( nombreArchivo );
+          }
+
+          userLog.close();
+        }
+
+
+
+        void registrarUserLog(string evento, string aRegistrar){
+            string nombreArchivo = aRegistrar + ".log";
+            std::ofstream userLog( nombreArchivo , std::ios::ate | std::ios::in);
+            time_t     now = time(0);
+            struct tm  tstruct;
+            char       buf[80];
+            tstruct = *localtime(&now);
+            strftime(buf, sizeof(buf), "%Y-%m-%d.%X", &tstruct);
+            userLog<<buf;
+            userLog<<": "<<evento<<" - "<<aRegistrar<<endl;
+            userLog<<": ==================================="<<endl;
+            userLog.close();
+
+
+        }
 
 
