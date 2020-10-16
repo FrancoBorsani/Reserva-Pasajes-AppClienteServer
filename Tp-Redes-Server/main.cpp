@@ -3,7 +3,8 @@
 #include <string>
 #include <conio.h>
 #include <clocale>//es para usar ñ y acento
-#include <fstream>
+#include <fstream> //Lib. para trabajar con archivos
+#include <ctime> //Lib. para trabajar con fechas / tiempos
 #include <cstdlib>
 #include <vector>
 #include <stdio.h>
@@ -11,6 +12,9 @@
 #define TAMANIO_I  5
 #define TAMANIO_J  21
 using namespace std;
+
+void inicioServerLog();
+void registrarServerLog(string evento, string aRegistrar);
 
 
 class Server{
@@ -31,7 +35,10 @@ public:
         bind(server, (SOCKADDR *)&serverAddr, sizeof(serverAddr));
         listen(server, 0);
 
+        inicioServerLog(); //REGISTRA INFORMACIÓN DEL SOCKET EN EL SERVER.LOG
+
         cout << "Escuchando para conexiones entrantes." << endl;
+
         int clientAddrSize = sizeof(clientAddr);
         if((client = accept(server, (SOCKADDR *)&clientAddr, &clientAddrSize)) != INVALID_SOCKET)
         {
@@ -62,6 +69,7 @@ public:
     void CerrarSocket()
     {
         closesocket(client);
+        registrarServerLog("Socket cerrado, cliente desconectado", "");
         cout << "Socket cerrado, cliente desconectado." << endl;
     }
 };
@@ -74,6 +82,8 @@ void mostrarButacas(char butacas[TAMANIO_I][TAMANIO_J]);
 void iniciarButacas(char butacas[TAMANIO_I][TAMANIO_J]);
 vector<string> getUsernameAndPassword(string str);
 void checkUser(Server *&Servidor);
+void registrarServerLog(string evento, string aRegistrar);
+
 
 /************************************
          MAIN
@@ -241,7 +251,10 @@ void checkUser(Server *&Servidor)
 
                     resultados = getUsernameAndPassword(linea);
 
-                    if(resultados[0] == userAndPass[0] && resultados[1] == userAndPass[1])  usuarioEncontrado = "true";
+                    if(resultados[0] == userAndPass[0] && resultados[1] == userAndPass[1]){
+                            usuarioEncontrado = "true";
+                            registrarServerLog("Usuario autenticado", resultados[0]);
+                    }
 
                 }
             }
@@ -261,3 +274,44 @@ void checkUser(Server *&Servidor)
         }
 
     }
+
+
+
+        void inicioServerLog(){
+            std::ofstream serverLog("server.txt", std::ios::ate | std::ios::in);
+            if(serverLog.fail()){ //Si el archivo no se encuentra o no esta disponible o presenta errores
+                    cout<<"No se pudo abrir el archivo server log"; //Muestra el error
+                                }
+            time_t     now = time(0);
+            struct tm  tstruct;
+            char       buf[80];
+            tstruct = *localtime(&now);
+            strftime(buf, sizeof(buf), "%Y-%m-%d.%X", &tstruct);
+            serverLog<<buf;
+            serverLog<<": Inicia Servidor"<<endl;
+            serverLog<<": ==================================="<<endl;
+            serverLog<<buf;
+            serverLog<<": Socket creado. Puerto de escucha:4747"<<endl;
+            serverLog<<": ==================================="<<endl;
+            serverLog.close();
+        }
+
+
+        void registrarServerLog(string evento, string aRegistrar){
+            std::ofstream serverLog("server.txt", std::ios::ate | std::ios::in);
+            if(serverLog.fail()){ //Si el archivo no se encuentra o no esta disponible o presenta errores
+                    cout<<"No se pudo abrir el archivo server log"; //Muestra el error
+                                }
+            time_t     now = time(0);
+            struct tm  tstruct;
+            char       buf[80];
+            tstruct = *localtime(&now);
+            strftime(buf, sizeof(buf), "%Y-%m-%d.%X", &tstruct);
+            serverLog<<buf;
+            serverLog<<": "<<evento<<" - "<<aRegistrar<<endl;
+            serverLog<<": ==================================="<<endl;
+            serverLog.close();
+        }
+
+
+
