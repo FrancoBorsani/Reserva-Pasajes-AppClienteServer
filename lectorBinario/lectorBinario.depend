@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1602882537 source:c:\users\franco\desktop\red\reserva-pasajes-appclienteserver\lectorbinario\main.cpp
+	<iostream>
+	<fstream>
+	<string.h>
+
