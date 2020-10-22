@@ -20,3 +20,19 @@
 	<string>
 	<clocale>
 
+1603402742 source:c:\users\tomas\desktop\github proyectos\reserva-pasajes-appclienteserver\tp-redes-client\main.cpp
+	<iostream>
+	<winsock2.h>
+	<conio.h>
+	<string>
+	<clocale>
+	<cstdlib>
+	<vector>
+	"Servicio.h"
+
+1603402125 c:\users\tomas\desktop\github proyectos\reserva-pasajes-appclienteserver\tp-redes-client\servicio.h
+	<string>
+
+1603402124 source:c:\users\tomas\desktop\github proyectos\reserva-pasajes-appclienteserver\tp-redes-client\servicio.cpp
+	"Servicio.h"
+

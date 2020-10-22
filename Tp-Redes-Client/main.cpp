@@ -5,10 +5,9 @@
 #include <clocale>//es para usar ñ y acento
 #include <cstdlib>
 #include <vector>
+#include "Servicio.h"
 
-#define TAMANIO_I  5
-#define TAMANIO_J  21
-#define GLOBAL_IP  "192.168.0.71"
+#define GLOBAL_IP  "192.168.1.33"
 #define PUERTO_GLOBAL 4747
 using namespace std;
 
