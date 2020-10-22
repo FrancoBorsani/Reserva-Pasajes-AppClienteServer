@@ -8,7 +8,7 @@
 
 #define TAMANIO_I  5
 #define TAMANIO_J  21
-#define GLOBAL_IP  "192.168.0.5"
+#define GLOBAL_IP  "192.168.0.71"
 #define PUERTO_GLOBAL 4747
 using namespace std;
 
@@ -34,7 +34,6 @@ public:
          for(int i=0;i<respuesta.length();i++){
            this->buffer[i]= respuesta[i];
          }
-
         send(server, buffer, sizeof(buffer), 0);
         memset(buffer, 0, sizeof(buffer));
         cout << "Mensaje enviado!" << endl;
@@ -58,7 +57,7 @@ public:
 };
 
 
-    
+
     /*
 
     void checkUser(const char* p_fileName)
@@ -70,7 +69,7 @@ public:
         vector<string> resultados;
 
         file.open(p_fileName, ios::in);
-		
+
         if(file.is_open())
         {
             while(!file.eof() && !usuarioEncontrado ){
@@ -88,7 +87,7 @@ public:
 
         usuarioEncontrado ? cout<<"Usuario Encontrado"<<endl<<endl : cout<<"Crendenciales invalidas..."<<endl<<endl<<"Por favor ingrese sus datos nuevamente (Le quedan "<<3-(intentos+1)<< " intentos)"<<endl<<endl;
     }*/
-	
+
 	/*
     vector<string> getUsernameAndPassword(string str, char pattern) {
 
@@ -108,8 +107,6 @@ public:
 
     }*/
 
-
-
 void iniciarButacas(char butacas[TAMANIO_I][TAMANIO_J]);
 void mostrarButacas(char butacas[TAMANIO_I][TAMANIO_J]);
 bool verificarPosicion(char butacas[TAMANIO_I][TAMANIO_J],int pos_I, int pos_J);
@@ -118,6 +115,7 @@ int asignarValorPosI_A_Letra(char letra);
 void determinarAccion_A_Seguir(char butacas[TAMANIO_I][TAMANIO_J],int posicionDisponible,int pos_I,int pos_J);
 string elegirButaca(Client *&Cliente,char butacas[TAMANIO_I][TAMANIO_J]);
 void menuCliente(Client *&Cliente);
+void pedirRegistroDeActividades(Client *&Cliente);
 bool verificarIpYPuerto(std::string ipReal, int puertoReal);
 void gestionarPasajes(Client *&Cliente,char butacas[TAMANIO_I][TAMANIO_J]);
 void reservarAsiento(Client *&Cliente,char butacas[TAMANIO_I][TAMANIO_J]);
@@ -125,20 +123,22 @@ string login();
 vector<string> separarPalabras(string str);
 bool autenticacion(Client *&Cliente);
 
+
+
 int main()
 {
    setlocale(LC_CTYPE,"Spanish");// Spanish (de la librería locale.h) es para usar ñ y acento
 
    Client *Cliente = new Client();
-   
+
    bool ingresar = autenticacion(Cliente);
-   
+
    if (ingresar){
    		menuCliente(Cliente);
    }else{
    	   Cliente->CerrarSocket();
    }
-                        
+
 	/*
    while(true)
     {
@@ -301,7 +301,8 @@ string elegirButaca(Client *&Cliente,char butacas[TAMANIO_I][TAMANIO_J]){
 
 /***********************************************************************/
 void reservarAsiento(Client *&Cliente,char butacas[TAMANIO_I][TAMANIO_J]){
-     string respuesta = "";
+    Cliente->Enviar("Reservar");
+    string respuesta = "";
     iniciarButacas(butacas);
     mostrarButacas(butacas);
     respuesta = elegirButaca(Cliente,butacas);
@@ -381,6 +382,25 @@ bool verificarIpYPuerto(std::string ipReal, int puertoReal){
 
 
 /***********************************************************************/
+void pedirRegistroDeActividades(Client *&Cliente){
+
+    Cliente->Enviar("Registro");
+
+    string numeroDeSentencias = Cliente->Recibir();
+
+    for(int i = 0 ; i < stoi(numeroDeSentencias); i++){
+        string respuesta = "";
+
+        respuesta = Cliente->Recibir();
+
+        cout<<respuesta<<endl;
+    }
+
+}
+/***********************************************************************/
+
+
+/***********************************************************************/
 void menuCliente(Client *&Cliente){
 
     //deberia ser global o pasarse por referencia.
@@ -415,10 +435,10 @@ void menuCliente(Client *&Cliente){
                     system("CLS");
                     break;
             case 2: system("CLS");
-                   gestionarPasajes(Cliente,matriz);
+                    gestionarPasajes(Cliente,matriz);
                     break;
             case 3: system("CLS");
-                    cout<<servicioElegido<<endl;
+                    pedirRegistroDeActividades(Cliente);
                     _getch();
                     system("CLS");
                     break;
@@ -448,7 +468,7 @@ void menuCliente(Client *&Cliente){
     	string credenciales;
     	vector<string> responseServer;
     	int intentos=0;
-    	
+
             cout << "Bienvenido al Sistema de reserva de pasajes"<<endl<<endl;
 
             cout << "Ingrese su nombre de usuario: ";
@@ -460,12 +480,12 @@ void menuCliente(Client *&Cliente){
             cin >> passwordTemp;
 
             cout << endl;
-            
+
             credenciales = usernameTemp + ";" + passwordTemp;
-            
+
 		return credenciales;
     }
-    
+
 vector<string> separarPalabras(string str) {
 
         int posInit = 0;
@@ -487,32 +507,32 @@ vector<string> separarPalabras(string str) {
 bool autenticacion(Client *&Cliente){
    int intentos = 0;
    bool usuarioEncontrado = false;
-   
+
    vector<string> responseServer;
-   
+
             while(intentos<3){
-            	
+
             	Cliente->Enviar(login());
-						            
+
 	            responseServer = separarPalabras(Cliente->Recibir());
-	            
+
 	            intentos = atoi(const_cast< char *>(responseServer[1].c_str()));
-	            	            	            
+
 	            if(responseServer[0] == "false"){
 	            	if(intentos<3){
-	            		cout<<"Por favor ingrese sus datos nuevamente (Le quedan " << 3-intentos << " intentos)."<<endl; 
+	            		cout<<"Por favor ingrese sus datos nuevamente (Le quedan " << 3-intentos << " intentos)."<<endl;
 						system("pause");
 		            	system("cls");
 	            	}else {
-	            		cout << endl << "Se agotaron la cantidad de intentos de ingreso. Vuelva a intentarlo en otro momento." << endl; 
+	            		cout << endl << "Se agotaron la cantidad de intentos de ingreso. Vuelva a intentarlo en otro momento." << endl;
    	   					system("pause");
 	   					system("cls");
 	            	}
-					 
+
 				} else {
 					usuarioEncontrado = true;
 				}
             }
-            
+
             return usuarioEncontrado;
 }

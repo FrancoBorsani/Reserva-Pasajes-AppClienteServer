@@ -2,12 +2,13 @@
 #include <winsock2.h>
 #include <string>
 #include <conio.h>
-#include <clocale>//es para usar Ã± y acento
+#include <clocale>//es para usar ñ y acento
 #include <fstream> //Lib. para trabajar con archivos
 #include <ctime> //Lib. para trabajar con fechas / tiempos
 #include <cstdlib>
 #include <vector>
 #include <stdio.h>
+#include <windows.h>
 
 #define TAMANIO_I  5
 #define TAMANIO_J  21
@@ -47,20 +48,36 @@ public:
 
     string Recibir()
     {
-      recv(client, buffer, sizeof(buffer), 0);
-      //cout << "El cliente dice: " << buffer << endl;
-      string buff = buffer;
-      memset(buffer, 0, sizeof(buffer));
-      return buff;
+        fd_set fds ;
+        struct timeval tv ;
+
+        tv.tv_sec = 10 ;
+        tv.tv_usec = 0 ;
+
+        FD_ZERO(&fds) ;
+        FD_SET(client, &fds) ;
+
+        int n = select (client, &fds, NULL, NULL, &tv) ;
+
+        if (n == 0){
+          printf("Timeout..\n");
+          // Cerrar sesion
+        }
+
+        recv(client, buffer, sizeof(buffer), 0);
+
+        string buff = buffer;
+        memset(buffer, 0, sizeof(buffer));
+        return buff;
     }
 
     void Enviar(string respuesta)
     {
-         for(int i=0;i<respuesta.length();i++){
-           this->buffer[i]= respuesta[i];
-         }
-
+        for(int i=0;i<respuesta.length();i++){
+            this->buffer[i]= respuesta[i];
+        }
         send(client, buffer, sizeof(buffer), 0);
+
         memset(buffer, 0, sizeof(buffer));
     }
 
@@ -79,8 +96,11 @@ int asignarValorPosI_A_Letra(char letra);
 void marcarButacaComoOcupada(char butacas[TAMANIO_I][TAMANIO_J], int pos_I, int pos_J);
 void mostrarButacas(char butacas[TAMANIO_I][TAMANIO_J]);
 void iniciarButacas(char butacas[TAMANIO_I][TAMANIO_J]);
+int numeroDeSentencias(string file);
+void manejarPeticion(string peticion, string userName, Server *&Servidor);
+void mostrarRegistro(string userName, Server *&Servidor);
 vector<string> getUsernameAndPassword(string str);
-void checkUser(Server *&Servidor);
+string checkUser(Server *&Servidor);
 void registrarServerLog(string evento, string aRegistrar);
 void registrarUserLog(string evento, string aRegistrar);
 void crearArchivoUserLog(string usuario);
@@ -90,7 +110,7 @@ void crearArchivoUserLog(string usuario);
 ***********************************/
 int main()
 {
-    setlocale(LC_CTYPE,"Spanish");// Spanish (de la librerÃ­a locale.h) es para usar Ã± y acento
+    setlocale(LC_CTYPE,"Spanish");// Spanish (de la librería locale.h) es para usar ñ y acento
 /*
      char matriz[TAMANIO_I][TAMANIO_J] = {{'O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O'},
     {'O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O'},
@@ -104,18 +124,81 @@ int main()
 
     //cout<< resultado[0] <<endl << resultado[1] <<endl;
 
-    checkUser(Servidor);
+    string userName = checkUser(Servidor);
 
-    Servidor->CerrarSocket();
+    while(true){
+        string peticion = Servidor->Recibir();
+        manejarPeticion(peticion, userName, Servidor);
+    }
 
-    system("cls");
+    //Servidor->CerrarSocket();
 
-    main(); // RECURSIVIDAD PAPAAAAAAAAAAAAAAA!
+    //system("cls");
+
+    //main();
 
 }
 /************************************
         FIN  MAIN
 ***********************************/
+
+/***********************************************************************/
+void mostrarRegistro(string userName, Server *&Servidor){
+
+    std::string userFile = userName+".log";
+    std::string numero = std::to_string(numeroDeSentencias(userFile));
+
+    Servidor->Enviar(numero);
+
+    fstream file;
+    file.open(userFile);
+
+    if(file.is_open()){
+        for(int i = 0 ; i < stoi(numero); i++){
+            string linea = "";
+            getline(file, linea);
+            Servidor->Enviar(linea);
+        }
+    }
+    file.close();
+}
+
+/***********************************************************************/
+void manejarPeticion(string peticion, string userName, Server *&Servidor){
+
+char matriz[TAMANIO_I][TAMANIO_J] = {{'O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O'},
+    {'O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O'},
+    {'O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O'}};
+
+    if(peticion=="Registro"){
+        mostrarRegistro(userName,Servidor);
+    }
+    else if(peticion=="Reservar"){
+        verificarSolicitud_Y_Responder(Servidor,matriz);
+    }
+
+}
+
+/***********************************************************************/
+int numeroDeSentencias(std::string archivo){
+
+        int contador = 0;
+
+        fstream file;
+
+        file.open(archivo);
+
+        if(file.is_open()){
+            while(!file.eof()){
+                string linea = "";
+                getline(file, linea);
+                contador++;
+            }
+        }
+        file.close();
+    return contador;
+};
+/***********************************************************************/
 
 
 /***********************************************************************/
@@ -129,7 +212,7 @@ void verificarSolicitud_Y_Responder(Server *&Servidor,char butacas[TAMANIO_I][TA
 
     mensajeDelCli = Servidor->Recibir();//en este mensaje solo puede llegar letra-numero o letra-numero-numero (sin guiones)
     letra = mensajeDelCli[0];
-    mensajeDelCli.erase(0,1);//Saco la letra que guerdÃ©
+    mensajeDelCli.erase(0,1);//Saco la letra que guerdé
     pos_J =atoi(const_cast< char *>(mensajeDelCli.c_str()));
     pos_I = asignarValorPosI_A_Letra(letra);
     posicionDisponible = verificarPosicion(butacas, pos_I, pos_J);
@@ -161,7 +244,6 @@ int asignarValorPosI_A_Letra(char letra){
     return pos_I;
 }
 /***********************************************************************/
-
 
 
 /***********************************************************************/
@@ -233,13 +315,15 @@ vector<string> getUsernameAndPassword(string str) {
         return resultados;
 }
 
-void checkUser(Server *&Servidor)
+string checkUser(Server *&Servidor)
     {
         string usuarioEncontrado = "false";
         char delimitador = ';';
         vector<string> resultados;
         vector<string> userAndPass;
         int contador = 0;
+        string loggedUser = "";
+
 
         while(contador<3 && usuarioEncontrado == "false"){
 
@@ -263,6 +347,7 @@ void checkUser(Server *&Servidor)
                             registrarServerLog("Usuario autenticado", resultados[0]);
                             crearArchivoUserLog(resultados[0]);
                             registrarUserLog("Inicia sesion", resultados[0]);
+                            loggedUser = resultados[0];
                     }
 
                 }
@@ -281,7 +366,7 @@ void checkUser(Server *&Servidor)
             Servidor->Enviar(usuarioEncontrado+";"+to_string(contador));
 
         }
-
+        return loggedUser;
     }
 
 

@@ -1,656 +1,184 @@
 .LOG
 
-2020-10-16.13:21:30: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.00:23:11: Inicia servidor - Socket creado. Puerto de escucha:4747
 : ===================================
-2020-10-16.13:21:54: Usuario autenticado - Usuario_1
+2020-10-21.00:23:21: Usuario autenticado - Usuario_2
 : ===================================
-2020-10-16.13:32:42: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.00:28:20: Inicia servidor - Socket creado. Puerto de escucha:4747
 : ===================================
-2020-10-16.13:34:18: Usuario autenticado - Usuario_1
+2020-10-21.00:28:31: Usuario autenticado - Usuario_2
 : ===================================
-2020-10-16.13:40:46: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.00:33:58: Inicia servidor - Socket creado. Puerto de escucha:4747
 : ===================================
-2020-10-16.13:41:05: Usuario autenticado - Usuario_1
+2020-10-21.00:34:08: Usuario autenticado - Usuario_2
 : ===================================
-2020-10-16.13:41:22: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.00:50:27: Inicia servidor - Socket creado. Puerto de escucha:4747
 : ===================================
-2020-10-16.13:41:33: Usuario autenticado - Usuario_2
+2020-10-21.00:50:39: Usuario autenticado - Usuario_1
 : ===================================
-2020-10-16.13:41:53: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.00:51:52: Inicia servidor - Socket creado. Puerto de escucha:4747
 : ===================================
-2020-10-16.13:42:03: Usuario autenticado - Usuario_1
+2020-10-21.00:52:04: Usuario autenticado - Usuario_1
 : ===================================
-2020-10-16.13:44:32: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.00:52:41: Inicia servidor - Socket creado. Puerto de escucha:4747
 : ===================================
-2020-10-16.13:44:45: Usuario autenticado - Usuario_1
+2020-10-21.00:52:52: Usuario autenticado - Usuario_1
 : ===================================
-2020-10-16.13:45:53: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.00:53:23: Inicia servidor - Socket creado. Puerto de escucha:4747
 : ===================================
-2020-10-16.13:46:03: Usuario autenticado - Usuario_1
+2020-10-21.00:53:32: Usuario autenticado - Usuario_1
 : ===================================
-2020-10-16.13:47:37: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.00:53:49: Inicia servidor - Socket creado. Puerto de escucha:4747
 : ===================================
-2020-10-16.13:47:48: Usuario autenticado - Usuario_1
+2020-10-21.00:53:51: Inicia servidor - Socket creado. Puerto de escucha:4747
 : ===================================
-2020-10-16.13:49:12: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.00:53:56: Inicia servidor - Socket creado. Puerto de escucha:4747
 : ===================================
-2020-10-16.13:49:22: Usuario autenticado - Usuario_1
+2020-10-21.00:54:10: Usuario autenticado - Usuario_1
 : ===================================
-2020-10-16.13:50:05: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.00:54:55: Inicia servidor - Socket creado. Puerto de escucha:4747
 : ===================================
-2020-10-16.13:50:14: Usuario autenticado - Usuario_1
+2020-10-21.00:55:05: Usuario autenticado - Usuario_1
 : ===================================
-2020-10-16.13:50:52: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.00:56:05: Inicia servidor - Socket creado. Puerto de escucha:4747
 : ===================================
-2020-10-16.13:51:03: Usuario autenticado - Usuario_1
+2020-10-21.00:56:21: Usuario autenticado - Usuario_2
 : ===================================
-2020-10-16.13:52:25: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.00:57:14: Inicia servidor - Socket creado. Puerto de escucha:4747
 : ===================================
-2020-10-16.13:52:41: Usuario autenticado - Usuario_1
+2020-10-21.00:57:23: Usuario autenticado - Usuario_1
 : ===================================
-2020-10-16.14:00:13: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.00:59:08: Inicia servidor - Socket creado. Puerto de escucha:4747
 : ===================================
-2020-10-16.14:00:27: Usuario autenticado - Usuario_1
+2020-10-21.00:59:17: Usuario autenticado - Usuario_2
 : ===================================
-2020-10-16.14:00:41: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.01:00:12: Inicia servidor - Socket creado. Puerto de escucha:4747
 : ===================================
-2020-10-16.14:01:46: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.01:00:23: Inicia servidor - Socket creado. Puerto de escucha:4747
 : ===================================
-2020-10-16.14:01:52: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.01:00:41: Usuario autenticado - Usuario_1
 : ===================================
-2020-10-16.14:02:04: Usuario autenticado - Usuario_1
+2020-10-21.01:01:14: Inicia servidor - Socket creado. Puerto de escucha:4747
 : ===================================
-2020-10-21.20:01:27: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.01:01:24: Usuario autenticado - Usuario_1
 : ===================================
-2020-10-21.20:05:58: Usuario autenticado - Usuario_1
+2020-10-21.19:00:09: Inicia servidor - Socket creado. Puerto de escucha:4747
 : ===================================
-2020-10-21.20:10:35: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.19:00:23: Usuario autenticado - Usuario_1
 : ===================================
-2020-10-21.20:11:47: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.19:01:08: Inicia servidor - Socket creado. Puerto de escucha:4747
 : ===================================
-2020-10-21.20:11:47: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.19:01:19: Usuario autenticado - Usuario_1
 : ===================================
-2020-10-21.20:11:47: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.19:03:32: Inicia servidor - Socket creado. Puerto de escucha:4747
 : ===================================
-2020-10-21.20:11:47: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.19:03:35: Inicia servidor - Socket creado. Puerto de escucha:4747
 : ===================================
-2020-10-21.20:11:47: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.19:05:01: Inicia servidor - Socket creado. Puerto de escucha:4747
 : ===================================
-2020-10-21.20:11:47: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.19:05:14: Usuario autenticado - Usuario_1
 : ===================================
-2020-10-21.20:11:47: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.19:08:14: Inicia servidor - Socket creado. Puerto de escucha:4747
 : ===================================
-2020-10-21.20:11:47: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.19:08:26: Usuario autenticado - Usuario_1
 : ===================================
-2020-10-21.20:11:47: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.19:09:58: Inicia servidor - Socket creado. Puerto de escucha:4747
 : ===================================
-2020-10-21.20:11:47: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.19:10:02: Inicia servidor - Socket creado. Puerto de escucha:4747
 : ===================================
-2020-10-21.20:11:47: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.19:10:07: Inicia servidor - Socket creado. Puerto de escucha:4747
 : ===================================
-2020-10-21.20:11:47: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.19:10:15: Usuario autenticado - Usuario_2
 : ===================================
-2020-10-21.20:11:47: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.19:20:43: Inicia servidor - Socket creado. Puerto de escucha:4747
 : ===================================
-2020-10-21.20:11:47: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.19:20:54: Usuario autenticado - Usuario_1
 : ===================================
-2020-10-21.20:11:48: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.19:36:22: Inicia servidor - Socket creado. Puerto de escucha:4747
 : ===================================
-2020-10-21.20:11:48: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.19:36:26: Inicia servidor - Socket creado. Puerto de escucha:4747
 : ===================================
-2020-10-21.20:11:48: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.19:36:30: Inicia servidor - Socket creado. Puerto de escucha:4747
 : ===================================
-2020-10-21.20:11:48: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.19:36:53: Inicia servidor - Socket creado. Puerto de escucha:4747
 : ===================================
-2020-10-21.20:11:48: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.19:37:26: Inicia servidor - Socket creado. Puerto de escucha:4747
 : ===================================
-2020-10-21.20:11:48: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.19:37:34: Inicia servidor - Socket creado. Puerto de escucha:4747
 : ===================================
-2020-10-21.20:11:48: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.19:39:04: Inicia servidor - Socket creado. Puerto de escucha:4747
 : ===================================
-2020-10-21.20:11:48: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.19:39:13: Usuario autenticado - Usuario_1
 : ===================================
-2020-10-21.20:11:48: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.20:08:37: Inicia servidor - Socket creado. Puerto de escucha:4747
 : ===================================
-2020-10-21.20:11:48: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.20:08:41: Inicia servidor - Socket creado. Puerto de escucha:4747
 : ===================================
-2020-10-21.20:11:48: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.20:08:52: Usuario autenticado - Usuario_1
 : ===================================
-2020-10-21.20:11:48: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.20:10:30: Inicia servidor - Socket creado. Puerto de escucha:4747
 : ===================================
-2020-10-21.20:11:48: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.20:10:38: Usuario autenticado - Usuario_1
 : ===================================
-2020-10-21.20:11:48: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.21:25:26: Inicia servidor - Socket creado. Puerto de escucha:4747
 : ===================================
-2020-10-21.20:11:48: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.21:25:36: Usuario autenticado - Usuario_1
 : ===================================
-2020-10-21.20:11:49: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.21:26:29: Inicia servidor - Socket creado. Puerto de escucha:4747
 : ===================================
-2020-10-21.20:11:49: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.21:26:38: Usuario autenticado - Usuario_1
 : ===================================
-2020-10-21.20:11:49: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.21:27:31: Inicia servidor - Socket creado. Puerto de escucha:4747
 : ===================================
-2020-10-21.20:11:49: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.21:27:42: Usuario autenticado - Usuario_1
 : ===================================
-2020-10-21.20:11:49: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.21:32:10: Inicia servidor - Socket creado. Puerto de escucha:4747
 : ===================================
-2020-10-21.20:11:49: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.21:32:25: Inicia servidor - Socket creado. Puerto de escucha:4747
 : ===================================
-2020-10-21.20:11:49: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.21:32:28: Inicia servidor - Socket creado. Puerto de escucha:4747
 : ===================================
-2020-10-21.20:11:49: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.21:32:37: Usuario autenticado - Usuario_1
 : ===================================
-2020-10-21.20:11:49: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.21:56:49: Inicia servidor - Socket creado. Puerto de escucha:4747
 : ===================================
-2020-10-21.20:11:49: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.21:57:29: Inicia servidor - Socket creado. Puerto de escucha:4747
 : ===================================
-2020-10-21.20:11:49: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.21:57:38: Usuario autenticado - Usuario_1
 : ===================================
-2020-10-21.20:11:49: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.21:57:55: Inicia servidor - Socket creado. Puerto de escucha:4747
 : ===================================
-2020-10-21.20:11:49: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.21:58:09: Inicia servidor - Socket creado. Puerto de escucha:4747
 : ===================================
-2020-10-21.20:11:49: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.21:58:17: Usuario autenticado - Usuario_1
 : ===================================
-2020-10-21.20:11:49: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.21:58:50: Inicia servidor - Socket creado. Puerto de escucha:4747
 : ===================================
-2020-10-21.20:11:50: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.21:59:00: Usuario autenticado - Usuario_1
 : ===================================
-2020-10-21.20:11:50: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.22:09:12: Inicia servidor - Socket creado. Puerto de escucha:4747
 : ===================================
-2020-10-21.20:11:50: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.22:09:23: Usuario autenticado - Usuario_1
 : ===================================
-2020-10-21.20:11:50: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.22:12:48: Inicia servidor - Socket creado. Puerto de escucha:4747
 : ===================================
-2020-10-21.20:11:50: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.22:12:50: Inicia servidor - Socket creado. Puerto de escucha:4747
 : ===================================
-2020-10-21.20:11:50: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.22:13:01: Usuario autenticado - Usuario_1
 : ===================================
-2020-10-21.20:11:50: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.22:13:24: Inicia servidor - Socket creado. Puerto de escucha:4747
 : ===================================
-2020-10-21.20:11:50: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.22:13:27: Inicia servidor - Socket creado. Puerto de escucha:4747
 : ===================================
-2020-10-21.20:11:50: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.22:13:38: Usuario autenticado - Usuario_1
 : ===================================
-2020-10-21.20:11:50: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.22:16:00: Inicia servidor - Socket creado. Puerto de escucha:4747
 : ===================================
-2020-10-21.20:11:50: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.22:16:45: Inicia servidor - Socket creado. Puerto de escucha:4747
 : ===================================
-2020-10-21.20:11:50: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.22:16:55: Usuario autenticado - Usuario_1
 : ===================================
-2020-10-21.20:11:50: Inicia servidor - Socket creado. Puerto de escucha:4747
+2020-10-21.22:17:27: Inicia servidor - Socket creado. Puerto de escucha:4747
 : ===================================
-2020-10-21.20:11:50: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:50: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:50: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:51: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:51: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:51: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:51: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:51: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:51: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:51: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:51: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:51: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:51: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:51: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:51: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:51: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:51: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:52: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:52: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:52: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:52: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:52: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:52: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:52: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:52: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:52: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:52: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:52: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:52: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:52: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:53: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:53: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:53: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:53: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:53: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:53: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:53: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:53: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:53: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:54: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:54: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:54: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:54: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:54: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:54: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:55: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:55: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:55: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:55: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:55: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:55: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:55: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:55: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:55: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:55: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:56: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:56: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:56: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:56: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:56: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:56: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:56: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:56: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:56: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:56: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:56: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:56: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:57: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:57: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:57: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:57: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:57: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:57: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:57: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:57: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:57: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:58: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:58: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:58: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:58: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:58: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:58: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:58: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:58: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:58: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:59: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:59: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:59: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:59: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:59: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:59: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:59: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:11:59: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:12:00: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:12:00: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:12:00: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:12:00: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:12:00: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:12:01: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:12:01: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:12:01: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:12:01: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:12:01: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:08: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:28: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:28: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:28: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:28: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:28: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:28: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:28: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:28: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:28: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:29: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:29: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:29: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:29: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:29: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:29: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:29: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:29: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:29: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:29: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:29: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:29: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:29: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:29: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:29: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:29: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:29: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:29: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:29: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:29: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:29: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:29: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:29: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:30: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:30: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:30: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:30: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:30: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:30: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:30: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:30: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:30: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:30: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:30: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:30: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:30: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:30: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:30: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:30: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:30: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:30: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:30: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:30: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:30: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:30: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:30: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:31: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:31: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:31: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:31: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:31: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:31: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:31: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:31: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:31: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:31: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:31: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:31: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:31: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:31: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:31: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:31: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:31: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:31: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:31: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:31: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:31: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:31: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:31: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:32: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:32: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:32: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:32: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:32: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:32: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:32: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:32: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:32: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:32: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:32: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:32: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:32: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:32: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:32: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:32: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:32: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:32: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:32: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:32: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:32: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:32: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:33: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:33: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:33: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:33: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:33: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:33: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:33: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:33: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:33: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:33: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:33: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:33: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:33: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:33: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:33: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:33: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:33: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:33: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:14:33: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:14:33: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:16:43: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:17:08: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:17:25: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:52:33: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:53:45: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:54:21: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:54:45: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:54:45: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:55:12: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:55:12: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:58:34: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
-2020-10-21.20:58:59: Socket cerrado, cliente desconectado - 
-: ===================================
-2020-10-21.20:58:59: Inicia servidor - Socket creado. Puerto de escucha:4747
-: ===================================
+
+22:39 21/10/2020
