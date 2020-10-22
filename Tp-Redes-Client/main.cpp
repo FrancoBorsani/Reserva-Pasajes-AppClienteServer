@@ -107,10 +107,6 @@ public:
 
     }*/
 
-enum Peticiones{
-Registro=1, Reservar, Liberar
-};
-
 void iniciarButacas(char butacas[TAMANIO_I][TAMANIO_J]);
 void mostrarButacas(char butacas[TAMANIO_I][TAMANIO_J]);
 bool verificarPosicion(char butacas[TAMANIO_I][TAMANIO_J],int pos_I, int pos_J);

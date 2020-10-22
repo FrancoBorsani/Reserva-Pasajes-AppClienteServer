@@ -53,15 +53,15 @@ public:
 
         tv.tv_sec = 10 ;
         tv.tv_usec = 0 ;
-        // Set up the file descriptor set.
+
         FD_ZERO(&fds) ;
         FD_SET(client, &fds) ;
 
         int n = select (client, &fds, NULL, NULL, &tv) ;
 
-        if ( n == 0){
+        if (n == 0){
           printf("Timeout..\n");
-          closesocket(client);
+          // Cerrar sesion
         }
 
         recv(client, buffer, sizeof(buffer), 0);
