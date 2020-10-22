@@ -84,6 +84,7 @@ public:
     void CerrarSocket()
     {
         closesocket(client);
+        WSACleanup();
         registrarServerLog("Socket cerrado, cliente desconectado", "");
         cout << "Socket cerrado, cliente desconectado." << endl;
     }
@@ -116,6 +117,7 @@ int main()
     {'O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O'}};
 */
     Server *Servidor = new Server();
+
     //iniciarButacas(matriz);
     //mostrarButacas(matriz);
     //verificarSolicitud_Y_Responder(Servidor,matriz);
@@ -125,12 +127,21 @@ int main()
     string userName = checkUser(Servidor);
 
 
+<<<<<<< HEAD
     while(true){
         string peticion = Servidor->Recibir();
         manejarPeticion(peticion, userName, Servidor);
     }
 
     return 0;
+=======
+    Servidor->CerrarSocket();
+
+    system("cls");
+
+    main(); // RECURSIVIDAD PAPAAAAAAAAAAAAAAA!
+
+>>>>>>> 4948a067534bf99b719e9cefbd80258750bf88ce
 }
 /************************************
         FIN  MAIN
