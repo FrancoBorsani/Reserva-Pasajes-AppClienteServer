@@ -62,12 +62,12 @@ public:
 
         send(client, buffer, sizeof(buffer), 0);
         memset(buffer, 0, sizeof(buffer));
-        cout << "Mensaje enviado!" << endl;
     }
 
     void CerrarSocket()
     {
         closesocket(client);
+        WSACleanup();
         registrarServerLog("Socket cerrado, cliente desconectado", "");
         cout << "Socket cerrado, cliente desconectado." << endl;
     }
@@ -97,6 +97,7 @@ int main()
     {'O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O'}};
 */
     Server *Servidor = new Server();
+
     //iniciarButacas(matriz);
     //mostrarButacas(matriz);
     //verificarSolicitud_Y_Responder(Servidor,matriz);
@@ -104,6 +105,12 @@ int main()
     //cout<< resultado[0] <<endl << resultado[1] <<endl;
 
     checkUser(Servidor);
+
+    Servidor->CerrarSocket();
+
+    system("cls");
+
+    main(); // RECURSIVIDAD PAPAAAAAAAAAAAAAAA!
 
 }
 /************************************
