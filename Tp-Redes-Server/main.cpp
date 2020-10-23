@@ -2,17 +2,20 @@
 #include <winsock2.h>
 #include <string>
 #include <conio.h>
-#include <clocale>//es para usar � y acento
+#include <clocale>//es para usar ñ y acento
 #include <fstream> //Lib. para trabajar con archivos
 #include <ctime> //Lib. para trabajar con fechas / tiempos
 #include <cstdlib>
 #include <vector>
 #include <stdio.h>
-#include <windows.h>
+#include <windns.h>
 
 #define TAMANIO_I  5
 #define TAMANIO_J  21
+
 using namespace std;
+
+string nombreArchivo;
 
 void registrarServerLog(string evento, string aRegistrar);
 
@@ -63,21 +66,20 @@ public:
           printf("Timeout..\n");
           // Cerrar sesion
         }
-
         recv(client, buffer, sizeof(buffer), 0);
 
         string buff = buffer;
         memset(buffer, 0, sizeof(buffer));
-        return buff;
+      return buff;
     }
 
     void Enviar(string respuesta)
     {
-        for(int i=0;i<respuesta.length();i++){
-            this->buffer[i]= respuesta[i];
-        }
-        send(client, buffer, sizeof(buffer), 0);
+         for(int i=0;i<respuesta.length();i++){
+           this->buffer[i]= respuesta[i];
+         }
 
+        send(client, buffer, sizeof(buffer), 0);
         memset(buffer, 0, sizeof(buffer));
     }
 
@@ -90,94 +92,102 @@ public:
     }
 };
 
-void verificarSolicitud_Y_Responder(Server *&Servidor,char butacas[TAMANIO_I][TAMANIO_J]);
-bool verificarPosicion(char butacas[TAMANIO_I][TAMANIO_J],int pos_I, int pos_J);
-int asignarValorPosI_A_Letra(char letra);
-void marcarButacaComoOcupada(char butacas[TAMANIO_I][TAMANIO_J], int pos_I, int pos_J);
-void mostrarButacas(char butacas[TAMANIO_I][TAMANIO_J]);
-void iniciarButacas(char butacas[TAMANIO_I][TAMANIO_J]);
-int numeroDeSentencias(string file);
-void manejarPeticion(string peticion, string userName, Server *&Servidor);
-void mostrarRegistro(string userName, Server *&Servidor);
-vector<string> getUsernameAndPassword(string str);
+void crearArchivoButacas();
+void accessoAlMenuGestionar(Server *&Servidor);
+string verificarSolicitud_Y_Responder(Server *&Servidor,vector <string> vectorButacas);
+void marcarButacaComoOcupada(vector <string> vectorButacas, int pos_I, int pos_J);
+vector<string> separarPalabrasPuntoYComa(string str);
 string checkUser(Server *&Servidor);
 void registrarServerLog(string evento, string aRegistrar);
 void registrarUserLog(string evento, string aRegistrar);
 void crearArchivoUserLog(string usuario);
+
+void iniciarButacas(char butacas[TAMANIO_I][TAMANIO_J]);
+void mostrarButacas(vector <string> vectorButacas);
+int asignarValorPosI_A_Letra(char letra);
+
+void darFormato_y_GuardarButacasEnArchivo(string nombreArchivo, string titulo,char butacas[TAMANIO_I][TAMANIO_J]);
+void guardarEnArchivo(string lineaAGuardar, string nombreArchivo);
+bool verificarSiExisteArchivo(string nombreArchivo);
+vector <string> leerArchivoGuardarEnVectorString(string nombreArchivo);
+void guardarEnArchivoYaFormateada(string lineaAGuardar, string nombreArchivo);
+void marcarEnArchivoReservaRealizada(vector <string> vectorButacas);
+string traerSoloButacas(vector <string> vectorButacas);
+
+int numeroDeSentencias(string file);
+void manejarPeticion(string userName, Server *&Servidor);
+string mostrarRegistro(string userName, Server *&Servidor);
+
+
 
 /************************************
          MAIN
 ***********************************/
 int main()
 {
-    setlocale(LC_CTYPE,"Spanish");// Spanish (de la librer�a locale.h) es para usar � y acento
-/*
-     char matriz[TAMANIO_I][TAMANIO_J] = {{'O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O'},
-    {'O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O'},
-    {'O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O'}};
-*/
+    setlocale(LC_CTYPE,"Spanish");// Spanish (de la librería locale.h) es para usar ñ y acento
     Server *Servidor = new Server();
 
-    //iniciarButacas(matriz);
-    //mostrarButacas(matriz);
-    //verificarSolicitud_Y_Responder(Servidor,matriz);
-
-    //cout<< resultado[0] <<endl << resultado[1] <<endl;
-
     string userName = checkUser(Servidor);
+    crearArchivoButacas();
 
-    while(true){
-        string peticion = Servidor->Recibir();
-        manejarPeticion(peticion, userName, Servidor);
-    }
+    manejarPeticion(userName, Servidor);
 
-    //Servidor->CerrarSocket();
+    Servidor->CerrarSocket();
 
-    //system("cls");
+    system("cls");
 
-    //main();
-
+    main();
 }
 /************************************
         FIN  MAIN
 ***********************************/
 
+
 /***********************************************************************/
-void mostrarRegistro(string userName, Server *&Servidor){
+void crearArchivoButacas(){
+    nombreArchivo = "Registro_de_butacas";
+    if(verificarSiExisteArchivo(nombreArchivo)==false){//solo es paracrear un archivo
+        string tituloArchivo = ">>> REGISTRO DE BUTACAS VACIAS Y OCUPADA <<<";
+        char butacas[TAMANIO_I][TAMANIO_J];
+        iniciarButacas(butacas);
+        darFormato_y_GuardarButacasEnArchivo(nombreArchivo,tituloArchivo,butacas);
+    }
+}
+/***********************************************************************/
 
-    std::string userFile = userName+".log";
-    std::string numero = std::to_string(numeroDeSentencias(userFile));
 
-    Servidor->Enviar(numero);
+/***********************************************************************/
+void accessoAlMenuGestionar(Server *&Servidor){
+    cout<<Servidor->Recibir()<<endl;
+    vector <string> vectorButacas = leerArchivoGuardarEnVectorString(nombreArchivo);
+    Servidor->Enviar(traerSoloButacas(vectorButacas));
+    string salir = "false";
+    while(salir=="false"){
+       vectorButacas = leerArchivoGuardarEnVectorString(nombreArchivo);
+       salir = verificarSolicitud_Y_Responder(Servidor,vectorButacas);
+       if(salir!="true" && salir!="false"){//es porque cuando se desconecta el cliente  cerrando la ventana llegaba vacio
+         salir ="true";
+         system("cls");
+       }
+    }
+}
+/***********************************************************************/
 
-    fstream file;
-    file.open(userFile);
 
-    if(file.is_open()){
-        for(int i = 0 ; i < stoi(numero); i++){
-            string linea = "";
-            getline(file, linea);
-            Servidor->Enviar(linea);
+/***********************************************************************/
+void manejarPeticion(string userName, Server *&Servidor){
+        string peticion = Servidor->Recibir();
+        Servidor->Enviar("_");//Envio cualquier cosa para que no dé error
+       if(peticion=="Registro"){
+          mostrarRegistro(userName,Servidor);
+       }
+       if(peticion=="Gestionar"){
+          accessoAlMenuGestionar(Servidor);
         }
-    }
-    file.close();
 }
-
 /***********************************************************************/
-void manejarPeticion(string peticion, string userName, Server *&Servidor){
 
-char matriz[TAMANIO_I][TAMANIO_J] = {{'O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O'},
-    {'O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O'},
-    {'O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O'}};
-
-    if(peticion=="Registro"){
-        mostrarRegistro(userName,Servidor);
-    }
-    else if(peticion=="Reservar"){
-        verificarSolicitud_Y_Responder(Servidor,matriz);
-    }
-
-}
 
 /***********************************************************************/
 int numeroDeSentencias(std::string archivo){
@@ -202,8 +212,147 @@ int numeroDeSentencias(std::string archivo){
 
 
 /***********************************************************************/
-void verificarSolicitud_Y_Responder(Server *&Servidor,char butacas[TAMANIO_I][TAMANIO_J]){
+string mostrarRegistro(string userName, Server *&Servidor){
 
+    string mensaje = Servidor->Recibir();
+
+    std::string userFile = userName+".log";
+    std::string numero = std::to_string(numeroDeSentencias(userFile));
+
+    Servidor->Enviar(numero);
+
+    fstream file;
+    file.open(userFile);
+
+    if(file.is_open()){
+        for(int i = 0 ; i < stoi(numero); i++){
+            string linea = "";
+            getline(file, linea);
+            Servidor->Enviar(linea);
+        }
+    }
+    file.close();
+
+  return mensaje;
+}
+/***********************************************************************/
+
+
+/***********************************************************************/
+string traerSoloButacas(vector <string> vectorButacas){
+    string soloButacas;
+cout<<endl;
+   for(int i=0;i<11;i++){
+        if(i>6&&i!=9){
+          for(int j=0;j<43;j++){
+              if(j>3 && j%2==0 && j<42){
+                 soloButacas=soloButacas+vectorButacas[i][j];
+              }else if(j==42){
+                 soloButacas=soloButacas+vectorButacas[i][j];
+              }//if interno
+          }//for j
+         }//if i>3
+   }//for i
+  return soloButacas;
+}
+/***********************************************************************/
+
+/***********************************************************************/
+void darFormato_y_GuardarButacasEnArchivo(string nombreArchivo, string titulo,char butacas[TAMANIO_I][TAMANIO_J]){
+    string lineaAGuardar;
+    guardarEnArchivo(titulo,nombreArchivo);
+    for (int i =0; i<TAMANIO_I;i++){
+        if(i==2){guardarEnArchivo("-------------------------------------------",nombreArchivo);}
+        if(i==4){guardarEnArchivo("===========================================",nombreArchivo);}
+        for (int j=0; j<TAMANIO_J;j++){
+           if(i==0&&j<1){lineaAGuardar=lineaAGuardar+"  "+butacas[i][j]+" ";
+           }else if(j<1){lineaAGuardar=lineaAGuardar+" "+butacas[i][j]+" |";
+           }else{lineaAGuardar=lineaAGuardar+butacas[i][j]+" ";}
+        }//cierro el for de columna
+        guardarEnArchivo(lineaAGuardar,nombreArchivo);
+        lineaAGuardar="";
+
+    }//Cierro el for de renglon
+
+}
+/***********************************************************************/
+
+/***********************************************************************/
+void guardarEnArchivo(string lineaAGuardar, string nombreArchivo){
+   bool NO_EsPrimeraCarga = verificarSiExisteArchivo(nombreArchivo);// Si no existe el archivo quiere decir que va a ser la primera cargaga de datos (ya que cuando lo creo cargo datos)
+   nombreArchivo= nombreArchivo+".txt";
+   ofstream archivo(nombreArchivo.c_str(),ios::out | ios::app);
+        if(NO_EsPrimeraCarga==false){//si es la primera carga
+          archivo<<"\n"<<lineaAGuardar<<"\n\n"; //pongo título y salto de linea al final para dejar un reglón vacio
+        }else{//si NO es la primera carga, pongo salto de linea al comienzo
+          archivo<<"\n"<<lineaAGuardar;
+        }/*sin este if me generaba una linea demás, al comienzo del archivo, por el salto de linea. Si pusiese el salto de linea al final genería la linea demás al final del
+         archivo y no tengo forma manejarlo cuando... en ambos casos al mostrar los registros del archivo me mostraría uno demás en blanco arriba o abajo*/
+   archivo.close();
+}
+/***********************************************************************/
+
+/***********************************************************************/
+bool verificarSiExisteArchivo(string nombreArchivo){
+    nombreArchivo= nombreArchivo+".txt";
+    bool yaExisteArchivo = true;
+    ifstream archivo;//ifstream(tipo de variable para abrir un archivo)...  archivo (nombre de la variable)
+    archivo.open(nombreArchivo.c_str(),ios::in);// con archivo.open le digo que quiero abrir un archivo y con ios::in le digo que abro para leerlo
+    if(archivo.fail())//si hay un error y no se abre el arvhivo
+    {
+        yaExisteArchivo = false;
+    }
+    archivo.close();//cerramos archivo
+ return yaExisteArchivo;
+}
+/***********************************************************************/
+
+/***********************************************************************/
+vector <string> leerArchivoGuardarEnVectorString(string nombreArchivo)
+{
+    vector <string> butacasEnSting;
+    nombreArchivo = nombreArchivo+".txt";
+    ifstream archivo;//ifstream(tipo de variable para abrir un archivo)...  archivo (nombre de la variable)
+    string texto;// variable string
+
+    archivo.open(nombreArchivo.c_str(),ios::in);// con archivo.open le digo que quiero abrir un archivo y con ios::in le digo que abro para leerlo
+
+    if(archivo.fail())//si hay un error y no se abre el arvhivo
+    {
+        cout<<"No se ha podido abrir archivo"<<endl;//se muestra
+        exit(1);//sale
+    }
+    int i=0;
+    //si se abre
+    while(!archivo.eof())//mientras no sea el final del archivo
+    {
+           getline(archivo,texto);//Tomo lo que va encontrando en "archivo" y lo copio en "texto"
+           butacasEnSting.push_back(texto);//guardo en una posición del vector la lines obtenidad del archivo
+           i++;
+    }
+   archivo.close();//cerramos archivo
+   return butacasEnSting;
+}
+/***********************************************************************/
+
+/***********************************************************************/
+void guardarEnArchivoYaFormateada(string lineaAGuardar, string nombreArchivo){
+   bool NO_EsPrimeraCarga = verificarSiExisteArchivo(nombreArchivo);// Si no existe el archivo quiere decir que va a ser la primera cargaga de datos (ya que cuando lo creo cargo datos)
+   nombreArchivo= nombreArchivo+".txt";
+   ofstream archivo(nombreArchivo.c_str(),ios::out | ios::app);
+        if(NO_EsPrimeraCarga==false){//si es la primera carga
+          archivo<<lineaAGuardar; //solo pongo la linea
+        }else{//si NO es la primera carga, pongo salto de linea al comienzo
+          archivo<<"\n"<<lineaAGuardar;
+        }/*sin este if me generaba una linea demás, al comienzo del archivo, por el salto de linea. Si pusiese el salto de linea al final genería la linea demás al final del
+         archivo y no tengo forma manejarlo cuando... en ambos casos al mostrar los registros del archivo me mostraría uno demás en blanco arriba o abajo*/
+   archivo.close();
+}
+/***********************************************************************/
+
+/***********************************************************************/
+string verificarSolicitud_Y_Responder(Server *&Servidor,vector <string> vectorButacas){
+    string mensajePeticion = "xxxxxx";
     string mensajeDelCli="";
     char letra;
     int pos_J;
@@ -212,18 +361,21 @@ void verificarSolicitud_Y_Responder(Server *&Servidor,char butacas[TAMANIO_I][TA
 
     mensajeDelCli = Servidor->Recibir();//en este mensaje solo puede llegar letra-numero o letra-numero-numero (sin guiones)
     letra = mensajeDelCli[0];
-    mensajeDelCli.erase(0,1);//Saco la letra que guerd�
+    mensajeDelCli.erase(0,1);//Saco la letra que guerdé
     pos_J =atoi(const_cast< char *>(mensajeDelCli.c_str()));
+    pos_J = pos_J*2+2; //es por la diferencia que hay entre la posicion de vista en consola y la del archivo
     pos_I = asignarValorPosI_A_Letra(letra);
-    posicionDisponible = verificarPosicion(butacas, pos_I, pos_J);
-    if(posicionDisponible){
-       Servidor->Enviar("true");
-       marcarButacaComoOcupada(butacas, pos_I, pos_J);
+    if(vectorButacas[pos_I][pos_J]=='O'){
+       Servidor->Enviar("true");//está disponible
+       marcarButacaComoOcupada(vectorButacas, pos_I, pos_J);
+       mensajePeticion = Servidor->Recibir();
     }else{
         Servidor->Enviar("false");
         cout<<"No se asino una butaca "<<endl<<endl;
-        mostrarButacas(butacas);
+        mostrarButacas(vectorButacas);
+        mensajePeticion = Servidor->Recibir();
     }
+  return mensajePeticion;
 }
 /***********************************************************************/
 
@@ -233,22 +385,15 @@ int asignarValorPosI_A_Letra(char letra){
     int pos_I = -1;
 
     if(letra=='A' || letra == 'a'){
-        pos_I=2;
+        pos_I=7;
     }
     else if(letra=='B' || letra == 'b'){
-        pos_I=3;}
+        pos_I=8;}
     else {
-        pos_I=4;
+        pos_I=10;
     }
 
     return pos_I;
-}
-/***********************************************************************/
-
-
-/***********************************************************************/
-bool verificarPosicion(char butacas[TAMANIO_I][TAMANIO_J],int pos_I, int pos_J){
-    return (butacas[pos_I][pos_J] == 'O')?true:false;
 }
 /***********************************************************************/
 
@@ -270,34 +415,47 @@ void iniciarButacas(char butacas[TAMANIO_I][TAMANIO_J]){
 
 
 /***********************************************************************/
-void mostrarButacas(char butacas[TAMANIO_I][TAMANIO_J]){
-    cout<<endl;
-    for (int i =0; i<TAMANIO_I;i++){
-        if(i==2){cout <<"---------------------------------------------------------------"<< endl;}
-        if(i==4){cout <<"==============================================================="<< endl;}
-        for (int j=0; j<TAMANIO_J;j++){
-           if(i==0&&j<1){cout <<"  "<<butacas[i][j]<<" ";
-           }else if(j<1){cout <<" "<<butacas[i][j]<<" |";
-           }else{cout <<" "<<butacas[i][j]<<" ";}
+void mostrarButacas(vector <string> vectorButacas){
+    for(int i=0;i<11;i++){
+        if(i>3){
+         cout<<vectorButacas[i]<<endl;
         }
-        printf("\n");
     }
 }
 /***********************************************************************/
 
-/***********************************************************************/
-void marcarButacaComoOcupada(char butacas[TAMANIO_I][TAMANIO_J], int pos_I, int pos_J){
+/**********************************************************************/
+void marcarEnArchivoReservaRealizada(vector <string> vectorButacas){
+    ofstream archivoAuxiliar;
+    archivoAuxiliar.open("auxiliar.txt",ios::out);
+    if(archivoAuxiliar.is_open()){
+       for(int i=0;i<11;i++){
+         archivoAuxiliar<<vectorButacas[i]<<"\n";
+       }//Fin for
+    }else{
+        cout<<"No se pudoAbrir el Archivo o aun no ha sido Creado"<<endl;
+    }
+    archivoAuxiliar.close();
+    remove("Registro_de_butacas.txt");
+    rename("auxiliar.txt","Registro_de_butacas.txt");
+}
+/**********************************************************************/
 
-        butacas[pos_I][pos_J] = 'X';
+
+/***********************************************************************/
+void marcarButacaComoOcupada(vector <string> vectorButacas, int pos_I, int pos_J){
+
+        vectorButacas[pos_I][pos_J] = 'X';
+        marcarEnArchivoReservaRealizada(vectorButacas);
         system("cls");
-        mostrarButacas(butacas);
+        mostrarButacas(vectorButacas);
         cout<<"************************************"<<endl;
         cout<<"** Butaca reservada exitosamente. **"<<endl;
         cout<<"************************************"<<endl;
  }
 /***********************************************************************/
 
-vector<string> getUsernameAndPassword(string str) {
+vector<string> separarPalabrasPuntoYComa(string str) {
 
         int posInit = 0;
         int posFound = 0;
@@ -316,105 +474,103 @@ vector<string> getUsernameAndPassword(string str) {
 }
 
 string checkUser(Server *&Servidor)
-    {
-        string usuarioEncontrado = "false";
-        char delimitador = ';';
-        vector<string> resultados;
-        vector<string> userAndPass;
-        int contador = 0;
-        string loggedUser = "";
+{
+    string usuarioEncontrado = "false";
+    char delimitador = ';';
+    vector<string> resultados;
+    vector<string> userAndPass;
+    int contador = 0;
+    string loggedUser = "";
 
 
-        while(contador<3 && usuarioEncontrado == "false"){
+    while(contador<3 && usuarioEncontrado == "false"){
 
-            string linea;
-            fstream file;
+        string linea;
+        fstream file;
 
-            file.open("users.dat", ios::in);
+        file.open("users.dat", ios::in);
 
-            userAndPass = getUsernameAndPassword(Servidor->Recibir());
+        userAndPass = separarPalabrasPuntoYComa(Servidor->Recibir());
 
-            if(file.is_open())
-            {
-                while(!file.eof()){
+        if(file.is_open())
+        {
+            while(!file.eof()){
 
-                    getline(file, linea);
+                getline(file, linea);
 
-                    resultados = getUsernameAndPassword(linea);
+                resultados = separarPalabrasPuntoYComa(linea);
 
-                    if(resultados[0] == userAndPass[0] && resultados[1] == userAndPass[1]){
-                            usuarioEncontrado = "true";
-                            registrarServerLog("Usuario autenticado", resultados[0]);
-                            crearArchivoUserLog(resultados[0]);
-                            registrarUserLog("Inicia sesion", resultados[0]);
-                            loggedUser = resultados[0];
-                    }
-
+                if(resultados[0] == userAndPass[0] && resultados[1] == userAndPass[1]){
+                        usuarioEncontrado = "true";
+                        registrarServerLog("Usuario autenticado", resultados[0]);
+                        crearArchivoUserLog(resultados[0]);
+                        registrarUserLog("Inicia sesion", resultados[0]);
+                        loggedUser = resultados[0];
                 }
+
             }
-
-            file.close();
-
-            usuarioEncontrado == "true" ? cout<<"Usuario Encontrado"<<endl<<endl : cout<<"Crendenciales invalidas..."<<endl<<endl<<"Por favor ingrese sus datos nuevamente (Le quedan " << " intentos)"<<endl<<endl;
-
-            contador++;
-
-            if(usuarioEncontrado == "true") {
-                contador = 4;
-            }
-
-            Servidor->Enviar(usuarioEncontrado+";"+to_string(contador));
-
         }
-        return loggedUser;
+
+        file.close();
+
+        usuarioEncontrado == "true" ? cout<<"Usuario Encontrado"<<endl<<endl : cout<<"Crendenciales invalidas..."<<endl<<endl<<"Por favor ingrese sus datos nuevamente (Le quedan " << " intentos)"<<endl<<endl;
+
+        contador++;
+
+        if(usuarioEncontrado == "true") {
+            contador = 4;
+        }
+
+        Servidor->Enviar(usuarioEncontrado+";"+to_string(contador));
+
     }
+  return loggedUser;
+}
 
 
 
-        void registrarServerLog(string evento, string aRegistrar){
-            std::ofstream serverLog("server.txt", std::ios::ate | std::ios::in);
-            if(serverLog.fail()){ //Si el archivo no se encuentra o no esta disponible o presenta errores
-                    cout<<"No se pudo abrir el archivo server log"; //Muestra el error
-                                }
-            time_t     now = time(0);
-            struct tm  tstruct;
-            char       buf[80];
-            tstruct = *localtime(&now);
-            strftime(buf, sizeof(buf), "%Y-%m-%d.%X", &tstruct);
-            serverLog<<buf;
-            serverLog<<": "<<evento<<" - "<<aRegistrar<<endl;
-            serverLog<<": ==================================="<<endl;
-            serverLog.close();
-        }
+void registrarServerLog(string evento, string aRegistrar){
+    std::ofstream serverLog("server.txt", std::ios::ate | std::ios::in);
+    if(serverLog.fail()){ //Si el archivo no se encuentra o no esta disponible o presenta errores
+            cout<<"No se pudo abrir el archivo server log"; //Muestra el error
+                        }
+    time_t     now = time(0);
+    struct tm  tstruct;
+    char       buf[80];
+    tstruct = *localtime(&now);
+    strftime(buf, sizeof(buf), "%Y-%m-%d.%X", &tstruct);
+    serverLog<<buf;
+    serverLog<<": "<<evento<<" - "<<aRegistrar<<endl;
+    serverLog<<": ==================================="<<endl;
+    serverLog.close();
+}
 
 
-        void crearArchivoUserLog(string usuario){
-            string nombreArchivo = usuario + ".log";
-          std::ifstream userLog( nombreArchivo );
-          if(userLog.fail()){
-            //EL ARCHIVO NO EXISTE
-            std::ofstream userLogCrear( nombreArchivo );
-          }
+void crearArchivoUserLog(string usuario){
+    string nombreArchivo = usuario + ".log";
+  std::ifstream userLog( nombreArchivo );
+  if(userLog.fail()){
+    //EL ARCHIVO NO EXISTE
+    std::ofstream userLogCrear( nombreArchivo );
+  }
 
-          userLog.close();
-        }
-
-
-
-        void registrarUserLog(string evento, string aRegistrar){
-            string nombreArchivo = aRegistrar + ".log";
-            std::ofstream userLog( nombreArchivo , std::ios::ate | std::ios::in);
-            time_t     now = time(0);
-            struct tm  tstruct;
-            char       buf[80];
-            tstruct = *localtime(&now);
-            strftime(buf, sizeof(buf), "%Y-%m-%d.%X", &tstruct);
-            userLog<<buf;
-            userLog<<": "<<evento<<" - "<<aRegistrar<<endl;
-            userLog<<": ==================================="<<endl;
-            userLog.close();
+  userLog.close();
+}
 
 
-        }
+
+void registrarUserLog(string evento, string aRegistrar){
+    string nombreArchivo = aRegistrar + ".log";
+    std::ofstream userLog( nombreArchivo , std::ios::ate | std::ios::in);
+    time_t     now = time(0);
+    struct tm  tstruct;
+    char       buf[80];
+    tstruct = *localtime(&now);
+    strftime(buf, sizeof(buf), "%Y-%m-%d.%X", &tstruct);
+    userLog<<buf;
+    userLog<<": "<<evento<<" - "<<aRegistrar<<endl;
+    userLog<<": ==================================="<<endl;
+    userLog.close();
 
 
+}
