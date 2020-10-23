@@ -116,7 +116,7 @@ string traerSoloButacas(vector <string> vectorButacas);
 
 int numeroDeSentencias(string file);
 void manejarPeticion(string userName, Server *&Servidor);
-string mostrarRegistro(string userName, Server *&Servidor);
+void mostrarRegistro(string userName, Server *&Servidor);
 
 
 
@@ -177,14 +177,20 @@ void accessoAlMenuGestionar(Server *&Servidor){
 
 /***********************************************************************/
 void manejarPeticion(string userName, Server *&Servidor){
-        string peticion = Servidor->Recibir();
+    string peticion="Ingreso";
+    while(peticion=="Ingreso"){
+        peticion = Servidor->Recibir();
         Servidor->Enviar("_");//Envio cualquier cosa para que no dé error
+
        if(peticion=="Registro"){
           mostrarRegistro(userName,Servidor);
+          peticion="Ingreso";
        }
        if(peticion=="Gestionar"){
           accessoAlMenuGestionar(Servidor);
+          peticion="Ingreso";
         }
+    }
 }
 /***********************************************************************/
 
@@ -212,9 +218,7 @@ int numeroDeSentencias(std::string archivo){
 
 
 /***********************************************************************/
-string mostrarRegistro(string userName, Server *&Servidor){
-
-    string mensaje = Servidor->Recibir();
+void mostrarRegistro(string userName, Server *&Servidor){
 
     std::string userFile = userName+".log";
     std::string numero = std::to_string(numeroDeSentencias(userFile));
@@ -233,7 +237,6 @@ string mostrarRegistro(string userName, Server *&Servidor){
     }
     file.close();
 
-  return mensaje;
 }
 /***********************************************************************/
 

@@ -20,7 +20,6 @@ string LINEA_C_GLOBAL;
 bool primerEntradaG=true;
 bool primerEntradaVRA=true;
 bool primerEntradaAS=true;
-vector <string> registros;
 
 class Client{
 public:
@@ -314,17 +313,17 @@ void menuCliente(Client *&Cliente){
 
         switch(servicioElegido){
             case 1: system("CLS");
-                    if(primerEntradaAS!=true){Cliente->Enviar("false");}else{Cliente->Enviar("AltaServicio"); Cliente->Recibir();}//es PARA EL WHILE salir que está en el server
+                    Cliente->Enviar("AltaServicio"); Cliente->Recibir();
                     cout<<servicioElegido<<endl;
                     _getch();
                     system("CLS");
                     break;
             case 2: system("CLS");
-                   if(primerEntradaG!=true){Cliente->Enviar("false");}else{Cliente->Enviar("Gestionar"); Cliente->Recibir();}//el false es PARA EL WHILE salir que está en el server
+                   Cliente->Enviar("Gestionar"); Cliente->Recibir();
                    gestionarPasajes(Cliente);
                     break;
             case 3: system("CLS");
-                    if(primerEntradaVRA!=true){Cliente->Enviar("false");}else{Cliente->Enviar("Registro"); Cliente->Recibir();}//el false es PARA EL WHILE salir que está en el server
+                    Cliente->Enviar("Registro"); Cliente->Recibir();
                     pedirRegistroDeActividades(Cliente);
                     _getch();
                     system("CLS");
@@ -350,23 +349,13 @@ void menuCliente(Client *&Cliente){
 /***********************************************************************/
 void pedirRegistroDeActividades(Client *&Cliente){
 
+    Cliente->Enviar("Registro");
+    string numeroDeSentencias = Cliente->Recibir();
 
-    if(primerEntradaVRA==true){
-        Cliente->Enviar("Registro");
-        string numeroDeSentencias = Cliente->Recibir();
-
-        for(int i = 0 ; i < stoi(numeroDeSentencias); i++){
-            string respuesta = "";
-
-            respuesta = Cliente->Recibir();
-            registros.push_back(respuesta);
-            cout<<respuesta<<endl;
-        }
-      primerEntradaVRA=false;
-    }else{
-       for(int i = 0 ; i < registros.size(); i++){
-            cout<<registros[i]<<endl;
-        }
+    for(int i = 0 ; i < stoi(numeroDeSentencias); i++){
+        string respuesta = "";
+        respuesta = Cliente->Recibir();
+        cout<<respuesta<<endl;
     }
 
 }
