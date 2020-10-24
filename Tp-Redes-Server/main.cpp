@@ -15,7 +15,6 @@
 
 using namespace std;
 
-string nombreArchivo;
 
 void registrarServerLog(string evento, string aRegistrar);
 
@@ -93,8 +92,8 @@ public:
     }
 };
 
-void crearArchivoButacas();
-void gestionarAsiento(Server *&Servidor, string userName, bool reservar);
+void crearArchivoButacas(string nombreArchivo,string tituloArchivo);
+void gestionarAsiento(string nombreArchivo,Server *&Servidor, string userName, bool reservar);
 void liberar(Server *&Servidor, string userName);
 string verificarSolicitud_Y_Responder(Server *&Servidor,vector <string> vectorButacas, string userName, bool reservar);
 void marcarButacaComoOcupada(vector <string> vectorButacas, int pos_I, int pos_J, string userName);
@@ -119,7 +118,7 @@ void marcarEnArchivoReservaRealizada(vector <string> vectorButacas);
 string traerSoloButacas(vector <string> vectorButacas);
 
 int numeroDeSentencias(string file);
-void manejarPeticion(string userName, Server *&Servidor);
+void manejarPeticion(string nombreArchivo,string userName, Server *&Servidor);
 void mostrarRegistro(string userName, Server *&Servidor);
 
 
@@ -133,9 +132,11 @@ int main()
     Server *Servidor = new Server();
 
     string userName = checkUser(Servidor);
-    crearArchivoButacas();
+    string nombreArchivo = "Registro_de_butacas";
+    string tituloArchivo = ">>> REGISTRO DE BUTACAS VACIAS Y OCUPADA <<<";
+    crearArchivoButacas(nombreArchivo,tituloArchivo);
 
-    manejarPeticion(userName, Servidor);
+    manejarPeticion(nombreArchivo,userName, Servidor);
 
     Servidor->CerrarSocket();
 
@@ -148,11 +149,10 @@ int main()
 ***********************************/
 
 
+
 /***********************************************************************/
-void crearArchivoButacas(){
-    nombreArchivo = "Registro_de_butacas";
+void crearArchivoButacas(string nombreArchivo,string tituloArchivo){
     if(verificarSiExisteArchivo(nombreArchivo)==false){//solo es paracrear un archivo
-        string tituloArchivo = ">>> REGISTRO DE BUTACAS VACIAS Y OCUPADA <<<";
         char butacas[TAMANIO_I][TAMANIO_J];
         iniciarButacas(butacas);
         darFormato_y_GuardarButacasEnArchivo(nombreArchivo,tituloArchivo,butacas);
@@ -160,8 +160,30 @@ void crearArchivoButacas(){
 }
 /***********************************************************************/
 
+
 /***********************************************************************/
-void gestionarAsiento(Server *&Servidor, string userName, bool reservar){
+void registrarViajesEnArchivo(string nombreArchivo){
+   vector <string> vectorButacas = leerArchivoGuardarEnVectorString(nombreArchivo);
+   string destinoFechaTurno = vectorButacas[1];
+   string butacas = traerSoloButacas(vectorButacas);
+   string butacasReservadas="";
+   for(int i=0;i<60;i++){
+        if(i<20&&butacas[i]=='X'){
+          butacasReservadas = butacasReservadas+"A"+to_string(i+1)+"_";
+        }else if(i>=20&&i<40&&butacas[i]=='X'){
+          butacasReservadas = butacasReservadas+"B"+to_string(i-19)+"_";
+        }else if(i>=40&&butacas[i]=='X'){
+          butacasReservadas = butacasReservadas+"C"+to_string(i-39)+"_";
+        }
+   }//for i
+   butacasReservadas.pop_back();//saco el último guion que le queda (no se puede igualar directamente a un string)
+   guardarEnArchivoYaFormateada(destinoFechaTurno+" "+butacasReservadas,"Registro_historico_de_viajes");
+}
+/***********************************************************************/
+
+
+/***********************************************************************/
+void gestionarAsiento(string nombreArchivo,Server *&Servidor, string userName, bool reservar){
 
     vector <string> vectorButacas = leerArchivoGuardarEnVectorString(nombreArchivo);
 
@@ -195,7 +217,7 @@ void liberar(Server *&Servidor, string userName){
 /***********************************************************************/
 
 /***********************************************************************/
-void manejarPeticion(string userName, Server *&Servidor){
+void manejarPeticion(string nombreArchivo,string userName, Server *&Servidor){
     string peticion="";
     bool salir = false;
 
@@ -211,11 +233,11 @@ void manejarPeticion(string userName, Server *&Servidor){
         else if(peticion=="Gestionar"){
             string opcion = Servidor->Recibir();
             if(opcion=="ReservarAsiento"){
-                gestionarAsiento(Servidor, userName,true);
+                gestionarAsiento(nombreArchivo,Servidor, userName,true);
                 opcion = "";
             }
             else if(opcion=="LiberarAsiento"){
-                gestionarAsiento(Servidor, userName, false);
+                gestionarAsiento(nombreArchivo,Servidor, userName, false);
                 opcion = "";
             }
 

@@ -1456,3 +1456,11 @@
 : ===================================
 2020-10-24.18:46:43: Usuario autenticado - Usuario_3
 : ===================================
+2020-10-24.19:40:08: Inicia servidor - Socket creado. Puerto de escucha:4747
+: ===================================
+2020-10-24.19:57:11: Inicia servidor - Socket creado. Puerto de escucha:4747
+: ===================================
+2020-10-24.19:57:40: Inicia servidor - Socket creado. Puerto de escucha:4747
+: ===================================
+2020-10-24.19:58:19: Usuario autenticado - .
+: ===================================
