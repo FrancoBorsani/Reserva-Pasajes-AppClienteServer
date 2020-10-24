@@ -94,9 +94,12 @@ public:
 };
 
 void crearArchivoButacas();
-void accesoAlMenuGestionar(Server *&Servidor, string userName);
-string verificarSolicitud_Y_Responder(Server *&Servidor,vector <string> vectorButacas, string userName);
+void gestionarAsiento(Server *&Servidor, string userName, bool reservar);
+void liberar(Server *&Servidor, string userName);
+string verificarSolicitud_Y_Responder(Server *&Servidor,vector <string> vectorButacas, string userName, bool reservar);
 void marcarButacaComoOcupada(vector <string> vectorButacas, int pos_I, int pos_J, string userName);
+void marcarButacaComoLiberada(vector <string> vectorButacas, int pos_I, int pos_J, string userName);
+string butacaAString(int pos_I, int pos_J);
 vector<string> separarPalabrasPuntoYComa(string str);
 string checkUser(Server *&Servidor);
 void registrarServerLog(string evento, string aRegistrar);
@@ -158,7 +161,7 @@ void crearArchivoButacas(){
 /***********************************************************************/
 
 /***********************************************************************/
-void accesoAlMenuGestionar(Server *&Servidor, string userName){
+void gestionarAsiento(Server *&Servidor, string userName, bool reservar){
 
     vector <string> vectorButacas = leerArchivoGuardarEnVectorString(nombreArchivo);
 
@@ -171,7 +174,7 @@ void accesoAlMenuGestionar(Server *&Servidor, string userName){
     while(!salirWhile){
 
         vectorButacas = leerArchivoGuardarEnVectorString(nombreArchivo);
-        salir = verificarSolicitud_Y_Responder(Servidor,vectorButacas, userName);
+        salir = verificarSolicitud_Y_Responder(Servidor,vectorButacas, userName, reservar);
 
         if(salir=="true"){
             salirWhile=true;
@@ -185,7 +188,11 @@ void accesoAlMenuGestionar(Server *&Servidor, string userName){
 
 }
 /***********************************************************************/
+void liberar(Server *&Servidor, string userName){
 
+}
+
+/***********************************************************************/
 
 /***********************************************************************/
 void manejarPeticion(string userName, Server *&Servidor){
@@ -204,7 +211,11 @@ void manejarPeticion(string userName, Server *&Servidor){
         else if(peticion=="Gestionar"){
             string opcion = Servidor->Recibir();
             if(opcion=="ReservarAsiento"){
-                accesoAlMenuGestionar(Servidor, userName);
+                gestionarAsiento(Servidor, userName,true);
+                opcion = "";
+            }
+            else if(opcion=="LiberarAsiento"){
+                gestionarAsiento(Servidor, userName, false);
                 opcion = "";
             }
 
@@ -372,7 +383,7 @@ void guardarEnArchivoYaFormateada(string lineaAGuardar, string nombreArchivo){
 /***********************************************************************/
 
 /***********************************************************************/
-string verificarSolicitud_Y_Responder(Server *&Servidor,vector <string> vectorButacas, string userName){
+string verificarSolicitud_Y_Responder(Server *&Servidor,vector <string> vectorButacas, string userName, bool reservar){
     string mensajePeticion = "";
     string mensajeDelCli="";
     char letra = '\0';
@@ -390,16 +401,21 @@ string verificarSolicitud_Y_Responder(Server *&Servidor,vector <string> vectorBu
         pos_I = asignarValorPosI_A_Letra(letra);
 
 
-        if(vectorButacas[pos_I][pos_J]=='O'){
+        if(vectorButacas[pos_I][pos_J]=='O' && reservar){
            Servidor->Enviar("Disponible");//está disponible
 
            marcarButacaComoOcupada(vectorButacas, pos_I, pos_J, userName);
            mensajePeticion = Servidor->Recibir();
         }
+        else if(vectorButacas[pos_I][pos_J]=='X' && !reservar){
+            Servidor->Enviar("Disponible");//está disponible
+
+            marcarButacaComoLiberada(vectorButacas, pos_I, pos_J, userName);
+            mensajePeticion = Servidor->Recibir();
+        }
         else{
             Servidor->Enviar("NoDisponible");//está disponible
-            cout<<"No se asigno una butaca "<<endl<<endl;
-            mostrarButacas(vectorButacas);
+            //mostrarButacas(vectorButacas);
             mensajePeticion = Servidor->Recibir();
         }
     }
@@ -466,7 +482,7 @@ void marcarEnArchivoReservaRealizada(vector <string> vectorButacas){
          archivoAuxiliar<<vectorButacas[i]<<"\n";
        }//Fin for
     }else{
-        cout<<"No se pudoAbrir el Archivo o aun no ha sido Creado"<<endl;
+        cout<<"No se pudo abrir el archivo o aun no ha sido creado"<<endl;
     }
     archivoAuxiliar.close();
     remove("Registro_de_butacas.txt");
@@ -474,6 +490,23 @@ void marcarEnArchivoReservaRealizada(vector <string> vectorButacas){
 }
 /**********************************************************************/
 
+/**********************************************************************/
+string butacaAString(int pos_I, int pos_J){
+    char letra = '\0';
+
+    pos_J = pos_J/2-2;
+    pos_J++;
+    std::string posJ_str = std::to_string(pos_J);
+
+    if(pos_I == 7) letra = 'A';
+    else if(pos_I == 8) letra = 'B';
+    else letra = 'C';
+
+    string butaca = letra+posJ_str;
+
+    return butaca;
+}
+/**********************************************************************/
 
 /***********************************************************************/
 void marcarButacaComoOcupada(vector <string> vectorButacas, int pos_I, int pos_J, string userName){
@@ -481,26 +514,35 @@ void marcarButacaComoOcupada(vector <string> vectorButacas, int pos_I, int pos_J
         vectorButacas[pos_I][pos_J] = 'X';
         marcarEnArchivoReservaRealizada(vectorButacas);
 
-        char letra = '\0';
-
-        pos_J = pos_J/2-2;
-        pos_J++;
-        std::string posJ_str = std::to_string(pos_J);
-
-        if(pos_I == 7) letra = 'A';
-        else if(pos_I == 8) letra = 'B';
-        else letra = 'C';
+        string butaca = butacaAString(pos_I, pos_J);
 
         string reserva = "Reserva_";
-        reserva.push_back(letra);
-        cout<<posJ_str<<" aaa "<<endl;
-        reserva+=posJ_str;
+
+        reserva+=butaca;
 
         registrarUserLog(reserva, userName);
         system("cls");
         mostrarButacas(vectorButacas);
         cout<<"************************************"<<endl;
         cout<<"** Butaca reservada exitosamente. **"<<endl;
+        cout<<"************************************"<<endl;
+ }
+
+ void marcarButacaComoLiberada(vector <string> vectorButacas, int pos_I, int pos_J, string userName){
+
+        vectorButacas[pos_I][pos_J] = 'O';
+        marcarEnArchivoReservaRealizada(vectorButacas);
+
+        string butaca = butacaAString(pos_I, pos_J);
+
+        string libera = "Libera_";
+        libera+=butaca;
+
+        registrarUserLog(libera, userName);
+        system("cls");
+        mostrarButacas(vectorButacas);
+        cout<<"************************************"<<endl;
+        cout<<"** Butaca liberada exitosamente. **"<<endl;
         cout<<"************************************"<<endl;
  }
 /***********************************************************************/

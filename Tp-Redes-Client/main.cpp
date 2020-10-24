@@ -73,14 +73,14 @@ vector <string> recibirButacas_Y_separar(string butacas);
 bool verificarPosicion(int pos_I, int pos_J);
 bool verificarCoordenadas(int numero,char letra);
 int asignarValorPosI_A_Letra(char letra);
-void determinarAccion_A_Seguir(Client *&Cliente,bool posicionDisponible,int pos_I,int pos_J);
+void determinarAccion_A_Seguir(Client *&Cliente,bool posicionDisponible,int pos_I,int pos_J, bool reservar);
 
-string elegirButaca(Client *&Cliente);
+string elegirButaca(Client *&Cliente, bool reservar);
 void menuCliente(Client *&Cliente);
 void pedirRegistroDeActividades(Client *&Cliente);
 bool verificarIpYPuerto(std::string ipReal, int puertoReal);
 void gestionarPasajes(Client *&Cliente);
-void reservarAsiento(Client *&Cliente);
+void reservarAsiento(Client *&Cliente, bool reservar);
 string login();
 vector<string> separarPalabras(string str);
 bool autenticacion(Client *&Cliente);
@@ -200,34 +200,44 @@ int asignarValorPosI_A_Letra(char letra){
 
 
 /***********************************************************************/
-void determinarAccion_A_Seguir(Client *&Cliente,bool posicionDisponible, int pos_I, int pos_J){
+void determinarAccion_A_Seguir(Client *&Cliente,bool posicionDisponible, int pos_I, int pos_J, bool reservar){
+
+    char estadoButaca = 'X';
+    string peticionButaca = "reservada";
+    string errorButaca = "reservada";
+
+    if(!reservar){
+      estadoButaca = 'O';
+      peticionButaca = "liberada";
+      errorButaca = "libre";
+    }
 
     if (posicionDisponible){
           if(pos_I==0){
-            LINEA_A_GLOBAL[pos_J] = 'X';
+            LINEA_A_GLOBAL[pos_J] = estadoButaca;
           }else if (pos_I==1){
-            LINEA_B_GLOBAL[pos_J] = 'X';
+            LINEA_B_GLOBAL[pos_J] = estadoButaca;
           }else{
-            LINEA_C_GLOBAL[pos_J] = 'X';
+            LINEA_C_GLOBAL[pos_J] = estadoButaca;
           }
           system("cls");
           Cliente->Enviar("true");
           mostrarButacasCliente();
           cout<<"************************************"<<endl;
-          cout<<"** Butaca reservada exitosamente. **"<<endl;
+          cout<<"** Butaca "<<peticionButaca<<" exitosamente. **"<<endl;
           cout<<"************************************"<<endl<<endl<<endl;
     }
     else{
-        cout<<"*** ERROR: Butaca ya reservada."<<endl<<endl;
+        cout<<"*** ERROR: Butaca ya "<<errorButaca<<". ***"<<endl<<endl;
         Cliente->Enviar("false");
-        elegirButaca(Cliente);
+        elegirButaca(Cliente,reservar);
     }
 }
 /***********************************************************************/
 
 
 /***********************************************************************/
-string elegirButaca(Client *&Cliente){
+string elegirButaca(Client *&Cliente, bool reservar){
 
     int pos_I = -1;
     int numero = -1;
@@ -236,9 +246,13 @@ string elegirButaca(Client *&Cliente){
     string respuesta = "";
     string respuestaAux = "";
 
+    string tipoPeticion = "reservar";
+    if(!reservar) tipoPeticion = "liberar";
+
+
     while(!salir){//Mientras salir sea false
 
-        cout<<"--- Elija la butaca a reservar (Ejemplo: A12). Para volver al menu anterior ingrese un 0.---"<<endl;
+        cout<<"--- Elija la butaca a "<<tipoPeticion<<" (Ejemplo: A12). Para volver al menu anterior ingrese un 0.---"<<endl;
         cin>>respuesta;
         respuestaAux = respuesta;
 
@@ -278,7 +292,7 @@ string elegirButaca(Client *&Cliente){
             posicionDisponible = true;
         }
         numero=numero-1; //es porque el vector arranca en pos 0
-        determinarAccion_A_Seguir(Cliente, posicionDisponible, pos_I, numero);
+        determinarAccion_A_Seguir(Cliente, posicionDisponible, pos_I, numero, reservar);
     }
     else{
         Cliente->Enviar("true");
@@ -402,18 +416,18 @@ void gestionarPasajes(Client *&Cliente){
         Cliente->Enviar("Gestionar");
         switch(opcionElegida){
             case 1: system("CLS");
-                    Cliente->Enviar("ReservarAsiento");//es PARA EL WHILE salir que está en el server
-                    reservarAsiento(Cliente);
+                    Cliente->Enviar("ReservarAsiento");
+                    reservarAsiento(Cliente, true);
                     _getch();
                     system("CLS");
                     break;
             case 2: system("CLS");
-                    Cliente->Enviar("false");//es PARA EL WHILE salir que está en el server
-                    //Liberar asiento
+                    Cliente->Enviar("LiberarAsiento");
+                    reservarAsiento(Cliente, false);
                     system("CLS");
                     break;
             case 3: system("CLS");
-                    Cliente->Enviar("false");//es PARA EL WHILE salir que está en el server
+                    Cliente->Enviar("false");
                     //Elegir otro servicio
                     system("CLS");
                     break;
@@ -430,7 +444,7 @@ void gestionarPasajes(Client *&Cliente){
 
 
 /***********************************************************************/
-void reservarAsiento(Client *&Cliente){
+void reservarAsiento(Client *&Cliente, bool reservar){
 
     //Cliente->Enviar("--->>> Cliente "+NAME_CLIENTE+" conectado<<<---");
     vector <string> vectorButacas = recibirButacas_Y_separar(Cliente->Recibir());
@@ -438,7 +452,7 @@ void reservarAsiento(Client *&Cliente){
     LINEA_A_GLOBAL=vectorButacas[0]; LINEA_B_GLOBAL=vectorButacas[1];  LINEA_C_GLOBAL=vectorButacas[2];
 
     mostrarButacasCliente();
-    elegirButaca(Cliente);
+    elegirButaca(Cliente, reservar);
 
 }
 /***********************************************************************/
