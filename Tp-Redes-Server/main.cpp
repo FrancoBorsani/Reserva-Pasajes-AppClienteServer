@@ -2,7 +2,7 @@
 #include <winsock2.h>
 #include <string>
 #include <conio.h>
-#include <clocale>//es para usar Ã± y acento
+#include <clocale>//es para usar ñ y acento
 #include <fstream> //Lib. para trabajar con archivos
 #include <ctime> //Lib. para trabajar con fechas / tiempos
 #include <cstdlib>
@@ -54,7 +54,7 @@ public:
         fd_set fds ;
         struct timeval tv ;
 
-        tv.tv_sec = 10 ;
+        tv.tv_sec = 120 ;
         tv.tv_usec = 0 ;
 
         FD_ZERO(&fds) ;
@@ -69,15 +69,16 @@ public:
         recv(client, buffer, sizeof(buffer), 0);
 
         string buff = buffer;
+
         memset(buffer, 0, sizeof(buffer));
       return buff;
     }
 
     void Enviar(string respuesta)
     {
-         for(int i=0;i<respuesta.length();i++){
-           this->buffer[i]= respuesta[i];
-         }
+        for(int i=0;i<respuesta.length();i++){
+            this->buffer[i]= respuesta[i];
+        }
 
         send(client, buffer, sizeof(buffer), 0);
         memset(buffer, 0, sizeof(buffer));
@@ -93,9 +94,9 @@ public:
 };
 
 void crearArchivoButacas();
-void accessoAlMenuGestionar(Server *&Servidor);
-string verificarSolicitud_Y_Responder(Server *&Servidor,vector <string> vectorButacas);
-void marcarButacaComoOcupada(vector <string> vectorButacas, int pos_I, int pos_J);
+void accesoAlMenuGestionar(Server *&Servidor, string userName);
+string verificarSolicitud_Y_Responder(Server *&Servidor,vector <string> vectorButacas, string userName);
+void marcarButacaComoOcupada(vector <string> vectorButacas, int pos_I, int pos_J, string userName);
 vector<string> separarPalabrasPuntoYComa(string str);
 string checkUser(Server *&Servidor);
 void registrarServerLog(string evento, string aRegistrar);
@@ -125,7 +126,7 @@ void mostrarRegistro(string userName, Server *&Servidor);
 ***********************************/
 int main()
 {
-    setlocale(LC_CTYPE,"Spanish");// Spanish (de la librerÃ­a locale.h) es para usar Ã± y acento
+    setlocale(LC_CTYPE,"Spanish");// Spanish (de la librería locale.h) es para usar ñ y acento
     Server *Servidor = new Server();
 
     string userName = checkUser(Servidor);
@@ -156,40 +157,59 @@ void crearArchivoButacas(){
 }
 /***********************************************************************/
 
-
 /***********************************************************************/
-void accessoAlMenuGestionar(Server *&Servidor){
-    cout<<Servidor->Recibir()<<endl;
+void accesoAlMenuGestionar(Server *&Servidor, string userName){
+
     vector <string> vectorButacas = leerArchivoGuardarEnVectorString(nombreArchivo);
+
     Servidor->Enviar(traerSoloButacas(vectorButacas));
+
     string salir = "false";
-    while(salir=="false"){
-       vectorButacas = leerArchivoGuardarEnVectorString(nombreArchivo);
-       salir = verificarSolicitud_Y_Responder(Servidor,vectorButacas);
-       if(salir!="true" && salir!="false"){//es porque cuando se desconecta el cliente  cerrando la ventana llegaba vacio
-         salir ="true";
-         system("cls");
-       }
+
+    bool salirWhile = false;
+
+    while(!salirWhile){
+
+        vectorButacas = leerArchivoGuardarEnVectorString(nombreArchivo);
+        salir = verificarSolicitud_Y_Responder(Servidor,vectorButacas, userName);
+
+        if(salir=="true"){
+            salirWhile=true;
+        }
+        else if(salir!="true" && salir!="false"){//es porque cuando se desconecta el cliente  cerrando la ventana llegaba vacio
+            salir ="true";
+            salirWhile = true;
+            system("cls");
+        }
     }
+
 }
 /***********************************************************************/
 
 
 /***********************************************************************/
 void manejarPeticion(string userName, Server *&Servidor){
-    string peticion="Ingreso";
-    while(peticion=="Ingreso"){
-        peticion = Servidor->Recibir();
-        Servidor->Enviar("_");//Envio cualquier cosa para que no dÃ© error
+    string peticion="";
+    bool salir = false;
 
-       if(peticion=="Registro"){
-          mostrarRegistro(userName,Servidor);
-          peticion="Ingreso";
-       }
-       if(peticion=="Gestionar"){
-          accessoAlMenuGestionar(Servidor);
-          peticion="Ingreso";
+    while(!salir){
+
+        peticion = Servidor->Recibir();
+        cout<<peticion<<endl;
+        //Servidor->Enviar("_");//Envio cualquier cosa para que no dé error
+
+        if(peticion=="Registro"){
+            mostrarRegistro(userName,Servidor);
         }
+        else if(peticion=="Gestionar"){
+            string opcion = Servidor->Recibir();
+            if(opcion=="ReservarAsiento"){
+                accesoAlMenuGestionar(Servidor, userName);
+                opcion = "";
+            }
+
+        }
+        peticion="";
     }
 }
 /***********************************************************************/
@@ -222,9 +242,7 @@ void mostrarRegistro(string userName, Server *&Servidor){
 
     std::string userFile = userName+".log";
     std::string numero = std::to_string(numeroDeSentencias(userFile));
-
     Servidor->Enviar(numero);
-
     fstream file;
     file.open(userFile);
 
@@ -286,11 +304,11 @@ void guardarEnArchivo(string lineaAGuardar, string nombreArchivo){
    nombreArchivo= nombreArchivo+".txt";
    ofstream archivo(nombreArchivo.c_str(),ios::out | ios::app);
         if(NO_EsPrimeraCarga==false){//si es la primera carga
-          archivo<<"\n"<<lineaAGuardar<<"\n\n"; //pongo tÃ­tulo y salto de linea al final para dejar un reglÃ³n vacio
+          archivo<<"\n"<<lineaAGuardar<<"\n\n"; //pongo título y salto de linea al final para dejar un reglón vacio
         }else{//si NO es la primera carga, pongo salto de linea al comienzo
           archivo<<"\n"<<lineaAGuardar;
-        }/*sin este if me generaba una linea demÃ¡s, al comienzo del archivo, por el salto de linea. Si pusiese el salto de linea al final generÃ­a la linea demÃ¡s al final del
-         archivo y no tengo forma manejarlo cuando... en ambos casos al mostrar los registros del archivo me mostrarÃ­a uno demÃ¡s en blanco arriba o abajo*/
+        }/*sin este if me generaba una linea demás, al comienzo del archivo, por el salto de linea. Si pusiese el salto de linea al final genería la linea demás al final del
+         archivo y no tengo forma manejarlo cuando... en ambos casos al mostrar los registros del archivo me mostraría uno demás en blanco arriba o abajo*/
    archivo.close();
 }
 /***********************************************************************/
@@ -330,7 +348,7 @@ vector <string> leerArchivoGuardarEnVectorString(string nombreArchivo)
     while(!archivo.eof())//mientras no sea el final del archivo
     {
            getline(archivo,texto);//Tomo lo que va encontrando en "archivo" y lo copio en "texto"
-           butacasEnSting.push_back(texto);//guardo en una posiciÃ³n del vector la lines obtenidad del archivo
+           butacasEnSting.push_back(texto);//guardo en una posición del vector la lines obtenidad del archivo
            i++;
     }
    archivo.close();//cerramos archivo
@@ -347,38 +365,49 @@ void guardarEnArchivoYaFormateada(string lineaAGuardar, string nombreArchivo){
           archivo<<lineaAGuardar; //solo pongo la linea
         }else{//si NO es la primera carga, pongo salto de linea al comienzo
           archivo<<"\n"<<lineaAGuardar;
-        }/*sin este if me generaba una linea demÃ¡s, al comienzo del archivo, por el salto de linea. Si pusiese el salto de linea al final generÃ­a la linea demÃ¡s al final del
-         archivo y no tengo forma manejarlo cuando... en ambos casos al mostrar los registros del archivo me mostrarÃ­a uno demÃ¡s en blanco arriba o abajo*/
+        }/*sin este if me generaba una linea demás, al comienzo del archivo, por el salto de linea. Si pusiese el salto de linea al final genería la linea demás al final del
+         archivo y no tengo forma manejarlo cuando... en ambos casos al mostrar los registros del archivo me mostraría uno demás en blanco arriba o abajo*/
    archivo.close();
 }
 /***********************************************************************/
 
 /***********************************************************************/
-string verificarSolicitud_Y_Responder(Server *&Servidor,vector <string> vectorButacas){
-    string mensajePeticion = "xxxxxx";
+string verificarSolicitud_Y_Responder(Server *&Servidor,vector <string> vectorButacas, string userName){
+    string mensajePeticion = "";
     string mensajeDelCli="";
-    char letra;
-    int pos_J;
-    int pos_I;
+    char letra = '\0';
+    int pos_J = -1;
+    int pos_I = -1;
     bool posicionDisponible = false;
 
-    mensajeDelCli = Servidor->Recibir();//en este mensaje solo puede llegar letra-numero o letra-numero-numero (sin guiones)
-    letra = mensajeDelCli[0];
-    mensajeDelCli.erase(0,1);//Saco la letra que guerdÃ©
-    pos_J =atoi(const_cast< char *>(mensajeDelCli.c_str()));
-    pos_J = pos_J*2+2; //es por la diferencia que hay entre la posicion de vista en consola y la del archivo
-    pos_I = asignarValorPosI_A_Letra(letra);
-    if(vectorButacas[pos_I][pos_J]=='O'){
-       Servidor->Enviar("true");//estÃ¡ disponible
-       marcarButacaComoOcupada(vectorButacas, pos_I, pos_J);
-       mensajePeticion = Servidor->Recibir();
-    }else{
-        Servidor->Enviar("false");
-        cout<<"No se asino una butaca "<<endl<<endl;
-        mostrarButacas(vectorButacas);
+    mensajeDelCli = Servidor->Recibir(); //Se recibe la butaca. EJ: B8
+
+    if(mensajeDelCli!="0"){
+        letra = mensajeDelCli[0];
+        mensajeDelCli.erase(0,1);//Saco la letra que guerdé
+        pos_J =atoi(const_cast< char *>(mensajeDelCli.c_str()));
+        pos_J = pos_J*2+2; //es por la diferencia que hay entre la posicion de vista en consola y la del archivo
+        pos_I = asignarValorPosI_A_Letra(letra);
+
+
+        if(vectorButacas[pos_I][pos_J]=='O'){
+           Servidor->Enviar("Disponible");//está disponible
+
+           marcarButacaComoOcupada(vectorButacas, pos_I, pos_J, userName);
+           mensajePeticion = Servidor->Recibir();
+        }
+        else{
+            Servidor->Enviar("NoDisponible");//está disponible
+            cout<<"No se asigno una butaca "<<endl<<endl;
+            mostrarButacas(vectorButacas);
+            mensajePeticion = Servidor->Recibir();
+        }
+    }
+    else{
         mensajePeticion = Servidor->Recibir();
     }
-  return mensajePeticion;
+
+    return mensajePeticion;
 }
 /***********************************************************************/
 
@@ -391,7 +420,8 @@ int asignarValorPosI_A_Letra(char letra){
         pos_I=7;
     }
     else if(letra=='B' || letra == 'b'){
-        pos_I=8;}
+        pos_I=8;
+    }
     else {
         pos_I=10;
     }
@@ -446,10 +476,27 @@ void marcarEnArchivoReservaRealizada(vector <string> vectorButacas){
 
 
 /***********************************************************************/
-void marcarButacaComoOcupada(vector <string> vectorButacas, int pos_I, int pos_J){
+void marcarButacaComoOcupada(vector <string> vectorButacas, int pos_I, int pos_J, string userName){
 
         vectorButacas[pos_I][pos_J] = 'X';
         marcarEnArchivoReservaRealizada(vectorButacas);
+
+        char letra = '\0';
+
+        pos_J = pos_J/2-2;
+        pos_J++;
+        std::string posJ_str = std::to_string(pos_J);
+
+        if(pos_I == 7) letra = 'A';
+        else if(pos_I == 8) letra = 'B';
+        else letra = 'C';
+
+        string reserva = "Reserva_";
+        reserva.push_back(letra);
+        cout<<posJ_str<<" aaa "<<endl;
+        reserva+=posJ_str;
+
+        registrarUserLog(reserva, userName);
         system("cls");
         mostrarButacas(vectorButacas);
         cout<<"************************************"<<endl;
