@@ -17,7 +17,7 @@ using namespace std;
 
 
 void registrarServerLog(string evento, string aRegistrar);
-
+void verificarArchivoServerLog();
 
 class Server{
 public:
@@ -36,7 +36,7 @@ public:
 
         bind(server, (SOCKADDR *)&serverAddr, sizeof(serverAddr));
         listen(server, 0);
-
+        verificarArchivoServerLog();
         registrarServerLog("Inicia servidor", "Socket creado. Puerto de escucha:4747");
 
         cout << "Escuchando para conexiones entrantes." << endl;
@@ -87,6 +87,7 @@ public:
     {
         closesocket(client);
         WSACleanup();
+        verificarArchivoServerLog();
         registrarServerLog("Socket cerrado, cliente desconectado", "");
         cout << "Socket cerrado, cliente desconectado." << endl;
     }
@@ -104,6 +105,7 @@ string checkUser(Server *&Servidor);
 void registrarServerLog(string evento, string aRegistrar);
 void registrarUserLog(string evento, string aRegistrar);
 void crearArchivoUserLog(string usuario);
+
 
 void iniciarButacas(char butacas[TAMANIO_I][TAMANIO_J]);
 void mostrarButacas(vector <string> vectorButacas);
@@ -619,6 +621,7 @@ string checkUser(Server *&Servidor)
 
                 if(resultados[0] == userAndPass[0] && resultados[1] == userAndPass[1]){
                         usuarioEncontrado = "true";
+                        verificarArchivoServerLog();
                         registrarServerLog("Usuario autenticado", resultados[0]);
                         crearArchivoUserLog(resultados[0]);
                         registrarUserLog("Inicia sesion", resultados[0]);
@@ -647,7 +650,7 @@ string checkUser(Server *&Servidor)
 
 
 void registrarServerLog(string evento, string aRegistrar){
-    std::ofstream serverLog("server.txt", std::ios::ate | std::ios::in);
+    std::ofstream serverLog("server.log", std::ios::ate | std::ios::in);
     if(serverLog.fail()){ //Si el archivo no se encuentra o no esta disponible o presenta errores
             cout<<"No se pudo abrir el archivo server log"; //Muestra el error
                         }
@@ -673,6 +676,18 @@ void crearArchivoUserLog(string usuario){
 
   userLog.close();
 }
+
+void verificarArchivoServerLog(){
+    string nombreArchivo = "server.log";
+  std::ifstream serverLog( nombreArchivo );
+  if(serverLog.fail()){
+    //EL ARCHIVO NO EXISTE
+    std::ofstream serverLogCrear( nombreArchivo );
+  }
+
+  serverLog.close();
+}
+
 
 
 
