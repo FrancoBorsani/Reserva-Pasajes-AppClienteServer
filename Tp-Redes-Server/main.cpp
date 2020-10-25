@@ -220,29 +220,32 @@ void liberar(Server *&Servidor, string userName){
 void manejarPeticion(string nombreArchivo,string userName, Server *&Servidor){
     string peticion="";
     bool salir = false;
-
+    string opcionesPosibles=" ";
     while(!salir){
-
+      salir = true;
         peticion = Servidor->Recibir();
-        cout<<peticion<<endl;
+ //       cout<<peticion<<endl;
         //Servidor->Enviar("_");//Envio cualquier cosa para que no dé error
 
         if(peticion=="Registro"){
             mostrarRegistro(userName,Servidor);
+            salir = false;
         }
         else if(peticion=="Gestionar"){
+            salir = false;
             string opcion = Servidor->Recibir();
             if(opcion=="ReservarAsiento"){
                 gestionarAsiento(nombreArchivo,Servidor, userName,true);
-                opcion = "";
+                opcion = "";     salir = false;
             }
             else if(opcion=="LiberarAsiento"){
                 gestionarAsiento(nombreArchivo,Servidor, userName, false);
-                opcion = "";
+                opcion = "";     salir = false;
             }
-
         }
         peticion="";
+
+
     }
 }
 /***********************************************************************/

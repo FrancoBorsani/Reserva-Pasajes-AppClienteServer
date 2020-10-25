@@ -8,18 +8,14 @@
 
 #define TAMANIO_I  5
 #define TAMANIO_J  21
-#define GLOBAL_IP  "192.168.0.71"
+#define GLOBAL_IP  "192.168.88.9"
 #define PUERTO_GLOBAL 4747
 
 using namespace std;
 
-string NAME_CLIENTE;
 string LINEA_A_GLOBAL = "";
 string LINEA_B_GLOBAL = "";
 string LINEA_C_GLOBAL = "";
-bool primerEntradaG=true;
-bool primerEntradaVRA=true;
-bool primerEntradaAS=true;
 
 class Client{
 public:
@@ -225,7 +221,7 @@ void determinarAccion_A_Seguir(Client *&Cliente,bool posicionDisponible, int pos
           mostrarButacasCliente();
           cout<<"************************************"<<endl;
           cout<<"** Butaca "<<peticionButaca<<" exitosamente. **"<<endl;
-          cout<<"************************************"<<endl<<endl<<endl;
+          cout<<"************************************"<<endl<<endl<<"Precione cualquier tecla para continuar..."<<endl;
     }
     else{
         cout<<"*** ERROR: Butaca ya "<<errorButaca<<". ***"<<endl<<endl;
@@ -287,7 +283,7 @@ string elegirButaca(Client *&Cliente, bool reservar){
         bool posicionDisponible = false;
 
         string posicion = Cliente->Recibir();
-        cout<<posicion<<endl;
+//        cout<<posicion<<endl;
         if(posicion=="Disponible"){
             posicionDisponible = true;
         }
@@ -295,6 +291,7 @@ string elegirButaca(Client *&Cliente, bool reservar){
         determinarAccion_A_Seguir(Cliente, posicionDisponible, pos_I, numero, reservar);
     }
     else{
+        cout<<"Precione cualquier tecla para continuar...";
         Cliente->Enviar("true");
     }
 
@@ -348,8 +345,7 @@ void menuCliente(Client *&Cliente){
                     system("CLS");
                     break;
             default: system("CLS");
-                    cout<<"Ingreso una opcion incorrecta."<<
-                    endl;
+                    cout<<"Ingreso una opcion incorrecta."<<endl;
                     _getch();
                     system("CLS");
                     break;
@@ -434,8 +430,8 @@ void gestionarPasajes(Client *&Cliente){
             case 4: Cliente->Enviar("false");system("CLS");
                     break;
             default: Cliente->Enviar("false");
-                    cout<<"Ingreso una opcion incorrecta."<<endl;
-                     _getch();
+                    cout<<"Ingreso una opcion incorrecta."<<endl<<endl<<"Pulse cualqier tecla para continuar..."<<endl;
+                     _getch();  system("CLS");  gestionarPasajes(Cliente);
                      break;
         }
     }
@@ -473,8 +469,6 @@ string login()
         cout << "Ingrese su nombre de usuario: ";
 
         cin >> usernameTemp;
-
-        NAME_CLIENTE = usernameTemp;
 
         cout << endl << "Ingrese su contraseña: ";
 
