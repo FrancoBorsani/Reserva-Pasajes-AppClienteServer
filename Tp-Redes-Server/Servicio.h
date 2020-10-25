@@ -9,17 +9,14 @@ using namespace std;
 
 /**
     AXIOMAS
-    id  > 0
-    31 >= dia >= 1
-    12 >= mes >= 1
     omnibus se asume que empieza vacio
 */
 
 typedef struct{
-    int id;
-    int dia,mes,anio;
+    string fecha;
     string origen;
     string destino;
+    string turno;
     char omnibus[TAMANIO_I][TAMANIO_J] = {{'O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O'},
     {'O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O'},
     {'O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O','O'}}; //el omnibus se inicializa vacio agregandole 'O´
@@ -30,13 +27,9 @@ void crearServicio(Servicio& servicio);
 void eliminarServicio(Servicio& servicio);
 
 
-int getId(Servicio& servicio);
-
-void setId(Servicio& servicio,int id);
-
 string getFecha(Servicio& servicio);
 
-void setFecha(Servicio& servicio  , int dia , int mes , int anio);
+void setFecha(Servicio& servicio  , string fecha);
 
 string  getOrigen(Servicio& servicio);
 
@@ -46,8 +39,12 @@ string  getDestino(Servicio& servicio);
 
 void setDestino(Servicio& servicio,string destino);
 
+string getTurno(Servicio& servicio);
 
-char** getOmnibus(Servicio& servicio);//retorna un puntero que apunta a la primer posicion de  memoria en donde se encuentra la matriz del servicio indicado
+void setTurno(Servicio& servicio , string turno);
+
+
+//char** getOmnibus(Servicio& servicio);//retorna un puntero que apunta a la primer posicion de  memoria en donde se encuentra la matriz del servicio indicado
 
 void setOmnibus(Servicio& servicio , char omnibus[TAMANIO_I][TAMANIO_J]);
 

@@ -1,32 +1,21 @@
 #include "Servicio.h"
 
 void crearServicio(Servicio& servicio){
-    servicio.id = 1;
-    servicio.dia = 1;
-    servicio.mes = 1;
-    servicio.anio = 1;
+    servicio.fecha="";
     servicio.origen = "";
     servicio.destino = "";
+    servicio.turno = "";
 }
 
 void eliminarServicio(Servicio& servicio){
 }
 
 
-int getId(Servicio& servicio){
-    return servicio.id;
-}
-void setId(Servicio& servicio,int id){
-    servicio.id = id;
-}
-
 string getFecha(Servicio& servicio){
-    return std::to_string(servicio.dia) + "-"+ std::to_string(servicio.mes) + "-"+  std::to_string(servicio.anio);
+    return servicio.fecha;
 }
-void setFecha(Servicio& servicio , int dia , int mes , int anio){
-    servicio.dia = dia;
-    servicio.mes = mes;
-    servicio.anio = anio;
+void setFecha(Servicio& servicio , string fecha){
+    servicio.fecha = fecha;
 }
 
 string  getOrigen(Servicio& servicio){
@@ -44,7 +33,15 @@ void setDestino(Servicio& servicio,string destino){
     servicio.destino = destino;
 }
 
+string getTurno(Servicio& servicio){
+    return servicio.turno;
+}
 
+void setTurno(Servicio& servicio , string turno){
+    servicio.turno = turno;
+}
+
+/*
 char** getOmnibus(Servicio& servicio){
     char ** matriz;
 
@@ -59,6 +56,7 @@ char** getOmnibus(Servicio& servicio){
     }
     return matriz;
 }
+*/
 void setOmnibus(Servicio& servicio, char omnibus[TAMANIO_I][TAMANIO_J] ){
        for (int i =0; i<TAMANIO_I;i++){
         for (int j=0; j<TAMANIO_J;j++){
