@@ -8,7 +8,7 @@
 
 #define TAMANIO_I  5
 #define TAMANIO_J  21
-#define GLOBAL_IP  "192.168.88.9"
+#define GLOBAL_IP  "192.168.1.33"
 #define PUERTO_GLOBAL 4747
 
 using namespace std;
@@ -63,6 +63,8 @@ public:
 };
 
 
+void altaServicio(Client*& cliente);
+bool verificarFecha(int a , int m , int d);
 
 void mostrarButacasCliente();
 vector <string> recibirButacas_Y_separar(string butacas);
@@ -105,6 +107,80 @@ int main()
 /*******************************FIN MAIN********************************/
 /***********************************************************************/
 
+
+/***********************************************************************/
+bool verificarFecha(int a , int m , int d){
+    //Array que almacenara los dias que tiene cada mes (si el ano es bisiesto, sumaremos +1 al febrero)
+    int dias_mes[] = {31, 28, 31, 30,31, 30, 31, 31, 30, 31, 30, 31};
+
+    //Comprobar si el ano es bisiesto y anadir dia en febrero en caso afirmativo
+    if((a%4 == 0 and a%100 != 0) or a%400 == 0)
+        dias_mes[1]++;
+
+    //Comprobar que el mes sea valido
+    if(m < 1 or m > 12)
+        return false;
+
+    //Comprobar que el dia sea valido
+    m = m-1;
+    if(d <= 0 or d > dias_mes[m])
+        return false;
+
+    //Si ha pasado todas estas condiciones, la fecha es valida
+    return true;
+}
+/***********************************************************************/
+
+
+/***********************************************************************/
+void altaServicio(Client*& cliente){
+    int dia,mes,anio;
+    bool fechaValida = false;
+    while(!fechaValida){
+        cout<<"Ingrese el dia: ";
+        cin>>dia;
+        cout<<"Ingrese el mes: ";
+        cin>>mes;
+        cout<<"Ingrese el año: ";
+        cin>>anio;
+
+        if(verificarFecha(anio,mes,dia)){
+            fechaValida = true;
+        }
+        else{
+            cout<<"La fecha ingresada no es valida"<<endl;
+            system("pause"); system("cls");
+        }
+    }
+    string origen,turno;
+    bool datosValidos =false;
+    while(!datosValidos){
+        cin.ignore(); //limpio el buffer
+        cout<<"Ingrese el origen(Mar del Plata, Buenos Aires): ";
+        getline(cin , origen);
+        cout<<"Ingrese el turno(Maniana , Tarde, Noche): ";
+        getline(cin , turno);
+
+        if( (origen=="Mar del Plata" || origen=="Buenos Aires")
+                                && (turno=="Maniana" || turno=="Tarde" || turno=="Noche") ){
+                            datosValidos=true;
+        }
+        else{cout<<"Datos erroneos"<<endl; system("pause"); system("cls");}
+    }
+
+    //Se le envian los datos al server
+    cliente->Enviar(std::to_string(dia)+"-"+std::to_string(mes)+"-"+std::to_string(anio)) ;
+    cliente->Enviar(origen);
+    cliente->Enviar(turno);
+
+    //El cliente recibe el resultado de la operacion
+    system("cls");
+    cout<<"===================================================================================="<<endl;
+    cout<<"\t"<<cliente->Recibir()<<endl;
+    cout<<"===================================================================================="<<endl;
+
+}
+/***********************************************************************/
 
 
 /***********************************************************************/
@@ -327,6 +403,7 @@ void menuCliente(Client *&Cliente){
         switch(servicioElegido){
             case 1: system("CLS");
                     Cliente->Enviar("AltaServicio");
+                    altaServicio(Cliente);
                     _getch();
                     system("CLS");
                     break;

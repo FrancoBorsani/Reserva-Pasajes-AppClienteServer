@@ -15,6 +15,8 @@
 
 using namespace std;
 
+vector<string> archivos_servicios; //en este vector guardo los 6 servicios del dia, mediante su nombreArchivo para poder identificarlos
+
 
 void registrarServerLog(string evento, string aRegistrar);
 void verificarArchivoServerLog();
@@ -93,7 +95,13 @@ public:
     }
 };
 
-void crearArchivoButacas(string nombreArchivo,string tituloArchivo);
+
+void crearServicio(string userName , Server*& servidor);
+void registrarServicio_en_archivoRespaldoServicios(string nombreArchivo);//para poder cargar los servicios en el vector
+void cargarServiciosEnVector();
+
+
+bool crearArchivoButacas(string nombreArchivo,string tituloArchivo);
 void gestionarAsiento(string nombreArchivo,Server *&Servidor, string userName, bool reservar);
 void liberar(Server *&Servidor, string userName);
 string verificarSolicitud_Y_Responder(Server *&Servidor,vector <string> vectorButacas, string userName, bool reservar);
@@ -133,6 +141,8 @@ int main()
     setlocale(LC_CTYPE,"Spanish");// Spanish (de la librería locale.h) es para usar ñ y acento
     Server *Servidor = new Server();
 
+    cargarServiciosEnVector();//carga el nombre del archivo de los servicios creados en el vector por si el sistema se cerro de forma inesperada
+
     string userName = checkUser(Servidor);
     string nombreArchivo = "Registro_de_butacas";
     string tituloArchivo = ">>> REGISTRO DE BUTACAS VACIAS Y OCUPADA <<<";
@@ -153,12 +163,116 @@ int main()
 
 
 /***********************************************************************/
-void crearArchivoButacas(string nombreArchivo,string tituloArchivo){
+void registrarServicio_en_archivoRespaldoServicios(string nombreArchivo){
+    ofstream archivoHistorialServicios;
+    archivoHistorialServicios.open("Respaldo_Servicios.txt" , ios::out | ios::app);
+
+    if(!archivoHistorialServicios.is_open()){
+        cout<<"Error, no se pudo abrir el archivo: Registro_Historico_Servicios.txt"<<endl;
+        exit(1);
+    }
+    archivoHistorialServicios<<nombreArchivo<<endl;///guardo el nombre del servicio creado, con el fin de tener un respaldo de los servicios  para poder identificarlos a la hora de cargarlos en el vector
+    archivoHistorialServicios.close();
+}
+/***********************************************************************/
+
+
+/**********************************************************************/
+void cargarServiciosEnVector(){
+    if(verificarSiExisteArchivo("Respaldo_Servicios")){
+            string servicio = "";
+            ifstream archivoServiciosRespaldo;
+            archivoServiciosRespaldo.open("Respaldo_Servicios.txt" , ios::in);
+
+            if( archivoServiciosRespaldo.fail())
+            {
+                cout << "Error, no existe el archivo: Respaldo_Servicios.txt"<< endl;
+                exit(1);
+            }
+            while(!archivoServiciosRespaldo.eof()){ ///el archivo  puede contener hasta 6 lineas , cada linea hace refencia a un servicio
+
+                getline(archivoServiciosRespaldo , servicio);
+                if(servicio != ""){
+                    archivos_servicios.push_back(servicio);//guardo el  servicio en el vector
+                }
+
+                //limpiamos la cadena para la prox iteracion
+                servicio.clear();
+            }
+            archivoServiciosRespaldo.close();
+    }
+}
+/************************************************************************/
+
+
+
+/***********************************************************************/
+void crearServicio(string userName , Server*& servidor){
+    /***Datos recibidos del  usuario****/
+    string fechaRecibida = servidor->Recibir();
+    string origenRecibido = servidor->Recibir();
+    string turnoRecibido  = servidor->Recibir();
+    /*****************************/
+    string msg = "";
+    string nombreArchivo = "";
+    string tituloArchivo = "";
+    if(origenRecibido=="Mar del Plata"){nombreArchivo=fechaRecibida+";Mar_Del_Plata;"+turnoRecibido; tituloArchivo=fechaRecibida+" "+"Mar_Del_Plata"+" "+turnoRecibido;}
+    else if(origenRecibido=="Buenos Aires"){nombreArchivo=fechaRecibida+";Buenos_Aires;"+turnoRecibido; tituloArchivo=fechaRecibida+" "+"Buenos_Aires"+" "+turnoRecibido;}
+
+
+        if(archivos_servicios.empty()){///si el vector esta vacio
+                crearArchivoButacas(nombreArchivo , tituloArchivo); ///crea su registro con sus correspondientes datos
+                registrarUserLog("Crea el servicio con los datos ("+tituloArchivo+")" , userName);///registro la accion del usuario en su archivo
+                registrarServicio_en_archivoRespaldoServicios(nombreArchivo); ///registro el servicio creado en un archivo de respaldo
+
+                msg = "El Servicio ("+tituloArchivo+") fue creado correctamente";
+                archivos_servicios.push_back(nombreArchivo); ///agrego el nombre del archivo en el vector
+        }
+        else{
+            if(archivos_servicios.size() < 6){ ///verifico que ya no existan los 6 servicios del dia
+                int pos = 0;
+                string fechaRegistrada="";
+                ///guardo solo la fecha en la variable fechaRegistrada
+                while(archivos_servicios[0][pos] != ';'){
+                    fechaRegistrada += archivos_servicios[0][pos];
+                    pos++;
+                }
+
+                if(fechaRecibida == fechaRegistrada){
+
+                            if(crearArchivoButacas(nombreArchivo , tituloArchivo)){ ///si el servicio no existe crea su registro con sus correspondientes datos
+                                registrarUserLog("Crea el servicio con los datos ("+tituloArchivo+")" , userName);///registro la accion del usuario en su archivo
+                                registrarServicio_en_archivoRespaldoServicios(nombreArchivo); ///registro el servicio creado en un archivo de respaldo
+
+                                msg = "El Servicio ("+tituloArchivo+") fue creado correctamente";
+                                archivos_servicios.push_back(nombreArchivo); ///agrego el nombre del archivo en el vector
+                            }
+                            else{
+                                    msg = "El Servicio ("+tituloArchivo+") que quiere crear ya existe";
+                            }
+
+                }
+                else{msg = "La fecha("+fechaRecibida+") no coincide con la fecha registrada("+fechaRegistrada+")";}
+            }
+            else{msg="No se puede crear otro servicio debido a que ya fueron creados los 6 servicios del dia";}
+        }
+
+        servidor->Enviar(msg); ///le informa al usuario el resultado de la operacion
+}
+/***********************************************************************/
+
+
+
+/***********************************************************************/
+bool crearArchivoButacas(string nombreArchivo,string tituloArchivo){
+    bool archivoCreado = false;
     if(verificarSiExisteArchivo(nombreArchivo)==false){//solo es paracrear un archivo
         char butacas[TAMANIO_I][TAMANIO_J];
         iniciarButacas(butacas);
         darFormato_y_GuardarButacasEnArchivo(nombreArchivo,tituloArchivo,butacas);
+        archivoCreado = true;
     }
+    return archivoCreado; ///para identificar si el servicio ya esta registrado e informarle al cliente
 }
 /***********************************************************************/
 
@@ -231,6 +345,10 @@ void manejarPeticion(string nombreArchivo,string userName, Server *&Servidor){
 
         if(peticion=="Registro"){
             mostrarRegistro(userName,Servidor);
+            salir = false;
+        }
+        else if(peticion=="AltaServicio"){
+            crearServicio(userName, Servidor);
             salir = false;
         }
         else if(peticion=="Gestionar"){

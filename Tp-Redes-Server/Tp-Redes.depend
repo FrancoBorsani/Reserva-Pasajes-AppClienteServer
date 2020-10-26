@@ -52,3 +52,16 @@
 	<stdio.h>
 	<windns.h>
 
+1603692652 source:c:\users\tomas\desktop\github proyectos\reserva-pasajes-appclienteserver\tp-redes-server\main.cpp
+	<iostream>
+	<winsock2.h>
+	<string>
+	<conio.h>
+	<clocale>
+	<fstream>
+	<ctime>
+	<cstdlib>
+	<vector>
+	<stdio.h>
+	<windns.h>
+
