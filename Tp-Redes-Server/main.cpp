@@ -2,25 +2,24 @@
 #include <winsock2.h>
 #include <string>
 #include <conio.h>
-#include <clocale>//es para usar Ã± y acento
+#include <clocale>//es para usar ñ y acento
 #include <fstream> //Lib. para trabajar con archivos
 #include <ctime> //Lib. para trabajar con fechas / tiempos
 #include <cstdlib>
 #include <vector>
 #include <stdio.h>
 #include <windns.h>
-#include "Servicio.h"
 
 #define TAMANIO_I  5
 #define TAMANIO_J  21
 
 using namespace std;
 
-string nombreArchivo;
-//vector<Servicio> servicios;
+vector<string> archivos_servicios; //en este vector guardo los 6 servicios del dia, mediante su nombreArchivo para poder identificarlos
+
 
 void registrarServerLog(string evento, string aRegistrar);
-
+void verificarArchivoServerLog();
 
 class Server{
 public:
@@ -39,7 +38,7 @@ public:
 
         bind(server, (SOCKADDR *)&serverAddr, sizeof(serverAddr));
         listen(server, 0);
-
+        verificarArchivoServerLog();
         registrarServerLog("Inicia servidor", "Socket creado. Puerto de escucha:4747");
 
         cout << "Escuchando para conexiones entrantes." << endl;
@@ -56,7 +55,7 @@ public:
         fd_set fds ;
         struct timeval tv ;
 
-        tv.tv_sec = 10 ;
+        tv.tv_sec = 120 ;
         tv.tv_usec = 0 ;
 
         FD_ZERO(&fds) ;
@@ -71,15 +70,16 @@ public:
         recv(client, buffer, sizeof(buffer), 0);
 
         string buff = buffer;
+
         memset(buffer, 0, sizeof(buffer));
       return buff;
     }
 
     void Enviar(string respuesta)
     {
-         for(int i=0;i<respuesta.length();i++){
-           this->buffer[i]= respuesta[i];
-         }
+        for(int i=0;i<respuesta.length();i++){
+            this->buffer[i]= respuesta[i];
+        }
 
         send(client, buffer, sizeof(buffer), 0);
         memset(buffer, 0, sizeof(buffer));
@@ -89,28 +89,31 @@ public:
     {
         closesocket(client);
         WSACleanup();
+        verificarArchivoServerLog();
         registrarServerLog("Socket cerrado, cliente desconectado", "");
         cout << "Socket cerrado, cliente desconectado." << endl;
     }
 };
 
-void crearArchivoServicios();
-void darFormato_y_guardarOmnibus_enArchivoServicios(ofstream&archivoServicios, Servicio& nuevoServicio);
-void iniciarOmnibus(Servicio& nuevoServicio);
-void registrarServicio(Servicio& nuevoServicio);
-bool existeServicio(string fecha , string origen , string turno);
-void altaServicio(Server*& servidor);
+
+void crearServicio(string userName , Server*& servidor);
+void registrarServicio_en_archivoRespaldoServicios(string nombreArchivo);//para poder cargar los servicios en el vector
+void cargarServiciosEnVector();
 
 
-void crearArchivoButacas();
-void accessoAlMenuGestionar(Server *&Servidor);
-string verificarSolicitud_Y_Responder(Server *&Servidor,vector <string> vectorButacas);
-void marcarButacaComoOcupada(vector <string> vectorButacas, int pos_I, int pos_J);
+bool crearArchivoButacas(string nombreArchivo,string tituloArchivo);
+void gestionarAsiento(string nombreArchivo,Server *&Servidor, string userName, bool reservar);
+void liberar(Server *&Servidor, string userName);
+string verificarSolicitud_Y_Responder(Server *&Servidor,vector <string> vectorButacas, string userName, bool reservar);
+void marcarButacaComoOcupada(vector <string> vectorButacas, int pos_I, int pos_J, string userName);
+void marcarButacaComoLiberada(vector <string> vectorButacas, int pos_I, int pos_J, string userName);
+string butacaAString(int pos_I, int pos_J);
 vector<string> separarPalabrasPuntoYComa(string str);
 string checkUser(Server *&Servidor);
 void registrarServerLog(string evento, string aRegistrar);
 void registrarUserLog(string evento, string aRegistrar);
 void crearArchivoUserLog(string usuario);
+
 
 void iniciarButacas(char butacas[TAMANIO_I][TAMANIO_J]);
 void mostrarButacas(vector <string> vectorButacas);
@@ -125,8 +128,9 @@ void marcarEnArchivoReservaRealizada(vector <string> vectorButacas);
 string traerSoloButacas(vector <string> vectorButacas);
 
 int numeroDeSentencias(string file);
-void manejarPeticion(string userName, Server *&Servidor);
+void manejarPeticion(string nombreArchivo,string userName, Server *&Servidor);
 void mostrarRegistro(string userName, Server *&Servidor);
+
 
 
 /************************************
@@ -134,14 +138,17 @@ void mostrarRegistro(string userName, Server *&Servidor);
 ***********************************/
 int main()
 {
-    setlocale(LC_CTYPE,"Spanish");// Spanish (de la librerÃ­a locale.h) es para usar Ã± y acento
+    setlocale(LC_CTYPE,"Spanish");// Spanish (de la librería locale.h) es para usar ñ y acento
     Server *Servidor = new Server();
 
-    string userName = checkUser(Servidor);
-    crearArchivoServicios();
-    crearArchivoButacas();
+    cargarServiciosEnVector();//carga el nombre del archivo de los servicios creados en el vector por si el sistema se cerro de forma inesperada
 
-    manejarPeticion(userName, Servidor);
+    string userName = checkUser(Servidor);
+    string nombreArchivo = "Registro_de_butacas";
+    string tituloArchivo = ">>> REGISTRO DE BUTACAS VACIAS Y OCUPADA <<<";
+    crearArchivoButacas(nombreArchivo,tituloArchivo);
+
+    manejarPeticion(nombreArchivo,userName, Servidor);
 
     Servidor->CerrarSocket();
 
@@ -153,214 +160,212 @@ int main()
         FIN  MAIN
 ***********************************/
 
-/**************************************************************************/
-void crearArchivoServicios(){
-    nombreArchivo = "Registros de servicios";
-    if(!verificarSiExisteArchivo(nombreArchivo)){
-        nombreArchivo = nombreArchivo+".txt";
-        ofstream archivoServicio;
-        archivoServicio.open(nombreArchivo , ios::out);
-        if(!archivoServicio.is_open()){
-            cout<<"Error al abrir el archivo: "<<nombreArchivo<<endl;
-            exit(1);
-        }
-        archivoServicio<<"======================================"<<endl;
-        archivoServicio<<"    <<<Registro de los sevicios creados>>>"<<endl;
-        archivoServicio<<"======================================"<<endl;
-        archivoServicio<<endl;
+
+
+/***********************************************************************/
+void registrarServicio_en_archivoRespaldoServicios(string nombreArchivo){
+    ofstream archivoHistorialServicios;
+    archivoHistorialServicios.open("Respaldo_Servicios.txt" , ios::out | ios::app);
+
+    if(!archivoHistorialServicios.is_open()){
+        cout<<"Error, no se pudo abrir el archivo: Registro_Historico_Servicios.txt"<<endl;
+        exit(1);
+    }
+    archivoHistorialServicios<<nombreArchivo<<endl;///guardo el nombre del servicio creado, con el fin de tener un respaldo de los servicios  para poder identificarlos a la hora de cargarlos en el vector
+    archivoHistorialServicios.close();
+}
+/***********************************************************************/
+
+
+/**********************************************************************/
+void cargarServiciosEnVector(){
+    if(verificarSiExisteArchivo("Respaldo_Servicios")){
+            string servicio = "";
+            ifstream archivoServiciosRespaldo;
+            archivoServiciosRespaldo.open("Respaldo_Servicios.txt" , ios::in);
+
+            if( archivoServiciosRespaldo.fail())
+            {
+                cout << "Error, no existe el archivo: Respaldo_Servicios.txt"<< endl;
+                exit(1);
+            }
+            while(!archivoServiciosRespaldo.eof()){ ///el archivo  puede contener hasta 6 lineas , cada linea hace refencia a un servicio
+
+                getline(archivoServiciosRespaldo , servicio);
+                if(servicio != ""){
+                    archivos_servicios.push_back(servicio);//guardo el  servicio en el vector
+                }
+
+                //limpiamos la cadena para la prox iteracion
+                servicio.clear();
+            }
+            archivoServiciosRespaldo.close();
     }
 }
-/**************************************************************************/
-
-
-/**************************************************************************/
-bool existeServicio(string fecha , string origen  , string turno){
-    string contenidoIrrelevante="" ,fechaGuardada ="", origenGuardado=""   , destinoGuardado=""  , turnoGuardado="";
-    bool existe = false;
-
-    ifstream archivoServicio;
-    archivoServicio.open("Registros de servicios.txt", ios::in);
-
-    for(int i=0;i<4;i++){getline(archivoServicio,contenidoIrrelevante);} //el archivo lee por linea y empieza leyendo el titulo que tiene 3 lineas + 1 salto de linea ,  por eso hago que el archivo lea 4 lineas y lo guardo una cadena
-    while(!archivoServicio.eof() && !existe ){
-        getline(archivoServicio,contenidoIrrelevante);
-        getline(archivoServicio,fechaGuardada);
-        getline(archivoServicio,origenGuardado);
-        getline(archivoServicio,destinoGuardado);
-        getline(archivoServicio,turnoGuardado);
-
-        ///neceisto comparar con el mismo formato que esta en el archivo por eso les agrego 'Fecha: ,Origen:  ,Destino: ,Turno: ' para que su formato conicida
-        if(fechaGuardada.compare("Fecha: "+fecha) == 0 && origenGuardado.compare("Origen: "+origen) == 0 &&
-                            turnoGuardado.compare("Turno: "+turno) == 0){
-                                existe = true;
-        }
-        for(int j=0;j<9;j++){getline(archivoServicio,contenidoIrrelevante);} //guardo las 8 lineas + 1 salto de linea que contienen el omnibus en la cadena para poder seguir comparando
-    }
-    archivoServicio.close();
-    return existe;
-}
-/**************************************************************************/
-
-
-/**************************************************************************/
-void iniciarOmnibus(Servicio& nuevoServicio){
-    char numeros[30] = {'1','2','3','4','5','6','7','8','9','0','1','2','3','4','5','6','7','8','9','0'};
-    char letras[5] = {' ',' ','A','B','C'};
-    for (int i =0; i<TAMANIO_I;i++){
-        for (int j=1; j<TAMANIO_J;j++){
-           if(j<=9){nuevoServicio.omnibus[0][j] = letras[0];}else if(j<=19){nuevoServicio.omnibus[0][j] = '1';}else{nuevoServicio.omnibus[0][j] = '2';}
-           nuevoServicio.omnibus[1][j] = numeros[j-1];
-           nuevoServicio.omnibus[i][0] = letras[i];
-           nuevoServicio.omnibus[i][j] = 'O';
-        }
-    }
-}
-/**************************************************************************/
-
-
-/**************************************************************************/
-void darFormato_y_guardarOmnibus_enArchivoServicios(ofstream&archivoServicios, Servicio& nuevoServicio){
-    for (int i =0; i<TAMANIO_I;i++){
-        if(i==2){archivoServicios<<"--------------------------------------------------------------------------------------------------------------------"<< endl;}
-        if(i==4){archivoServicios<<"=========================================================="<< endl;}
-        for (int j=0; j<TAMANIO_J;j++){
-           if(i==0&&j<1){archivoServicios <<"  "<<nuevoServicio.omnibus[i][j]<<"             ";
-           }else if(j<1){archivoServicios <<" "<<nuevoServicio.omnibus[i][j]<<"  |";
-           }else{archivoServicios <<" "<<nuevoServicio.omnibus[i][j]<<" ";}
-        }
-        archivoServicios<<endl;
-    }
-}
-/**************************************************************************/
-
-
-/**************************************************************************/
-void registrarServicio(Servicio& nuevoServicio){
-    ofstream archivoServicios;
-    archivoServicios.open("Registros de servicios.txt" , ios::out | ios::app);
-
-    archivoServicios<<"===================================================="<<endl;
-    archivoServicios<<"Fecha: "<<getFecha(nuevoServicio)<<endl;
-    archivoServicios<<"Origen: "<<getOrigen(nuevoServicio)<<endl;
-    archivoServicios<<"Destino: "<<getDestino(nuevoServicio)<<endl;
-    archivoServicios<<"Turno: "<<getTurno(nuevoServicio)<<endl;
-    archivoServicios<<"Omnibus:"<<endl;
-
-    iniciarOmnibus(nuevoServicio);
-    darFormato_y_guardarOmnibus_enArchivoServicios(archivoServicios , nuevoServicio);
-    archivoServicios<<endl;
-
-    archivoServicios.close();
-}
-/**************************************************************************/
-
-
-/**************************************************************************/
-void altaServicio(Server*& servidor){
-
-    /*****Datos recibidos por el cliente*****/
-    string fechaRecibida = servidor->Recibir();
-    string origenRecibido = servidor->Recibir();
-    string turnoRecibido = servidor->Recibir();
-    /*********************************/
-
-    string msg = "" , msgDatosDelServicio="";
-    msgDatosDelServicio ="(Fecha: "+fechaRecibida + ", Origen: "+origenRecibido + ", Turno: "+turnoRecibido+")";
-
-    if(!existeServicio(fechaRecibida , origenRecibido , turnoRecibido)){ //compruebo  si ya existe el servicio con los datos recibidos
-        Servicio *nuevoServicio = new Servicio;
-        crearServicio(*nuevoServicio);
-
-        setFecha(*nuevoServicio, fechaRecibida);
-        setOrigen(*nuevoServicio, origenRecibido);
-        setTurno(*nuevoServicio, turnoRecibido);
-        if(origenRecibido == "Buenos Aires"){setDestino(*nuevoServicio,"Mar del Plata");}
-        else{setDestino(*nuevoServicio , "Buenos Aires");}
-
-        registrarServicio(*nuevoServicio);//registro el servicio en el archivo
-
-        eliminarServicio(*nuevoServicio);
-        delete nuevoServicio;//una vez registrado en el archivo libero la memoria que reserve para el servicio
-        msg = "\nServicio con los datos: "+msgDatosDelServicio+" creado de forma correcta";
-    }
-    else{
-        msg = "\nEl servicio con los datos: "+msgDatosDelServicio+" que quiere crear ya existe";
-    }
-    servidor->Enviar(msg); //le informa al cliente el resultado de la operacion
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/************************************************************************/
 
 
 
 /***********************************************************************/
-void crearArchivoButacas(){
-    nombreArchivo = "Registro_de_butacas";
+void crearServicio(string userName , Server*& servidor){
+    /***Datos recibidos del  usuario****/
+    string fechaRecibida = servidor->Recibir();
+    string origenRecibido = servidor->Recibir();
+    string turnoRecibido  = servidor->Recibir();
+    /*****************************/
+    string msg = "";
+    string nombreArchivo = "";
+    string tituloArchivo = "";
+    if(origenRecibido=="Mar del Plata"){nombreArchivo=fechaRecibida+";Mar_Del_Plata;"+turnoRecibido; tituloArchivo=fechaRecibida+" "+"Mar_Del_Plata"+" "+turnoRecibido;}
+    else if(origenRecibido=="Buenos Aires"){nombreArchivo=fechaRecibida+";Buenos_Aires;"+turnoRecibido; tituloArchivo=fechaRecibida+" "+"Buenos_Aires"+" "+turnoRecibido;}
+
+
+        if(archivos_servicios.empty()){///si el vector esta vacio
+                crearArchivoButacas(nombreArchivo , tituloArchivo); ///crea su registro con sus correspondientes datos
+                registrarUserLog("Crea el servicio con los datos ("+tituloArchivo+")" , userName);///registro la accion del usuario en su archivo
+                registrarServicio_en_archivoRespaldoServicios(nombreArchivo); ///registro el servicio creado en un archivo de respaldo
+
+                msg = "El Servicio ("+tituloArchivo+") fue creado correctamente";
+                archivos_servicios.push_back(nombreArchivo); ///agrego el nombre del archivo en el vector
+        }
+        else{
+            if(archivos_servicios.size() < 6){ ///verifico que ya no existan los 6 servicios del dia
+                int pos = 0;
+                string fechaRegistrada="";
+                ///guardo solo la fecha en la variable fechaRegistrada
+                while(archivos_servicios[0][pos] != ';'){
+                    fechaRegistrada += archivos_servicios[0][pos];
+                    pos++;
+                }
+
+                if(fechaRecibida == fechaRegistrada){
+
+                            if(crearArchivoButacas(nombreArchivo , tituloArchivo)){ ///si el servicio no existe crea su registro con sus correspondientes datos
+                                registrarUserLog("Crea el servicio con los datos ("+tituloArchivo+")" , userName);///registro la accion del usuario en su archivo
+                                registrarServicio_en_archivoRespaldoServicios(nombreArchivo); ///registro el servicio creado en un archivo de respaldo
+
+                                msg = "El Servicio ("+tituloArchivo+") fue creado correctamente";
+                                archivos_servicios.push_back(nombreArchivo); ///agrego el nombre del archivo en el vector
+                            }
+                            else{
+                                    msg = "El Servicio ("+tituloArchivo+") que quiere crear ya existe";
+                            }
+
+                }
+                else{msg = "La fecha("+fechaRecibida+") no coincide con la fecha registrada("+fechaRegistrada+")";}
+            }
+            else{msg="No se puede crear otro servicio debido a que ya fueron creados los 6 servicios del dia";}
+        }
+
+        servidor->Enviar(msg); ///le informa al usuario el resultado de la operacion
+}
+/***********************************************************************/
+
+
+
+/***********************************************************************/
+bool crearArchivoButacas(string nombreArchivo,string tituloArchivo){
+    bool archivoCreado = false;
     if(verificarSiExisteArchivo(nombreArchivo)==false){//solo es paracrear un archivo
-        string tituloArchivo = ">>> REGISTRO DE BUTACAS VACIAS Y OCUPADA <<<";
         char butacas[TAMANIO_I][TAMANIO_J];
         iniciarButacas(butacas);
         darFormato_y_GuardarButacasEnArchivo(nombreArchivo,tituloArchivo,butacas);
+        archivoCreado = true;
     }
+    return archivoCreado; ///para identificar si el servicio ya esta registrado e informarle al cliente
 }
 /***********************************************************************/
 
 
 /***********************************************************************/
-void accessoAlMenuGestionar(Server *&Servidor){
-    cout<<Servidor->Recibir()<<endl;
-    vector <string> vectorButacas = leerArchivoGuardarEnVectorString(nombreArchivo);
-    Servidor->Enviar(traerSoloButacas(vectorButacas));
-    string salir = "false";
-    while(salir=="false"){
-       vectorButacas = leerArchivoGuardarEnVectorString(nombreArchivo);
-       salir = verificarSolicitud_Y_Responder(Servidor,vectorButacas);
-       if(salir!="true" && salir!="false"){//es porque cuando se desconecta el cliente  cerrando la ventana llegaba vacio
-         salir ="true";
-         system("cls");
-       }
-    }
-}
-/***********************************************************************/
-
-
-/***********************************************************************/
-void manejarPeticion(string userName, Server *&Servidor){
-    string peticion="Ingreso";
-    while(peticion=="Ingreso"){
-        peticion = Servidor->Recibir();
-        Servidor->Enviar("_");//Envio cualquier cosa para que no dÃ© error
-
-       if(peticion=="Registro"){
-          mostrarRegistro(userName,Servidor);
-          peticion="Ingreso";
-       }
-       if(peticion=="AltaServicio"){
-            altaServicio(Servidor);
-            peticion ="Ingreso";
-       }
-       if(peticion=="Gestionar"){
-          accessoAlMenuGestionar(Servidor);
-          peticion="Ingreso";
+void registrarViajesEnArchivo(string nombreArchivo){
+   vector <string> vectorButacas = leerArchivoGuardarEnVectorString(nombreArchivo);
+   string destinoFechaTurno = vectorButacas[1];
+   string butacas = traerSoloButacas(vectorButacas);
+   string butacasReservadas="";
+   for(int i=0;i<60;i++){
+        if(i<20&&butacas[i]=='X'){
+          butacasReservadas = butacasReservadas+"A"+to_string(i+1)+"_";
+        }else if(i>=20&&i<40&&butacas[i]=='X'){
+          butacasReservadas = butacasReservadas+"B"+to_string(i-19)+"_";
+        }else if(i>=40&&butacas[i]=='X'){
+          butacasReservadas = butacasReservadas+"C"+to_string(i-39)+"_";
         }
+   }//for i
+   butacasReservadas.pop_back();//saco el último guion que le queda (no se puede igualar directamente a un string)
+   guardarEnArchivoYaFormateada(destinoFechaTurno+" "+butacasReservadas,"Registro_historico_de_viajes");
+}
+/***********************************************************************/
+
+
+/***********************************************************************/
+void gestionarAsiento(string nombreArchivo,Server *&Servidor, string userName, bool reservar){
+
+    vector <string> vectorButacas = leerArchivoGuardarEnVectorString(nombreArchivo);
+
+    Servidor->Enviar(traerSoloButacas(vectorButacas));
+
+    string salir = "false";
+
+    bool salirWhile = false;
+
+    while(!salirWhile){
+
+        vectorButacas = leerArchivoGuardarEnVectorString(nombreArchivo);
+        salir = verificarSolicitud_Y_Responder(Servidor,vectorButacas, userName, reservar);
+
+        if(salir=="true"){
+            salirWhile=true;
+        }
+        else if(salir!="true" && salir!="false"){//es porque cuando se desconecta el cliente  cerrando la ventana llegaba vacio
+            salir ="true";
+            salirWhile = true;
+            system("cls");
+        }
+    }
+
+}
+/***********************************************************************/
+void liberar(Server *&Servidor, string userName){
+
+}
+
+/***********************************************************************/
+
+/***********************************************************************/
+void manejarPeticion(string nombreArchivo,string userName, Server *&Servidor){
+    string peticion="";
+    bool salir = false;
+    string opcionesPosibles=" ";
+    while(!salir){
+      salir = true;
+        peticion = Servidor->Recibir();
+ //       cout<<peticion<<endl;
+        //Servidor->Enviar("_");//Envio cualquier cosa para que no dé error
+
+        if(peticion=="Registro"){
+            mostrarRegistro(userName,Servidor);
+            salir = false;
+        }
+        else if(peticion=="AltaServicio"){
+            crearServicio(userName, Servidor);
+            salir = false;
+        }
+        else if(peticion=="Gestionar"){
+            salir = false;
+            string opcion = Servidor->Recibir();
+            if(opcion=="ReservarAsiento"){
+                gestionarAsiento(nombreArchivo,Servidor, userName,true);
+                opcion = "";     salir = false;
+            }
+            else if(opcion=="LiberarAsiento"){
+                gestionarAsiento(nombreArchivo,Servidor, userName, false);
+                opcion = "";     salir = false;
+            }
+        }
+        peticion="";
+
+
     }
 }
 /***********************************************************************/
@@ -393,9 +398,7 @@ void mostrarRegistro(string userName, Server *&Servidor){
 
     std::string userFile = userName+".log";
     std::string numero = std::to_string(numeroDeSentencias(userFile));
-
     Servidor->Enviar(numero);
-
     fstream file;
     file.open(userFile);
 
@@ -457,11 +460,11 @@ void guardarEnArchivo(string lineaAGuardar, string nombreArchivo){
    nombreArchivo= nombreArchivo+".txt";
    ofstream archivo(nombreArchivo.c_str(),ios::out | ios::app);
         if(NO_EsPrimeraCarga==false){//si es la primera carga
-          archivo<<"\n"<<lineaAGuardar<<"\n\n"; //pongo tÃ­tulo y salto de linea al final para dejar un reglÃ³n vacio
+          archivo<<"\n"<<lineaAGuardar<<"\n\n"; //pongo título y salto de linea al final para dejar un reglón vacio
         }else{//si NO es la primera carga, pongo salto de linea al comienzo
           archivo<<"\n"<<lineaAGuardar;
-        }/*sin este if me generaba una linea demÃ¡s, al comienzo del archivo, por el salto de linea. Si pusiese el salto de linea al final generÃ­a la linea demÃ¡s al final del
-         archivo y no tengo forma manejarlo cuando... en ambos casos al mostrar los registros del archivo me mostrarÃ­a uno demÃ¡s en blanco arriba o abajo*/
+        }/*sin este if me generaba una linea demás, al comienzo del archivo, por el salto de linea. Si pusiese el salto de linea al final genería la linea demás al final del
+         archivo y no tengo forma manejarlo cuando... en ambos casos al mostrar los registros del archivo me mostraría uno demás en blanco arriba o abajo*/
    archivo.close();
 }
 /***********************************************************************/
@@ -501,7 +504,7 @@ vector <string> leerArchivoGuardarEnVectorString(string nombreArchivo)
     while(!archivo.eof())//mientras no sea el final del archivo
     {
            getline(archivo,texto);//Tomo lo que va encontrando en "archivo" y lo copio en "texto"
-           butacasEnSting.push_back(texto);//guardo en una posiciÃ³n del vector la lines obtenidad del archivo
+           butacasEnSting.push_back(texto);//guardo en una posición del vector la lines obtenidad del archivo
            i++;
     }
    archivo.close();//cerramos archivo
@@ -518,38 +521,54 @@ void guardarEnArchivoYaFormateada(string lineaAGuardar, string nombreArchivo){
           archivo<<lineaAGuardar; //solo pongo la linea
         }else{//si NO es la primera carga, pongo salto de linea al comienzo
           archivo<<"\n"<<lineaAGuardar;
-        }/*sin este if me generaba una linea demÃ¡s, al comienzo del archivo, por el salto de linea. Si pusiese el salto de linea al final generÃ­a la linea demÃ¡s al final del
-         archivo y no tengo forma manejarlo cuando... en ambos casos al mostrar los registros del archivo me mostrarÃ­a uno demÃ¡s en blanco arriba o abajo*/
+        }/*sin este if me generaba una linea demás, al comienzo del archivo, por el salto de linea. Si pusiese el salto de linea al final genería la linea demás al final del
+         archivo y no tengo forma manejarlo cuando... en ambos casos al mostrar los registros del archivo me mostraría uno demás en blanco arriba o abajo*/
    archivo.close();
 }
 /***********************************************************************/
 
 /***********************************************************************/
-string verificarSolicitud_Y_Responder(Server *&Servidor,vector <string> vectorButacas){
-    string mensajePeticion = "xxxxxx";
+string verificarSolicitud_Y_Responder(Server *&Servidor,vector <string> vectorButacas, string userName, bool reservar){
+    string mensajePeticion = "";
     string mensajeDelCli="";
-    char letra;
-    int pos_J;
-    int pos_I;
+    char letra = '\0';
+    int pos_J = -1;
+    int pos_I = -1;
     bool posicionDisponible = false;
 
-    mensajeDelCli = Servidor->Recibir();//en este mensaje solo puede llegar letra-numero o letra-numero-numero (sin guiones)
-    letra = mensajeDelCli[0];
-    mensajeDelCli.erase(0,1);//Saco la letra que guerdÃ©
-    pos_J =atoi(const_cast< char *>(mensajeDelCli.c_str()));
-    pos_J = pos_J*2+2; //es por la diferencia que hay entre la posicion de vista en consola y la del archivo
-    pos_I = asignarValorPosI_A_Letra(letra);
-    if(vectorButacas[pos_I][pos_J]=='O'){
-       Servidor->Enviar("true");//estÃ¡ disponible
-       marcarButacaComoOcupada(vectorButacas, pos_I, pos_J);
-       mensajePeticion = Servidor->Recibir();
-    }else{
-        Servidor->Enviar("false");
-        cout<<"No se asino una butaca "<<endl<<endl;
-        mostrarButacas(vectorButacas);
+    mensajeDelCli = Servidor->Recibir(); //Se recibe la butaca. EJ: B8
+
+    if(mensajeDelCli!="0"){
+        letra = mensajeDelCli[0];
+        mensajeDelCli.erase(0,1);//Saco la letra que guerdé
+        pos_J =atoi(const_cast< char *>(mensajeDelCli.c_str()));
+        pos_J = pos_J*2+2; //es por la diferencia que hay entre la posicion de vista en consola y la del archivo
+        pos_I = asignarValorPosI_A_Letra(letra);
+
+
+        if(vectorButacas[pos_I][pos_J]=='O' && reservar){
+           Servidor->Enviar("Disponible");//está disponible
+
+           marcarButacaComoOcupada(vectorButacas, pos_I, pos_J, userName);
+           mensajePeticion = Servidor->Recibir();
+        }
+        else if(vectorButacas[pos_I][pos_J]=='X' && !reservar){
+            Servidor->Enviar("Disponible");//está disponible
+
+            marcarButacaComoLiberada(vectorButacas, pos_I, pos_J, userName);
+            mensajePeticion = Servidor->Recibir();
+        }
+        else{
+            Servidor->Enviar("NoDisponible");//está disponible
+            //mostrarButacas(vectorButacas);
+            mensajePeticion = Servidor->Recibir();
+        }
+    }
+    else{
         mensajePeticion = Servidor->Recibir();
     }
-  return mensajePeticion;
+
+    return mensajePeticion;
 }
 /***********************************************************************/
 
@@ -562,7 +581,8 @@ int asignarValorPosI_A_Letra(char letra){
         pos_I=7;
     }
     else if(letra=='B' || letra == 'b'){
-        pos_I=8;}
+        pos_I=8;
+    }
     else {
         pos_I=10;
     }
@@ -607,7 +627,7 @@ void marcarEnArchivoReservaRealizada(vector <string> vectorButacas){
          archivoAuxiliar<<vectorButacas[i]<<"\n";
        }//Fin for
     }else{
-        cout<<"No se pudoAbrir el Archivo o aun no ha sido Creado"<<endl;
+        cout<<"No se pudo abrir el archivo o aun no ha sido creado"<<endl;
     }
     archivoAuxiliar.close();
     remove("Registro_de_butacas.txt");
@@ -615,16 +635,59 @@ void marcarEnArchivoReservaRealizada(vector <string> vectorButacas){
 }
 /**********************************************************************/
 
+/**********************************************************************/
+string butacaAString(int pos_I, int pos_J){
+    char letra = '\0';
+
+    pos_J = pos_J/2-2;
+    pos_J++;
+    std::string posJ_str = std::to_string(pos_J);
+
+    if(pos_I == 7) letra = 'A';
+    else if(pos_I == 8) letra = 'B';
+    else letra = 'C';
+
+    string butaca = letra+posJ_str;
+
+    return butaca;
+}
+/**********************************************************************/
 
 /***********************************************************************/
-void marcarButacaComoOcupada(vector <string> vectorButacas, int pos_I, int pos_J){
+void marcarButacaComoOcupada(vector <string> vectorButacas, int pos_I, int pos_J, string userName){
 
         vectorButacas[pos_I][pos_J] = 'X';
         marcarEnArchivoReservaRealizada(vectorButacas);
+
+        string butaca = butacaAString(pos_I, pos_J);
+
+        string reserva = "Reserva_";
+
+        reserva+=butaca;
+
+        registrarUserLog(reserva, userName);
         system("cls");
         mostrarButacas(vectorButacas);
         cout<<"************************************"<<endl;
         cout<<"** Butaca reservada exitosamente. **"<<endl;
+        cout<<"************************************"<<endl;
+ }
+
+ void marcarButacaComoLiberada(vector <string> vectorButacas, int pos_I, int pos_J, string userName){
+
+        vectorButacas[pos_I][pos_J] = 'O';
+        marcarEnArchivoReservaRealizada(vectorButacas);
+
+        string butaca = butacaAString(pos_I, pos_J);
+
+        string libera = "Libera_";
+        libera+=butaca;
+
+        registrarUserLog(libera, userName);
+        system("cls");
+        mostrarButacas(vectorButacas);
+        cout<<"************************************"<<endl;
+        cout<<"** Butaca liberada exitosamente. **"<<endl;
         cout<<"************************************"<<endl;
  }
 /***********************************************************************/
@@ -676,6 +739,7 @@ string checkUser(Server *&Servidor)
 
                 if(resultados[0] == userAndPass[0] && resultados[1] == userAndPass[1]){
                         usuarioEncontrado = "true";
+                        verificarArchivoServerLog();
                         registrarServerLog("Usuario autenticado", resultados[0]);
                         crearArchivoUserLog(resultados[0]);
                         registrarUserLog("Inicia sesion", resultados[0]);
@@ -704,7 +768,7 @@ string checkUser(Server *&Servidor)
 
 
 void registrarServerLog(string evento, string aRegistrar){
-    std::ofstream serverLog("server.txt", std::ios::ate | std::ios::in);
+    std::ofstream serverLog("server.log", std::ios::ate | std::ios::in);
     if(serverLog.fail()){ //Si el archivo no se encuentra o no esta disponible o presenta errores
             cout<<"No se pudo abrir el archivo server log"; //Muestra el error
                         }
@@ -730,6 +794,18 @@ void crearArchivoUserLog(string usuario){
 
   userLog.close();
 }
+
+void verificarArchivoServerLog(){
+    string nombreArchivo = "server.log";
+  std::ifstream serverLog( nombreArchivo );
+  if(serverLog.fail()){
+    //EL ARCHIVO NO EXISTE
+    std::ofstream serverLogCrear( nombreArchivo );
+  }
+
+  serverLog.close();
+}
+
 
 
 

@@ -39,7 +39,7 @@
 	<vector>
 	<stdio.h>
 
-1603585947 source:c:\users\tomas\desktop\github proyectos\reserva-pasajes-appclienteserver\tp-redes-server\main.cpp
+1603667777 source:c:\users\franco\desktop\redestp\reserva-pasajes-appclienteserver\tp-redes-server\main.cpp
 	<iostream>
 	<winsock2.h>
 	<string>
@@ -51,11 +51,17 @@
 	<vector>
 	<stdio.h>
 	<windns.h>
-	"Servicio.h"
 
-1603580893 c:\users\tomas\desktop\github proyectos\reserva-pasajes-appclienteserver\tp-redes-server\servicio.h
+1603691682 source:c:\users\tomas\desktop\github proyectos\reserva-pasajes-appclienteserver\tp-redes-server\main.cpp
+	<iostream>
+	<winsock2.h>
 	<string>
-
-1603580899 source:c:\users\tomas\desktop\github proyectos\reserva-pasajes-appclienteserver\tp-redes-server\servicio.cpp
-	"Servicio.h"
+	<conio.h>
+	<clocale>
+	<fstream>
+	<ctime>
+	<cstdlib>
+	<vector>
+	<stdio.h>
+	<windns.h>
 

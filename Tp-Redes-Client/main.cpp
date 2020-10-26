@@ -13,13 +13,9 @@
 
 using namespace std;
 
-string NAME_CLIENTE;
-string LINEA_A_GLOBAL;
-string LINEA_B_GLOBAL;
-string LINEA_C_GLOBAL;
-bool primerEntradaG=true;
-bool primerEntradaVRA=true;
-bool primerEntradaAS=true;
+string LINEA_A_GLOBAL = "";
+string LINEA_B_GLOBAL = "";
+string LINEA_C_GLOBAL = "";
 
 class Client{
 public:
@@ -46,7 +42,7 @@ public:
 
         send(server, buffer, sizeof(buffer), 0);
         memset(buffer, 0, sizeof(buffer));
-        cout << "Mensaje enviado!" << endl;
+        //cout << "Mensaje enviado!" << endl;
     }
 
      string Recibir()
@@ -75,14 +71,14 @@ vector <string> recibirButacas_Y_separar(string butacas);
 bool verificarPosicion(int pos_I, int pos_J);
 bool verificarCoordenadas(int numero,char letra);
 int asignarValorPosI_A_Letra(char letra);
-void determinarAccion_A_Seguir(Client *&Cliente,bool posicionDisponible,int pos_I,int pos_J);
+void determinarAccion_A_Seguir(Client *&Cliente,bool posicionDisponible,int pos_I,int pos_J, bool reservar);
 
-string elegirButaca(Client *&Cliente);
+string elegirButaca(Client *&Cliente, bool reservar);
 void menuCliente(Client *&Cliente);
 void pedirRegistroDeActividades(Client *&Cliente);
 bool verificarIpYPuerto(std::string ipReal, int puertoReal);
 void gestionarPasajes(Client *&Cliente);
-void reservarAsiento(Client *&Cliente);
+void reservarAsiento(Client *&Cliente, bool reservar);
 string login();
 vector<string> separarPalabras(string str);
 bool autenticacion(Client *&Cliente);
@@ -133,14 +129,12 @@ bool verificarFecha(int a , int m , int d){
     //Si ha pasado todas estas condiciones, la fecha es valida
     return true;
 }
-
 /***********************************************************************/
 
 
 /***********************************************************************/
 void altaServicio(Client*& cliente){
-    int dia , mes , anio;
-    string fechaCompleta = "";
+    int dia,mes,anio;
     bool fechaValida = false;
     while(!fechaValida){
         cout<<"Ingrese el dia: ";
@@ -149,45 +143,49 @@ void altaServicio(Client*& cliente){
         cin>>mes;
         cout<<"Ingrese el año: ";
         cin>>anio;
-        fechaCompleta = std::to_string(dia) + "-" + std::to_string(mes) + "-" + std::to_string(anio);
 
-        if(verificarFecha(anio , mes , dia)){
+        if(verificarFecha(anio,mes,dia)){
             fechaValida = true;
         }
         else{
-            cout<<"\nLa fecha: "<<fechaCompleta<<" no es valida"<<endl;
+            cout<<"La fecha ingresada no es valida"<<endl;
             system("pause"); system("cls");
         }
     }
-    cliente->Enviar(fechaCompleta);
-
-    bool origenValido = false;
-    bool turnoValido = false;
-    string origen , destino , turno;
-    do{
-        cin.ignore();//limpio buffer
+    string origen,turno;
+    bool datosValidos =false;
+    while(!datosValidos){
+        cin.ignore(); //limpio el buffer
         cout<<"Ingrese el origen(Mar del Plata, Buenos Aires): ";
-        getline(cin,origen);
-        cout<<"Ingrese el turno(Maniana, Tarde, Noche): ";
-        getline(cin,turno);
+        getline(cin , origen);
+        cout<<"Ingrese el turno(Maniana , Tarde, Noche): ";
+        getline(cin , turno);
 
-        if(origen.compare("Mar del Plata")== 0 || origen.compare("Buenos Aires")== 0){origenValido = true;}
-        else{cout<<"\nOrigen erroneo"<<endl; system("pause");}
-        if(turno.compare("Maniana")==0 || turno.compare("Tarde")==0 ||  turno.compare("Noche")==0){turnoValido = true;}
-        else{cout<<"\nTurno erroneo"<<endl; system("pause");}
-    }while( !origenValido  || !turnoValido);
+        if( (origen=="Mar del Plata" || origen=="Buenos Aires")
+                                && (turno=="Maniana" || turno=="Tarde" || turno=="Noche") ){
+                            datosValidos=true;
+        }
+        else{cout<<"Datos erroneos"<<endl; system("pause"); system("cls");}
+    }
+
+    //Se le envian los datos al server
+    cliente->Enviar(std::to_string(dia)+"-"+std::to_string(mes)+"-"+std::to_string(anio)) ;
+    cliente->Enviar(origen);
+    cliente->Enviar(turno);
+
+    //El cliente recibe el resultado de la operacion
     system("cls");
-    cliente->Enviar(origen);;
-    cliente->Enviar(turno);;
+    cout<<"===================================================================================="<<endl;
+    cout<<"\t"<<cliente->Recibir()<<endl;
+    cout<<"===================================================================================="<<endl;
 
-    cout<<cliente->Recibir(); //el servidor le infora si la operacion se puedo realizar o no
 }
 /***********************************************************************/
 
 
 /***********************************************************************/
 void mostrarButacasCliente(){
-    string lineaA; string lineaB; string lineaC;
+    string lineaA = ""; string lineaB= ""; string lineaC = "";
     for(int i=0;i<20;i++){
       lineaA=lineaA+LINEA_A_GLOBAL[i]+" ";
       lineaB=lineaB+LINEA_B_GLOBAL[i]+" ";
@@ -207,23 +205,25 @@ void mostrarButacasCliente(){
 
 /***********************************************************************/
 vector <string> recibirButacas_Y_separar(string butacas){
-   string lineaA;
-   string lineaB;
-   string lineaC;
+   string lineaA = "";
+   string lineaB = "";
+   string lineaC = "";
+
    vector <string> vectorLineas;
    //--------------------------------------------------
    for(int i=0;i<60;i++){
         if(i<20){
-          lineaA=lineaA+butacas[i];
+          lineaA+=butacas[i];
         }else if(i>=20&&i<40){
-          lineaB=lineaB+butacas[i];
+          lineaB+=butacas[i];
         }else{
-          lineaC=lineaC+butacas[i];
+          lineaC+=butacas[i];
         }
    }//for i
    vectorLineas.push_back(lineaA);
    vectorLineas.push_back(lineaB);
    vectorLineas.push_back(lineaC);
+
    //--------------------------------------------------
   return vectorLineas;
 }
@@ -272,91 +272,106 @@ int asignarValorPosI_A_Letra(char letra){
 
 
 /***********************************************************************/
-void determinarAccion_A_Seguir(Client *&Cliente,bool posicionDisponible, int pos_I, int pos_J){
+void determinarAccion_A_Seguir(Client *&Cliente,bool posicionDisponible, int pos_I, int pos_J, bool reservar){
+
+    char estadoButaca = 'X';
+    string peticionButaca = "reservada";
+    string errorButaca = "reservada";
+
+    if(!reservar){
+      estadoButaca = 'O';
+      peticionButaca = "liberada";
+      errorButaca = "libre";
+    }
 
     if (posicionDisponible){
           if(pos_I==0){
-            LINEA_A_GLOBAL[pos_J] = 'X';
+            LINEA_A_GLOBAL[pos_J] = estadoButaca;
           }else if (pos_I==1){
-            LINEA_B_GLOBAL[pos_J] = 'X';
+            LINEA_B_GLOBAL[pos_J] = estadoButaca;
           }else{
-            LINEA_C_GLOBAL[pos_J] = 'X';
+            LINEA_C_GLOBAL[pos_J] = estadoButaca;
           }
           system("cls");
+          Cliente->Enviar("true");
           mostrarButacasCliente();
           cout<<"************************************"<<endl;
-          cout<<"** Butaca reservada exitosamente. **"<<endl;
-          cout<<"************************************"<<endl<<endl<<endl;
+          cout<<"** Butaca "<<peticionButaca<<" exitosamente. **"<<endl;
+          cout<<"************************************"<<endl<<endl<<"Precione cualquier tecla para continuar..."<<endl;
     }
     else{
-        cout<<"*** ERROR: Butaca ya reservada."<<endl<<endl;
-        Cliente->Enviar("false");//es necesario para que no salga del while SALIR del SERVER
-        elegirButaca(Cliente);
+        cout<<"*** ERROR: Butaca ya "<<errorButaca<<". ***"<<endl<<endl;
+        Cliente->Enviar("false");
+        elegirButaca(Cliente,reservar);
     }
 }
 /***********************************************************************/
 
 
 /***********************************************************************/
-string elegirButaca(Client *&Cliente){
+string elegirButaca(Client *&Cliente, bool reservar){
 
     int pos_I = -1;
     int numero = -1;
-    char letra = ' ';
-    bool noContinuar = false;
-    std::string respuesta;
-    std::string respuestaAux;
-    bool entradaCorrecta = false;
-    bool errorTipeo=false;
-    while(!noContinuar){//Mientras noContinuar sea fals
+    char letra = '\0'; //Vacio
+    bool salir = false;
+    string respuesta = "";
+    string respuestaAux = "";
 
-        cout<<"--- Elija la butaca a reservar (Ejemplo: A12). Para volver al menu anterior ingrese un 0.---"<<endl;
+    string tipoPeticion = "reservar";
+    if(!reservar) tipoPeticion = "liberar";
+
+
+    while(!salir){//Mientras salir sea false
+
+        cout<<"--- Elija la butaca a "<<tipoPeticion<<" (Ejemplo: A12). Para volver al menu anterior ingrese un 0.---"<<endl;
         cin>>respuesta;
         respuestaAux = respuesta;
+
         if(respuesta=="0"){
-            noContinuar = true;
-        }//Cierra el else if respuesta == "0"
+            salir = true;
+        }
         else{
-            letra = respuesta[0];//1) guarda "B" en un supesto ingreso de "B7"
-            respuesta.erase(0,1);//2)borro la que ya guardé, en un supesto ingreso de "B7" borra "B"
-            numero=atoi(const_cast< char *>(respuesta.c_str()));//3) si no convierte da "0" (por ejemplo: si encuetra "A4" no convierte, si hay solo numero/s convierte), pero si encuentra "12a" (número/s y letra/s) tambien convierte el/los números y descarta letra/s
-            if(respuesta==to_string(numero)){//me aseguro de que despues del número/s no se hallan ingresado mas letras. Supuesto: se ingre sa "B12hj" o "B2gh", B se guarda en
-               entradaCorrecta=true;             // el paso 1, numero en el paso 2 y en if se rechaza por la/las letras que siguen al número
-            }else{
-              errorTipeo=true;
-              cout<<"*********** ERROR: ha ingresado datos incorrectos, vuelva a intentarlo!!!"<<endl<<"Pulse cualquier tecla para continuar."<<endl;
-              _getch();
-              system("cls");
-              mostrarButacasCliente();
-            }//Fin if respuesta==to_string(numero)
+            letra = respuesta[0];//1) guarda "B" en un supuesto ingreso de "B7"
+            respuesta.erase(0,1);//2)borro la que ya guardé, en un supuesto ingreso de "B7" borra "B"
+            numero = atoi(const_cast< char *>(respuesta.c_str())); // si no convierte da "0" (por ejemplo: si encuetra "A4" no convierte, si hay solo numero/s convierte), pero si encuentra "12a" (número/s y letra/s) tambien convierte el/los números y descarta letra/s
 
-        }//Cierra el else del if respuesta == "0"
-
-        if(noContinuar==false && entradaCorrecta==true){
-            if(verificarCoordenadas(numero, letra)){
-                pos_I = asignarValorPosI_A_Letra(letra);
-                noContinuar = true;
+            if(respuesta==to_string(numero)){//me aseguro de que despues del número/s no se hallan ingresado mas letras. Supuesto: se ingre sa "B12hj" o "B2gh".
+                if(verificarCoordenadas(numero, letra)){
+                    pos_I = asignarValorPosI_A_Letra(letra);
+                    salir = true;
+                }
             }
-            else if(errorTipeo==false){
-                cout<<"ERROR: Ingreso una ubicacion no valida."<<endl;
+            else{
+                cout<<"***ERROR: Ubicacion no valida.***"<<endl<<"Pulse cualquier tecla para continuar."<<endl;
                 _getch();
                 system("cls");
                 mostrarButacasCliente();
-            }//Cierra el if verificarCoordenadas
-        }//Cierra el if !noContinuar
+            }
 
+        }
     }//cierra el while
 
-    if(respuesta!="0"){
-        Cliente->Enviar(respuestaAux);
+    Cliente->Enviar(respuestaAux);
+
+    if(respuestaAux!="0"){
+
         bool posicionDisponible = false;
-        if(Cliente->Recibir()=="true"){
-                posicionDisponible = true;
+
+        string posicion = Cliente->Recibir();
+//        cout<<posicion<<endl;
+        if(posicion=="Disponible"){
+            posicionDisponible = true;
         }
         numero=numero-1; //es porque el vector arranca en pos 0
-        determinarAccion_A_Seguir(Cliente,posicionDisponible, pos_I, numero);
+        determinarAccion_A_Seguir(Cliente, posicionDisponible, pos_I, numero, reservar);
     }
- return respuestaAux;
+    else{
+        cout<<"Precione cualquier tecla para continuar...";
+        Cliente->Enviar("true");
+    }
+
+    return respuestaAux;
 }
 /***********************************************************************/
 
@@ -387,17 +402,15 @@ void menuCliente(Client *&Cliente){
 
         switch(servicioElegido){
             case 1: system("CLS");
-                    Cliente->Enviar("AltaServicio"); Cliente->Recibir();
+                    Cliente->Enviar("AltaServicio");
                     altaServicio(Cliente);
                     _getch();
                     system("CLS");
                     break;
             case 2: system("CLS");
-                   Cliente->Enviar("Gestionar"); Cliente->Recibir();
-                   gestionarPasajes(Cliente);
+                    gestionarPasajes(Cliente);
                     break;
             case 3: system("CLS");
-                    Cliente->Enviar("Registro"); Cliente->Recibir();
                     pedirRegistroDeActividades(Cliente);
                     _getch();
                     system("CLS");
@@ -409,8 +422,7 @@ void menuCliente(Client *&Cliente){
                     system("CLS");
                     break;
             default: system("CLS");
-                    cout<<"Ingreso una opcion incorrecta."<<
-                    endl;
+                    cout<<"Ingreso una opcion incorrecta."<<endl;
                     _getch();
                     system("CLS");
                     break;
@@ -424,9 +436,10 @@ void menuCliente(Client *&Cliente){
 void pedirRegistroDeActividades(Client *&Cliente){
 
     Cliente->Enviar("Registro");
-    string numeroDeSentencias = Cliente->Recibir();
 
-    for(int i = 0 ; i < stoi(numeroDeSentencias); i++){
+    string numero = Cliente->Recibir();
+
+    for(int i = 0 ; i < stoi(numero); i++){
         string respuesta = "";
         respuesta = Cliente->Recibir();
         cout<<respuesta<<endl;
@@ -473,33 +486,30 @@ void gestionarPasajes(Client *&Cliente){
         cout<<"3-Elegir otro servicio"<<endl;
         cout<<"4-Volver al menu anterior"<<endl;
         cin>>opcionElegida;
-
+        Cliente->Enviar("Gestionar");
         switch(opcionElegida){
             case 1: system("CLS");
-                    if(primerEntradaG!=true){Cliente->Enviar("false");}//es PARA EL WHILE salir que está en el server
-                    reservarAsiento(Cliente);
-                    system("pause");
-                    system("CLS");
-                    break;
-            case 2: system("CLS");
-                   if(primerEntradaG!=true){Cliente->Enviar("false");}//es PARA EL WHILE salir que está en el server
-                    //Liberar asiento
-                    system("pause");
-                    system("CLS");
-                    break;
-            case 3: system("CLS");
-                   if(primerEntradaG!=true){Cliente->Enviar("false");}//es PARA EL WHILE salir que está en el server
-                    //Elegir otro servicio
-                    system("pause");
-                    system("CLS");
-                    break;
-            case 4: system("CLS");
-                    break;
-            default: system("CLS");
-                    cout<<"Ingreso una opcion incorrecta."<<endl;
+                    Cliente->Enviar("ReservarAsiento");
+                    reservarAsiento(Cliente, true);
                     _getch();
                     system("CLS");
                     break;
+            case 2: system("CLS");
+                    Cliente->Enviar("LiberarAsiento");
+                    reservarAsiento(Cliente, false);
+                    system("CLS");
+                    break;
+            case 3: system("CLS");
+                    Cliente->Enviar("false");
+                    //Elegir otro servicio
+                    system("CLS");
+                    break;
+            case 4: Cliente->Enviar("false");system("CLS");
+                    break;
+            default: Cliente->Enviar("false");
+                    cout<<"Ingreso una opcion incorrecta."<<endl<<endl<<"Pulse cualqier tecla para continuar..."<<endl;
+                     _getch();  system("CLS");  gestionarPasajes(Cliente);
+                     break;
         }
     }
 }
@@ -507,15 +517,15 @@ void gestionarPasajes(Client *&Cliente){
 
 
 /***********************************************************************/
-void reservarAsiento(Client *&Cliente){
-    if(primerEntradaG==true){
-       Cliente->Enviar("--->>> Cliete "+NAME_CLIENTE+" conectado<<<---");
-       vector <string> vectorButacas = recibirButacas_Y_separar(Cliente->Recibir());
-       LINEA_A_GLOBAL=vectorButacas[0]; LINEA_B_GLOBAL=vectorButacas[1];  LINEA_C_GLOBAL=vectorButacas[2];
-      primerEntradaG=false;
-    }
+void reservarAsiento(Client *&Cliente, bool reservar){
+
+    //Cliente->Enviar("--->>> Cliente "+NAME_CLIENTE+" conectado<<<---");
+    vector <string> vectorButacas = recibirButacas_Y_separar(Cliente->Recibir());
+
+    LINEA_A_GLOBAL=vectorButacas[0]; LINEA_B_GLOBAL=vectorButacas[1];  LINEA_C_GLOBAL=vectorButacas[2];
+
     mostrarButacasCliente();
-    elegirButaca(Cliente);
+    elegirButaca(Cliente, reservar);
 
 }
 /***********************************************************************/
@@ -536,8 +546,6 @@ string login()
         cout << "Ingrese su nombre de usuario: ";
 
         cin >> usernameTemp;
-
-        NAME_CLIENTE = usernameTemp;
 
         cout << endl << "Ingrese su contraseña: ";
 
