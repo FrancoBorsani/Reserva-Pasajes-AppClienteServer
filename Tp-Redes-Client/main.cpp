@@ -8,7 +8,7 @@
 
 #define TAMANIO_I  5
 #define TAMANIO_J  21
-#define GLOBAL_IP  "192.168.1.33"
+#define GLOBAL_IP  "192.168.88.9"
 #define PUERTO_GLOBAL 4747
 
 using namespace std;
@@ -61,7 +61,6 @@ public:
        cout << "Socket cerrado." << endl << endl;
     }
 };
-
 
 void altaServicio(Client*& cliente);
 bool verificarFecha(int a , int m , int d);
@@ -298,6 +297,7 @@ void determinarAccion_A_Seguir(Client *&Cliente,bool posicionDisponible, int pos
           cout<<"************************************"<<endl;
           cout<<"** Butaca "<<peticionButaca<<" exitosamente. **"<<endl;
           cout<<"************************************"<<endl<<endl<<"Precione cualquier tecla para continuar..."<<endl;
+          if(estadoButaca=='O'){_getch();}
     }
     else{
         cout<<"*** ERROR: Butaca ya "<<errorButaca<<". ***"<<endl<<endl;
