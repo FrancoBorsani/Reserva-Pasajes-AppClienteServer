@@ -20,6 +20,9 @@ using namespace std;
 
 vector<string> archivos_servicios;
 
+void escribirABin(string nombreArchivo, string datos);
+void verificarArchivoInfoServicios();
+
 /**********************************************************************/
 void cargarServiciosEnVector(){
     if(verificarSiExisteArchivo("Historial_Registros_Creados")){
@@ -58,10 +61,30 @@ void registrarServicio_en_archivoHistorial(string nombreArchivo){
         exit(1);
     }
     archivoHistorialServicios<<nombreArchivo<<endl;///guardo el nombre del servicio creado, con el fin de tener un respaldo de los servicios  para poder identificarlos a la hora de cargarlos en el vector
+    if(verificarSiExisteArchivo("infoServicios")){  //Escribo información del servicio en binario
+        escribirABin("infoServicios", nombreArchivo);
+    }else{
+        verificarArchivoInfoServicios();
+        escribirABin("infoServicios", nombreArchivo);
+    }
     archivoHistorialServicios.close();
 }
 /***********************************************************************/
 
+
+
+void escribirABin(string nombreArchivo, string datos){
+  //   char datosAEscribir [] = "" + datos;   //Debe ser char ya que no se puede directamente con strings
+    // ESCRITURA EN BINARIO
+
+    char datosAEscribir [datos.size()];
+    strcpy(datosAEscribir, datos.c_str());
+
+    string archivo = nombreArchivo + ".bin";
+    ofstream archivoInfoServicios (archivo, std::ios::ate | std::ios::in | ios :: binary);
+    archivoInfoServicios << datosAEscribir<<"\r\n";
+    archivoInfoServicios.close();
+}
 
 /***********************************************************************/
 void crearServicio(string userName , Server*& servidor){
@@ -119,8 +142,18 @@ void verificarArchivoServerLog(){
 
   serverLog.close();
 }
+/***********************************************************************/
 
+void verificarArchivoInfoServicios(){
+    string nombreArchivo = "infoServicios.bin";
+  std::ifstream serverLog( nombreArchivo );
+  if(serverLog.fail()){
+    //EL ARCHIVO NO EXISTE
+    std::ofstream serverLogCrear( nombreArchivo );
+  }
 
+  serverLog.close();
+}
 
 /***********************************************************************/
 void mostrarRegistro(string userName, Server *&Servidor){

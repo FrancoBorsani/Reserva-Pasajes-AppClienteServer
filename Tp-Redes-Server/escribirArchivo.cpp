@@ -102,6 +102,27 @@ bool verificarSiExisteArchivo(string nombreArchivo){
 }
 /***********************************************************************/
 
+/***********************************************************************/
+bool verificarSiExisteArchivoBin(string nombreArchivo){
+    nombreArchivo= nombreArchivo+".bin";
+    bool yaExisteArchivo = true;
+    ifstream archivo;//ifstream(tipo de variable para abrir un archivo)...  archivo (nombre de la variable)
+    archivo.open(nombreArchivo.c_str(),ios::in);// con archivo.open le digo que quiero abrir un archivo y con ios::in le digo que abro para leerlo
+    if(archivo.fail())//si hay un error y no se abre el arvhivo
+    {
+        yaExisteArchivo = false;
+    }
+    archivo.close();//cerramos archivo
+ return yaExisteArchivo;
+}
+/***********************************************************************/
+
+
+
+
+
+
+
 
 /***********************************************************************/
 void guardarEnArchivoYaFormateada(string lineaAGuardar, string nombreArchivo){
