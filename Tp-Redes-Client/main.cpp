@@ -3,12 +3,13 @@
 #include <conio.h>
 #include <string>
 #include <clocale>//es para usar ñ y acento
+#include <ctime>//para comparar la fecha con la fecha actual
 #include <cstdlib>
 #include <vector>
 
 #define TAMANIO_I  5
 #define TAMANIO_J  21
-#define GLOBAL_IP  "192.168.88.9"
+#define GLOBAL_IP  "192.168.1.33"
 #define PUERTO_GLOBAL 4747
 
 using namespace std;
@@ -63,6 +64,7 @@ public:
 };
 
 void altaServicio(Client*& cliente);
+bool compararFecha_con_fechaActual(int a ,int m , int d);
 bool verificarFecha(int a , int m , int d);
 
 void mostrarButacasCliente();
@@ -107,7 +109,32 @@ int main()
 /***********************************************************************/
 
 
+bool compararFecha_con_fechaActual(int a ,int m , int d){
+    //comprobar que la fecha no sea menor a la actual
+    bool valido;
+    time_t t = time(NULL);
+	tm* timePtr = localtime(&t);
+    int diaActual, mesActual , anioActual;
+    anioActual=((int)timePtr->tm_year+1900);
+    mesActual=((int)timePtr->tm_mon+1);
+    diaActual=((int)timePtr->tm_mday);
+
+    if( a > anioActual){valido=true;}
+    else if( a == anioActual){
+        if(m > mesActual){valido = true;}
+        else if(m == mesActual){
+            if(d > diaActual){valido = true;}
+            else if(d == diaActual){valido=true;}
+            else{valido = false;}
+        }
+        else{valido = false;}
+    }
+    else{valido=false;}
+
+    return valido;
+}
 /***********************************************************************/
+
 bool verificarFecha(int a , int m , int d){
     //Array que almacenara los dias que tiene cada mes (si el ano es bisiesto, sumaremos +1 al febrero)
     int dias_mes[] = {31, 28, 31, 30,31, 30, 31, 31, 30, 31, 30, 31};
@@ -120,13 +147,14 @@ bool verificarFecha(int a , int m , int d){
     if(m < 1 or m > 12)
         return false;
 
+    int auxM = m - 1;
     //Comprobar que el dia sea valido
-    m = m-1;
-    if(d <= 0 or d > dias_mes[m])
+    if(d <= 0 or d > dias_mes[auxM])
         return false;
 
-    //Si ha pasado todas estas condiciones, la fecha es valida
-    return true;
+    //compruebo si la fecha que me paso el cliente es mayor o igual a la fecha actual
+    if(compararFecha_con_fechaActual(a, m , d)){return true;}
+    else return false;
 }
 /***********************************************************************/
 

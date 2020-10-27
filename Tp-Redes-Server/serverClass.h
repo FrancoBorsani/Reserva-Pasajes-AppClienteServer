@@ -99,7 +99,7 @@ public:
 
 
 void crearServicio(string userName , Server*& servidor);
-void registrarServicio_en_archivoRespaldoServicios(string nombreArchivo);//para poder cargar los servicios en el vector
+void registrarServicio_en_archivoHistorial(string nombreArchivo);//para poder cargar los servicios en el vector
 void cargarServiciosEnVector();
 
 

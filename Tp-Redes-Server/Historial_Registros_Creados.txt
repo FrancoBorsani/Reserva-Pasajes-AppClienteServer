@@ -1,0 +1,9 @@
+1-11-2020;Mar_Del_Plata;Noche
+26-10-2020;Mar_Del_Plata;Tarde
+27-10-2020;Mar_Del_Plata;Maniana
+30-11-2020;Buenos_Aires;Tarde
+27-10-2020;Buenos_Aires;Tarde
+27-10-2020;Mar_Del_Plata;Noche
+27-10-2020;Mar_Del_Plata;Tarde
+27-10-2020;Buenos_Aires;Noche
+27-10-2020;Buenos_Aires;Maniana

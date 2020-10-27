@@ -25,3 +25,13 @@
 	<string>
 	<clocale>
 
+1603766182 source:c:\users\tomas\documents\github\reserva-pasajes-appclienteserver\tp-redes-client\main.cpp
+	<iostream>
+	<winsock2.h>
+	<conio.h>
+	<string>
+	<clocale>
+	<ctime>
+	<cstdlib>
+	<vector>
+
