@@ -514,3 +514,106 @@
 	<stdio.h>
 	<windns.h>
 
+1603884021 source:d:\licenciatura en sistemas\3∫ a—o\2∫ cuatrimestre\redes y comunicaciones\tp-cuatrimestral-redes\tda\v3\reserva-pasajes-appclienteserver\tp-redes-server\main.cpp
+	"serverClass.h"
+	"leerArchivo.h"
+	"escribirArchivo.h"
+	<iostream>
+	<winsock2.h>
+	<string>
+	<conio.h>
+	<clocale>
+	<fstream>
+	<ctime>
+	<cstdlib>
+	<vector>
+	<stdio.h>
+	<windns.h>
+
+1603884021 d:\licenciatura en sistemas\3∫ a—o\2∫ cuatrimestre\redes y comunicaciones\tp-cuatrimestral-redes\tda\v3\reserva-pasajes-appclienteserver\tp-redes-server\serverclass.h
+	<iostream>
+	<winsock2.h>
+	<string>
+	<conio.h>
+	<clocale>
+	<fstream>
+	<ctime>
+	<cstdlib>
+	<vector>
+	<stdio.h>
+	<windns.h>
+
+1603867950 d:\licenciatura en sistemas\3∫ a—o\2∫ cuatrimestre\redes y comunicaciones\tp-cuatrimestral-redes\tda\v3\reserva-pasajes-appclienteserver\tp-redes-server\leerarchivo.h
+	<iostream>
+	<winsock2.h>
+	<string>
+	<conio.h>
+	<clocale>
+	<fstream>
+	<ctime>
+	<cstdlib>
+	<vector>
+	<stdio.h>
+	<windns.h>
+
+1603882746 d:\licenciatura en sistemas\3∫ a—o\2∫ cuatrimestre\redes y comunicaciones\tp-cuatrimestral-redes\tda\v3\reserva-pasajes-appclienteserver\tp-redes-server\escribirarchivo.h
+	<iostream>
+	<winsock2.h>
+	<string>
+	<conio.h>
+	<clocale>
+	<fstream>
+	<ctime>
+	<cstdlib>
+	<vector>
+	<stdio.h>
+	<windns.h>
+
+1603886455 source:d:\licenciatura en sistemas\3∫ a—o\2∫ cuatrimestre\redes y comunicaciones\tp-cuatrimestral-redes\tda\v3\reserva-pasajes-appclienteserver\tp-redes-server\leerarchivo.cpp
+	"serverClass.h"
+	"leerArchivo.h"
+	"escribirArchivo.h"
+	<iostream>
+	<winsock2.h>
+	<string>
+	<conio.h>
+	<clocale>
+	<fstream>
+	<ctime>
+	<cstdlib>
+	<vector>
+	<stdio.h>
+	<windns.h>
+
+1603886355 source:d:\licenciatura en sistemas\3∫ a—o\2∫ cuatrimestre\redes y comunicaciones\tp-cuatrimestral-redes\tda\v3\reserva-pasajes-appclienteserver\tp-redes-server\escribirarchivo.cpp
+	"serverClass.h"
+	"leerArchivo.h"
+	"escribirArchivo.h"
+	<iostream>
+	<winsock2.h>
+	<string>
+	<conio.h>
+	<clocale>
+	<fstream>
+	<ctime>
+	<cstdlib>
+	<vector>
+	<stdio.h>
+	<windns.h>
+
+1603886355 source:d:\licenciatura en sistemas\3∫ a—o\2∫ cuatrimestre\redes y comunicaciones\tp-cuatrimestral-redes\tda\v3\reserva-pasajes-appclienteserver\tp-redes-server\serverclass.cpp
+	"serverClass.h"
+	"leerArchivo.h"
+	"escribirArchivo.h"
+	<iostream>
+	<winsock2.h>
+	<string>
+	<conio.h>
+	<clocale>
+	<fstream>
+	<ctime>
+	<cstdlib>
+	<vector>
+	<stdio.h>
+	<windns.h>
+

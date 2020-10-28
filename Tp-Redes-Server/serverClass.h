@@ -79,7 +79,7 @@ public:
 
     void Enviar(string respuesta)
     {
-        for(int i=0;i<respuesta.length();i++){
+        for(int i=0;i<(int)respuesta.length();i++){
             this->buffer[i]= respuesta[i];
         }
 
@@ -99,9 +99,7 @@ public:
 
 
 void crearServicio(string userName , Server*& servidor);
-void registrarServicio_en_archivoHistorial(string nombreArchivo);//para poder cargar los servicios en el vector
-void cargarServiciosEnVector();
-
+void renovacionDeMicrosDisponibles();
 
 void mostrarRegistro(string userName, Server *&Servidor);
 string checkUser(Server *&Servidor);

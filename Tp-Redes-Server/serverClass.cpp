@@ -20,71 +20,43 @@ using namespace std;
 
 vector<string> archivos_servicios;
 
-void escribirABin(string nombreArchivo, string datos);
-void verificarArchivoInfoServicios();
 
 /**********************************************************************/
-void cargarServiciosEnVector(){
-    if(verificarSiExisteArchivo("Historial_Registros_Creados")){
+void renovacionDeMicrosDisponibles(){
+    vector <string> vecStringAux;
+    if(verificarSiExisteArchivo("Archivos_activos")){
             string servicio = "";
             ifstream archivoServiciosRespaldo;
-            archivoServiciosRespaldo.open("Historial_Registros_Creados.txt" , ios::in);
-
-            if( archivoServiciosRespaldo.fail())
-            {
-                cout << "Error, no existe el archivo: Historial_Registros_Creados.txt"<< endl;
-                exit(1);
-            }
+            archivoServiciosRespaldo.open("Archivos_activos.txt" ,ios::in);
             while(!archivoServiciosRespaldo.eof()){ ///el archivo  puede contener hasta 6 lineas , cada linea hace refencia a un servicio
-
                 getline(archivoServiciosRespaldo , servicio);
                 if(servicio != ""){
-                    archivos_servicios.push_back(servicio);//guardo el  servicio en el vector
+                   if(siFechaActualEsMayor(servicio)==false){//si los servicios tienen fechas que son igual o mayor a la fecha actual
+                      archivos_servicios.push_back(servicio);//guardo el  servicio en el vector GLOBAL
+                      vecStringAux.push_back(servicio);//guardo el  servicio en el vector que uso en el if (vecStringAux.size()>0)
+                   }else{//si la fecha actual es mayor
+                     registrarViajesEnArchivo(servicio);//los paso a un archivo general (servicio realizado)
+                     servicio=servicio+".txt";
+                     remove(servicio.c_str());//borro el archivo individual
+                   }
                 }
 
                 //limpiamos la cadena para la prox iteracion
                 servicio.clear();
             }
             archivoServiciosRespaldo.close();
+
+             if(vecStringAux.size()>0){//si quedó para dejar en el archivo "Archivos_activos"
+                   actualizarCambiosEnArchivo(vecStringAux,"Archivos_activos");//saco lo que pasé al archivo definitivo
+            }else if(vecStringAux.size()==0){ remove("Archivos_activos.txt"); }//Si no quedó ni un registro con fecha igual o superior a la actual BORRO EL ARCHIVO y se generará cuado sea necesario
+
+    }else{
+       cout << "Error, no existe el archivo: Archivos_activos.txt"<< endl;
+       exit(1);
     }
 }
 /************************************************************************/
 
-
-/***********************************************************************/
-void registrarServicio_en_archivoHistorial(string nombreArchivo){
-    ofstream archivoHistorialServicios;
-    archivoHistorialServicios.open("Historial_Registros_Creados.txt" , ios::out | ios::app);
-
-    if(!archivoHistorialServicios.is_open()){
-        cout<<"Error, no se pudo abrir el archivo: Historial_Registros_Creados.txt"<<endl;
-        exit(1);
-    }
-    archivoHistorialServicios<<nombreArchivo<<endl;///guardo el nombre del servicio creado, con el fin de tener un respaldo de los servicios  para poder identificarlos a la hora de cargarlos en el vector
-    if(verificarSiExisteArchivo("infoServicios")){  //Escribo información del servicio en binario
-        escribirABin("infoServicios", nombreArchivo);
-    }else{
-        verificarArchivoInfoServicios();
-        escribirABin("infoServicios", nombreArchivo);
-    }
-    archivoHistorialServicios.close();
-}
-/***********************************************************************/
-
-
-
-void escribirABin(string nombreArchivo, string datos){
-  //   char datosAEscribir [] = "" + datos;   //Debe ser char ya que no se puede directamente con strings
-    // ESCRITURA EN BINARIO
-
-    char datosAEscribir [datos.size()];
-    strcpy(datosAEscribir, datos.c_str());
-
-    string archivo = nombreArchivo + ".bin";
-    ofstream archivoInfoServicios (archivo, std::ios::ate | std::ios::in | ios :: binary);
-    archivoInfoServicios << datosAEscribir<<"\r\n";
-    archivoInfoServicios.close();
-}
 
 /***********************************************************************/
 void crearServicio(string userName , Server*& servidor){
@@ -101,7 +73,7 @@ void crearServicio(string userName , Server*& servidor){
 
     if(crearArchivoButacas(nombreArchivo , tituloArchivo)){ ///si el servicio no existe crea su registro con sus correspondientes datos
         registrarUserLog("Crea el servicio con los datos ("+tituloArchivo+")" , userName);///registro la accion del usuario en su archivo
-        registrarServicio_en_archivoHistorial(nombreArchivo); ///registro el servicio creado en un archivo de respaldo
+        guardarEnArchivoSinFormato(nombreArchivo, "Archivos_activos"); ///registro el servicio creado en un archivo de respaldo
 
         msg = "El Servicio ("+tituloArchivo+") fue creado correctamente";
         archivos_servicios.push_back(nombreArchivo); ///agrego el nombre del archivo en el vector
@@ -144,16 +116,6 @@ void verificarArchivoServerLog(){
 }
 /***********************************************************************/
 
-void verificarArchivoInfoServicios(){
-    string nombreArchivo = "infoServicios.bin";
-  std::ifstream serverLog( nombreArchivo );
-  if(serverLog.fail()){
-    //EL ARCHIVO NO EXISTE
-    std::ofstream serverLogCrear( nombreArchivo );
-  }
-
-  serverLog.close();
-}
 
 /***********************************************************************/
 void mostrarRegistro(string userName, Server *&Servidor){
@@ -180,7 +142,6 @@ void mostrarRegistro(string userName, Server *&Servidor){
 string checkUser(Server *&Servidor)
 {
     string usuarioEncontrado = "false";
-    char delimitador = ';';
     vector<string> resultados;
     vector<string> userAndPass;
     int contador = 0;
@@ -276,7 +237,6 @@ string verificarSolicitud_Y_Responder(Server *&Servidor,vector <string> vectorBu
     char letra = '\0';
     int pos_J = -1;
     int pos_I = -1;
-    bool posicionDisponible = false;
 
     mensajeDelCli = Servidor->Recibir(); //Se recibe la butaca. EJ: B8
 

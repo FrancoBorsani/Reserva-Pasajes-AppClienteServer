@@ -20,12 +20,14 @@ using namespace std;
 
 
 
+
 int main()
 {
     setlocale(LC_CTYPE,"Spanish");// Spanish (de la librería locale.h) es para usar ñ y acento
+
     Server *Servidor = new Server();
 
-    cargarServiciosEnVector();//carga el nombre del archivo de los servicios creados en el vector por si el sistema se cerro de forma inesperada
+    renovacionDeMicrosDisponibles();//Pasa a un archivo general y borra archivos los individuales de los servicios de fechas anteriores a la actual y carga el nombre del archivo de los servicios ACTIVOS en el vector por si el sistema se cerro de forma inesperada
 
     string userName = checkUser(Servidor);
     string nombreArchivo = "Registro_de_butacas";

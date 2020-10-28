@@ -20,5 +20,10 @@ using namespace std;
 string traerSoloButacas(vector <string> vectorButacas);
 vector <string> leerArchivoGuardarEnVectorString(string nombreArchivo);
 vector<string> separarPalabrasPuntoYComa(string str);
+bool siFechaActualEsMayor(string str);
+int *traerFechaActual();
+int compararDosFechas(int fecha[3], int fecha2[3]);
+int *separarFechaPasarAInt(string input_fecha);
+
 
 #endif // LEERARCHIVO_H_INCLUDED
