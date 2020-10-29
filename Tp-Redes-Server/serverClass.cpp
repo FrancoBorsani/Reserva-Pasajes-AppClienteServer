@@ -278,6 +278,117 @@ string verificarSolicitud_Y_Responder(Server *&Servidor,vector <string> vectorBu
 }
 /***********************************************************************/
 
+vector<string> separarDatos(string datosAutobus){
+    vector<string> datos;
+
+    std::string delimiter = ";";
+    size_t pos = 0;
+    std::string token;
+
+    //Separo los datos
+    while ((pos = datosAutobus.find(delimiter)) != std::string::npos) {
+        token = datosAutobus.substr(0, pos);
+        datos.push_back(token);
+        datosAutobus.erase(0, pos + delimiter.length());
+    }
+
+    datos.push_back(datosAutobus);
+
+    return datos;
+}
+
+bool checkIfMultipleBus(string datosAutobus){
+
+    vector<string> datos = separarDatos(datosAutobus);
+
+    bool fechaVacia = false;
+    bool origenVacio = false;
+    bool turnoVacio = false;
+
+    if(datos[0]=="0-0-0"){
+        fechaVacia = true;
+    }
+
+    if(datos[1]=="0"){
+        origenVacio = true;
+    }
+
+    if(datos[2]=="0"){
+        turnoVacio = true;
+    }
+
+
+    return (fechaVacia || origenVacio ||turnoVacio);
+}
+
+/***********************************************************************/
+vector<string> leerArchivoGeneral(){
+    string archivoGeneral = "Archivos_activos.txt";
+
+    string texto = "";
+
+    fstream archivo;
+
+    archivo.open(archivoGeneral);
+
+
+    vector<string> archivosActivos;
+
+    if(archivo.is_open()){
+        while(!archivo.eof()){
+           getline(archivo,texto);//Tomo lo que va encontrando en "archivo" y lo copio en "texto"
+           archivosActivos.push_back(texto);//guardo en una posición del vector la linea obtenida del archivo
+        }
+        archivo.close();
+    }
+
+    return archivosActivos;
+}
+
+
+vector<string> elegirAutobus(string datosAutobus){
+
+    vector<string> datos = separarDatos(datosAutobus);
+
+    vector<string> archivosActivos = leerArchivoGeneral();
+
+    vector<string> archivosADevolver;
+
+    for(int i = 0 ; i < archivosActivos.size(); i++){
+        vector<string> currentBusData = separarDatos(archivosActivos[i]);
+
+        if( (datos[0]=="0-0-0" || currentBusData[0]==datos[0]) &&
+            (datos[1]=="0" || currentBusData[1]==datos[1]) &&
+            (datos[2]=="0" || currentBusData[2]==datos[2])) {
+
+            archivosADevolver.push_back(archivosActivos[i]);
+        }
+    }
+
+
+    return archivosADevolver;
+}
+/***********************************************************************/
+string changeNameIfMultipleBus(string nombreArchivoAutobus, Server *&Servidor){
+
+    if(checkIfMultipleBus(nombreArchivoAutobus)){
+
+        vector<string> autobusesDisponibles = elegirAutobus(nombreArchivoAutobus);
+        Servidor->Enviar( std::to_string(autobusesDisponibles.size()) );
+        for(int i = 0 ; i < autobusesDisponibles.size(); i++){
+            Servidor->Enviar(autobusesDisponibles[i]);
+        }
+        string autobusElegido = Servidor->Recibir();
+
+        vector<string> archivosActivos = leerArchivoGeneral();
+
+        nombreArchivoAutobus = autobusElegido;
+    }
+
+
+    return nombreArchivoAutobus;
+}
+
 /***********************************************************************/
 void manejarPeticion(string userName, Server *&Servidor){
     string peticion="";
@@ -302,6 +413,8 @@ void manejarPeticion(string userName, Server *&Servidor){
 
             string nombreArchivoAutobus = Servidor->Recibir();
 
+            nombreArchivoAutobus = changeNameIfMultipleBus(nombreArchivoAutobus, Servidor);
+
             vector <string> butacasAutobus = leerArchivoGuardarEnVectorString(nombreArchivoAutobus);
 
             if(!butacasAutobus.empty()){
@@ -321,6 +434,9 @@ void manejarPeticion(string userName, Server *&Servidor){
                 else if(opcion=="ElegirOtroServicio"){
 
                     string nombreArchivoAutobusAux = Servidor->Recibir();
+
+                    nombreArchivoAutobusAux = changeNameIfMultipleBus(nombreArchivoAutobusAux, Servidor);
+
                     vector <string> butacasAutobusAux = leerArchivoGuardarEnVectorString(nombreArchivoAutobusAux);
 
                     if(!butacasAutobusAux.empty()){
