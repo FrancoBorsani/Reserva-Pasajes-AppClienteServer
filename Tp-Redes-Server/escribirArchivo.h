@@ -30,8 +30,9 @@ int asignarValorPosI_A_Letra(char letra);
 void iniciarButacas(char butacas[TAMANIO_I][TAMANIO_J]);
 void mostrarButacas(vector <string> vectorButacas);
 string butacaAString(int pos_I, int pos_J);
-void marcarButacaComoOcupada(vector <string> vectorButacas, int pos_I, int pos_J, string userName);
-void marcarButacaComoLiberada(vector <string> vectorButacas, int pos_I, int pos_J, string userName);
+string getIdServicio(string nombreArchivo);
+void marcarButacaComoOcupada(vector <string> vectorButacas, int pos_I, int pos_J, string userName, string nombreArchivo);
+void marcarButacaComoLiberada(vector <string> vectorButacas, int pos_I, int pos_J, string userName, string NombreArchivo);
 void registrarUserLog(string evento, string aRegistrar);
 void crearArchivoUserLog(string usuario);
 

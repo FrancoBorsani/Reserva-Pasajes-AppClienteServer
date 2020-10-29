@@ -22,8 +22,8 @@ using namespace std;
 
 /***********************************************************************/
 string traerSoloButacas(vector <string> vectorButacas){
-    string soloButacas;
-   for(int i=0;i<11;i++){
+    string soloButacas = "";
+    for(int i=0;i<11;i++){
         if(i>6&&i!=9){
           for(int j=0;j<43;j++){
               if(j>3 && j%2==0 && j<42){
@@ -33,8 +33,8 @@ string traerSoloButacas(vector <string> vectorButacas){
               }//if interno
           }//for j
          }//if i>3
-   }//for i
-  return soloButacas;
+    }//for i
+    return soloButacas;
 }
 /***********************************************************************/
 
@@ -42,28 +42,25 @@ string traerSoloButacas(vector <string> vectorButacas){
 /***********************************************************************/
 vector <string> leerArchivoGuardarEnVectorString(string nombreArchivo)
 {
-    vector <string> butacasEnSting;
-    nombreArchivo = nombreArchivo+".txt";
-    ifstream archivo;//ifstream(tipo de variable para abrir un archivo)...  archivo (nombre de la variable)
-    string texto;// variable string
+    vector <string> butacasEnString;
 
-    archivo.open(nombreArchivo.c_str(),ios::in);// con archivo.open le digo que quiero abrir un archivo y con ios::in le digo que abro para leerlo
+    nombreArchivo +=".txt";
 
-    if(archivo.fail())//si hay un error y no se abre el arvhivo
-    {
-        cout<<"No se ha podido abrir archivo"<<endl;//se muestra
-        exit(1);//sale
-    }
-    int i=0;
-    //si se abre
-    while(!archivo.eof())//mientras no sea el final del archivo
-    {
+    string texto = "";
+
+    fstream archivo;
+
+    archivo.open(nombreArchivo);
+
+    if(archivo.is_open()){
+        while(!archivo.eof()){
            getline(archivo,texto);//Tomo lo que va encontrando en "archivo" y lo copio en "texto"
-           butacasEnSting.push_back(texto);//guardo en una posición del vector la lines obtenidad del archivo
-           i++;
+           butacasEnString.push_back(texto);//guardo en una posición del vector la linea obtenida del archivo
+        }
+        archivo.close();
     }
-   archivo.close();//cerramos archivo
-   return butacasEnSting;
+
+    return butacasEnString;
 }
 /***********************************************************************/
 

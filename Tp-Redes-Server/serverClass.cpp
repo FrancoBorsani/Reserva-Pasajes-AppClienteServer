@@ -3,6 +3,7 @@
 #include "escribirArchivo.h"
 #include <iostream>
 #include <winsock2.h>
+#include <algorithm>
 #include <string>
 #include <conio.h>
 #include <clocale>//es para usar ñ y acento
@@ -65,11 +66,13 @@ void crearServicio(string userName , Server*& servidor){
     string origenRecibido = servidor->Recibir();
     string turnoRecibido  = servidor->Recibir();
     /*****************************/
+    turnoRecibido[0] = toupper(turnoRecibido[0]);
+
     string msg = "";
     string nombreArchivo = "";
     string tituloArchivo = "";
-    if(origenRecibido=="Mar del Plata"){nombreArchivo=fechaRecibida+";Mar_Del_Plata;"+turnoRecibido; tituloArchivo=fechaRecibida+" "+"Mar_Del_Plata"+" "+turnoRecibido;}
-    else if(origenRecibido=="Buenos Aires"){nombreArchivo=fechaRecibida+";Buenos_Aires;"+turnoRecibido; tituloArchivo=fechaRecibida+" "+"Buenos_Aires"+" "+turnoRecibido;}
+    if(origenRecibido=="mar del plata"){nombreArchivo=fechaRecibida+";Mar_Del_Plata;"+turnoRecibido; tituloArchivo=fechaRecibida+" "+"Mar_Del_Plata"+" "+turnoRecibido;}
+    else if(origenRecibido=="buenos aires"){nombreArchivo=fechaRecibida+";Buenos_Aires;"+turnoRecibido; tituloArchivo=fechaRecibida+" "+"Buenos_Aires"+" "+turnoRecibido;}
 
     if(crearArchivoButacas(nombreArchivo , tituloArchivo)){ ///si el servicio no existe crea su registro con sus correspondientes datos
         registrarUserLog("Crea el servicio con los datos ("+tituloArchivo+")" , userName);///registro la accion del usuario en su archivo
@@ -157,8 +160,7 @@ string checkUser(Server *&Servidor)
 
         userAndPass = separarPalabrasPuntoYComa(Servidor->Recibir());
 
-        if(file.is_open())
-        {
+        if(file.is_open()){
             while(!file.eof()){
 
                 getline(file, linea);
@@ -209,7 +211,7 @@ void gestionarAsiento(string nombreArchivo,Server *&Servidor, string userName, b
     while(!salirWhile){
 
         vectorButacas = leerArchivoGuardarEnVectorString(nombreArchivo);
-        salir = verificarSolicitud_Y_Responder(Servidor,vectorButacas, userName, reservar);
+        salir = verificarSolicitud_Y_Responder(Servidor,vectorButacas, userName, reservar, nombreArchivo);
 
         if(salir=="true"){
             salirWhile=true;
@@ -223,15 +225,10 @@ void gestionarAsiento(string nombreArchivo,Server *&Servidor, string userName, b
 
 }
 /***********************************************************************/
-void liberar(Server *&Servidor, string userName){
-
-}
-
-/***********************************************************************/
 
 
 /***********************************************************************/
-string verificarSolicitud_Y_Responder(Server *&Servidor,vector <string> vectorButacas, string userName, bool reservar){
+string verificarSolicitud_Y_Responder(Server *&Servidor,vector <string> vectorButacas, string userName, bool reservar, string nombreArchivo){
     string mensajePeticion = "";
     string mensajeDelCli="";
     char letra = '\0';
@@ -251,13 +248,13 @@ string verificarSolicitud_Y_Responder(Server *&Servidor,vector <string> vectorBu
         if(vectorButacas[pos_I][pos_J]=='O' && reservar){
            Servidor->Enviar("Disponible");//está disponible
 
-           marcarButacaComoOcupada(vectorButacas, pos_I, pos_J, userName);
+           marcarButacaComoOcupada(vectorButacas, pos_I, pos_J, userName, nombreArchivo);
            mensajePeticion = Servidor->Recibir();
         }
         else if(vectorButacas[pos_I][pos_J]=='X' && !reservar){
             Servidor->Enviar("Disponible");//está disponible
 
-            marcarButacaComoLiberada(vectorButacas, pos_I, pos_J, userName);
+            marcarButacaComoLiberada(vectorButacas, pos_I, pos_J, userName, nombreArchivo);
             mensajePeticion = Servidor->Recibir();
         }
         else{
@@ -275,15 +272,15 @@ string verificarSolicitud_Y_Responder(Server *&Servidor,vector <string> vectorBu
 /***********************************************************************/
 
 /***********************************************************************/
-void manejarPeticion(string nombreArchivo,string userName, Server *&Servidor){
+void manejarPeticion(string userName, Server *&Servidor){
     string peticion="";
     bool salir = false;
     string opcionesPosibles=" ";
+
     while(!salir){
-      salir = true;
+
+        salir = true;
         peticion = Servidor->Recibir();
- //       cout<<peticion<<endl;
-        //Servidor->Enviar("_");//Envio cualquier cosa para que no dé error
 
         if(peticion=="Registro"){
             mostrarRegistro(userName,Servidor);
@@ -295,16 +292,41 @@ void manejarPeticion(string nombreArchivo,string userName, Server *&Servidor){
         }
         else if(peticion=="Gestionar"){
             salir = false;
-            string opcion = Servidor->Recibir();
-            if(opcion=="ReservarAsiento"){
-                gestionarAsiento(nombreArchivo,Servidor, userName,true);
-                opcion = "";     salir = false;
+
+            string nombreArchivoAutobus = Servidor->Recibir();
+
+            vector <string> butacasAutobus = leerArchivoGuardarEnVectorString(nombreArchivoAutobus);
+
+            if(!butacasAutobus.empty()){
+
+                Servidor->Enviar(traerSoloButacas(butacasAutobus));
+
+                string opcion = Servidor->Recibir();
+
+                if(opcion=="ReservarAsiento"){
+                    gestionarAsiento(nombreArchivoAutobus,Servidor, userName,true);
+                    opcion = "";     salir = false;
+                }
+                else if(opcion=="LiberarAsiento"){
+                    gestionarAsiento(nombreArchivoAutobus,Servidor, userName, false);
+                    opcion = "";     salir = false;
+                }
+                else if(opcion=="ElegirOtroServicio"){
+
+                    string nombreArchivoAutobusAux = Servidor->Recibir();
+                    vector <string> butacasAutobusAux = leerArchivoGuardarEnVectorString(nombreArchivoAutobusAux);
+
+                    if(!butacasAutobusAux.empty()){
+                         Servidor->Enviar(traerSoloButacas(butacasAutobusAux));
+                    }
+                    else Servidor->Enviar("ServicioInexistente");
+
+                    opcion = "";     salir = false;
+                }
             }
-            else if(opcion=="LiberarAsiento"){
-                gestionarAsiento(nombreArchivo,Servidor, userName, false);
-                opcion = "";     salir = false;
-            }
+            else Servidor->Enviar("ServicioInexistente");
         }
+
         peticion="";
 
 

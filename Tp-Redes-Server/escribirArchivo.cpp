@@ -217,13 +217,37 @@ string butacaAString(int pos_I, int pos_J){
 }
 /**********************************************************************/
 
+string getIdServicio(string nombreArchivo){
+
+    vector<string> datos;
+
+    std::string delimiter = ";";
+    size_t pos = 0;
+    std::string token;
+
+    //Separo los datos
+    while ((pos = nombreArchivo.find(delimiter)) != std::string::npos) {
+        token = nombreArchivo.substr(0, pos);
+        datos.push_back(token);
+        nombreArchivo.erase(0, pos + delimiter.length());
+    }
+
+    string origen = datos[1];
+    string turno = nombreArchivo;
+
+   return ""+datos[0]+origen[0]+turno[0];
+}
+
 
 /***********************************************************************/
-void marcarButacaComoOcupada(vector <string> vectorButacas, int pos_I, int pos_J, string userName){
+void marcarButacaComoOcupada(vector <string> vectorButacas, int pos_I, int pos_J, string userName, string nombreArchivo){
         vectorButacas[pos_I][pos_J] = 'X';
-        actualizarCambiosEnArchivo(vectorButacas,"Registro_de_butacas");
+        actualizarCambiosEnArchivo(vectorButacas, nombreArchivo);
+
+        string idServicio = getIdServicio(nombreArchivo);
+
         string butaca = butacaAString(pos_I, pos_J);
-        string reserva = "Reserva_";
+        string reserva = idServicio+" - Reserva_";
         reserva+=butaca;
         registrarUserLog(reserva, userName);
         system("cls");
@@ -259,11 +283,14 @@ void marcarButacaComoOcupada(vector <string> vectorButacas, int pos_I, int pos_J
 
 
 /**********************************************************************/
- void marcarButacaComoLiberada(vector <string> vectorButacas, int pos_I, int pos_J, string userName){
+ void marcarButacaComoLiberada(vector <string> vectorButacas, int pos_I, int pos_J, string userName, string nombreArchivo){
         vectorButacas[pos_I][pos_J] = 'O';
-        actualizarCambiosEnArchivo(vectorButacas,"Registro_de_butacas");
+        actualizarCambiosEnArchivo(vectorButacas, nombreArchivo);
+
+        string idServicio = getIdServicio(nombreArchivo);
+
         string butaca = butacaAString(pos_I, pos_J);
-        string libera = "Libera_";
+        string libera = idServicio+" - Libera_";
         libera+=butaca;
         registrarUserLog(libera, userName);
         system("cls");
