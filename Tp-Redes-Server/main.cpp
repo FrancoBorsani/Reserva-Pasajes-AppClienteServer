@@ -36,7 +36,7 @@ int main()
 
     manejarPeticion(userName, Servidor);
 
-    Servidor->CerrarSocket();
+    Servidor->CerrarSocket(userName);
 
     system("cls");
     }

@@ -20,6 +20,7 @@ using namespace std;
 
 
 void registrarServerLog(string evento);
+void registrarUserLog(string evento, string aRegistrar);
 void verificarArchivoServerLog();
 
 class Server{
@@ -86,13 +87,15 @@ public:
         memset(buffer, 0, sizeof(buffer));
     }
 
-    void CerrarSocket()
+    void CerrarSocket(string username)
     {
         closesocket(client);
         WSACleanup();
         verificarArchivoServerLog();
         registrarServerLog("Cliente desconectado");
         cout << "Socket cerrado, cliente desconectado." << endl;
+        registrarUserLog("Cierra sesion", username);
+
     }
 };
 
