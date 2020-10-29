@@ -1,16 +1,2 @@
-31-12-2020;Buenos_Aires;Tarde
-12-12-2020;Mar_Del_Plata;Maniana
-29-10-2020;Buenos_Aires;Noche
-1-12-2021;Buenos_Aires;Tarde
-12-12-2020;Buenos_Aires;Tarde
-18-1-2021;Mar_Del_Plata;Maniana
-12-12-2044;Mar_Del_Plata;noche
-12-12-2044;Buenos_Aires;tarde
-12-12-2043;Mar_Del_Plata;Noche
-12-12-2033;Mar_Del_Plata;Noche
-12-12-2022;Buenos_Aires;Noche
-12-12-2085;Mar_Del_Plata;Noche
-12-12-2048;Buenos_Aires;Tarde
-12-12-2024;Buenos_Aires;Tarde
 12-12-2020;Buenos_Aires;Tarde
 12-12-2020;Buenos_Aires;Noche
