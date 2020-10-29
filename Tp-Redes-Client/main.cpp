@@ -72,7 +72,7 @@ public:
 void altaServicio(Client*& cliente);
 bool compararFecha_con_fechaActual(int a ,int m , int d);
 bool verificarFecha(int a , int m , int d);
-vector<string> elegirServicio();
+vector<string> elegirServicio(bool crear);
 void mostrarButacasCliente();
 vector <string> recibirButacas_Y_separar(string butacas);
 bool verificarPosicion(int pos_I, int pos_J);
@@ -165,13 +165,15 @@ bool verificarFecha(int a , int m , int d){
 }
 /***********************************************************************/
 
-vector<string> elegirServicio(){
+vector<string> elegirServicio(bool crear){
 
     vector<string> servicioOutput;
 
     int dia,mes,anio;
     bool fechaValida = false;
     while(!fechaValida){
+
+        if(!crear) cout<<"Si la fecha no le interesa, ingrese 0 en todos los campos."<<endl<<endl;
         cout<<"Ingrese el dia: ";
         cin>>dia;
         cout<<"Ingrese el mes: ";
@@ -179,7 +181,7 @@ vector<string> elegirServicio(){
         cout<<"Ingrese el año: ";
         cin>>anio;
 
-        if(verificarFecha(anio,mes,dia)){
+        if(verificarFecha(anio,mes,dia) || (!crear && (dia==0 && mes==0 && anio==0) ) ){
             fechaValida = true;
             servicioOutput.push_back(std::to_string(dia));
             servicioOutput.push_back(std::to_string(mes));
@@ -195,6 +197,8 @@ vector<string> elegirServicio(){
     bool datosValidos =false;
 
     while(!datosValidos){
+        system("cls");
+        if(!crear) cout<<"Ingrese un 0 en el campo que no le interese."<<endl<<endl;
         cin.ignore(); //limpio el buffer
         cout<<"Ingrese el origen(Mar del Plata | Buenos Aires): ";
         getline(cin , origen);
@@ -209,8 +213,7 @@ vector<string> elegirServicio(){
             c = ::tolower(c);
         });
 
-        if( (origen=="mar del plata" || origen=="buenos aires")
-                                && (turno=="maniana" || turno=="tarde" || turno=="noche") ){
+        if( (origen=="mar del plata" || origen=="buenos aires" || (!crear && origen=="0") ) && (turno=="maniana" || turno=="tarde" || turno=="noche" || (!crear && turno=="0") ) ){
                             servicioOutput.push_back(origen);
                             servicioOutput.push_back(turno);
                             datosValidos=true;
@@ -226,7 +229,7 @@ vector<string> elegirServicio(){
 /***********************************************************************/
 void altaServicio(Client*& cliente){
 
-    vector<string> datos = elegirServicio();
+    vector<string> datos = elegirServicio(true);
 
     //Se le envian los datos al server
     cliente->Enviar(datos[0]+"-"+datos[1]+"-"+datos[2]) ; //Fecha
@@ -535,9 +538,9 @@ bool verificarIpYPuerto(std::string ipReal, int puertoReal){
 }
 /***********************************************************************/
 
-string autobusAUsar(){
+string autobusAUsar(bool crear){
 
-    vector<string> datosServicio = elegirServicio();
+    vector<string> datosServicio = elegirServicio(crear);
 
     string origen = datosServicio[3];
     string turno = datosServicio[4];
@@ -554,6 +557,76 @@ string autobusAUsar(){
     return datosServicio[0]+"-"+datosServicio[1]+"-"+datosServicio[2]+";"+origen+";"+turno;
 }
 
+vector<string> separarDatos(string datosAutobus){
+    vector<string> datos;
+
+    std::string delimiter = ";";
+    size_t pos = 0;
+    std::string token;
+
+    //Separo los datos
+    while ((pos = datosAutobus.find(delimiter)) != std::string::npos) {
+        token = datosAutobus.substr(0, pos);
+        datos.push_back(token);
+        datosAutobus.erase(0, pos + delimiter.length());
+    }
+
+    datos.push_back(datosAutobus);
+
+    return datos;
+}
+
+bool checkIfMultipleBus(string autobusAPedir){
+    vector<string> datos = separarDatos(autobusAPedir);
+
+    bool fechaVacia = false;
+    bool origenVacio = false;
+    bool turnoVacio = false;
+
+    if(datos[0]=="0-0-0"){
+        fechaVacia = true;
+    }
+
+    if(datos[1]=="0"){
+        origenVacio = true;
+    }
+
+    if(datos[2]=="0"){
+        turnoVacio = true;
+    }
+
+
+    return (fechaVacia || origenVacio || turnoVacio);
+}
+
+string doIfMultipleBuses(Client *&Cliente, string autobusAPedir){
+
+    if(checkIfMultipleBus(autobusAPedir)){
+
+        string numero = Cliente->Recibir();
+        vector<string> autobusesDisponibles;
+
+        for(int i = 0; i < stoi(numero) ; i++){
+            autobusesDisponibles.push_back(Cliente->Recibir());
+        }
+
+        int numeroAutobusElegido=0;
+        system("cls");
+        cout<<"Seleccione el autobus que quiere usar."<<endl<<endl;
+        for(int i = 0 ; i < autobusesDisponibles.size(); i++){
+
+            cout<<(i+1)<<"- "<<autobusesDisponibles[i]<<endl;
+        }
+        cin>>numeroAutobusElegido;
+
+        Cliente->Enviar( autobusesDisponibles[numeroAutobusElegido-1] );
+
+        return autobusesDisponibles[numeroAutobusElegido-1];
+    }
+    else{
+        return autobusAPedir;
+    }
+}
 
 /***********************************************************************/
 void gestionarPasajes(Client *&Cliente){
@@ -561,16 +634,13 @@ void gestionarPasajes(Client *&Cliente){
 
     int gestionarCnt = 0; //Es por la estrategia que usamos en manejarPeticion en la parte del servidor.
 
-    /**Solo en la primera vuelta**/
-
     Cliente->Enviar("Gestionar");
-
-    string autobusAPedir = autobusAUsar();
-
+    string autobusAPedir = autobusAUsar(false); //Estamos eligiendo un servicio, no creandolo.
     Cliente->Enviar(autobusAPedir);
 
+    autobusAPedir = doIfMultipleBuses(Cliente,autobusAPedir);
+
     string butacas = Cliente->Recibir();
-    /**Solo en la primera vuelta**/
 
     _getch();
 
@@ -598,6 +668,7 @@ void gestionarPasajes(Client *&Cliente){
 
                 string butacas = Cliente->Recibir();
             }
+
             gestionarCnt = 1;
 
             switch(opcionElegida){
@@ -614,9 +685,12 @@ void gestionarPasajes(Client *&Cliente){
                         break;
                 case 3:{ system("CLS");
                         Cliente->Enviar("ElegirOtroServicio");
-                        string autobusAPedirAux = autobusAUsar();
+
+                        string autobusAPedirAux = autobusAUsar(false); //Estamos eligiendo un servicio, no creandolo.
                         Cliente->Enviar(autobusAPedirAux);
+                        autobusAPedirAux = doIfMultipleBuses(Cliente,autobusAPedirAux);
                         string butacasAux = Cliente->Recibir();
+
                         if(butacasAux!="ServicioInexistente"){
                             autobusAPedir = autobusAPedirAux;
                             vectorButacas = recibirButacas_Y_separar(butacasAux);
