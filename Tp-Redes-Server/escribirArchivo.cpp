@@ -325,13 +325,22 @@ void crearArchivoUserLog(string usuario){
 void registrarUserLog(string evento, string aRegistrar){
     string nombreArchivo = aRegistrar + ".log";
     std::ofstream userLog( nombreArchivo , std::ios::ate | std::ios::in);
+    if(userLog.fail()){ //Si el archivo no se encuentra o no esta disponible o presenta errores
+            cout<<"No se pudo abrir el archivo user log"; //Muestra el error
+                        }
     time_t     now = time(0);
     struct tm  tstruct;
     char       buf[80];
     tstruct = *localtime(&now);
     strftime(buf, sizeof(buf), "%Y-%m-%d.%X", &tstruct);
+    if(evento == "Inicia sesion"){
+        userLog<<endl<<buf<<": ==================================="<<endl;;
+        userLog<<buf<<": "<<evento<<endl;
+        userLog<<buf<<": ==================================="<<endl;
+    }else{
     userLog<<buf;
-    userLog<<": "<<evento<<" - "<<aRegistrar<<endl;
-    userLog<<": ==================================="<<endl;
+    userLog<<": "<<evento<<endl;
+         }
     userLog.close();
-}
+
+    }

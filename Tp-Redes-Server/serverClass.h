@@ -19,7 +19,7 @@ using namespace std;
 
 
 
-void registrarServerLog(string evento, string aRegistrar);
+void registrarServerLog(string evento);
 void verificarArchivoServerLog();
 
 class Server{
@@ -41,7 +41,7 @@ public:
         listen(server, 0);
 
         verificarArchivoServerLog();
-        registrarServerLog("Inicia servidor", "Socket creado. Puerto de escucha:4747");
+        registrarServerLog("Inicia servidor");
 
         cout << "Escuchando para conexiones entrantes." << endl;
 
@@ -92,7 +92,7 @@ public:
         closesocket(client);
         WSACleanup();
         verificarArchivoServerLog();
-        registrarServerLog("Socket cerrado, cliente desconectado", "");
+        registrarServerLog("Socket cerrado, cliente desconectado");
         cout << "Socket cerrado, cliente desconectado." << endl;
     }
 };
