@@ -232,10 +232,18 @@ string getIdServicio(string nombreArchivo){
         nombreArchivo.erase(0, pos + delimiter.length());
     }
 
+    string fecha = datos[0];
+
+    for(int i = 0 ; i < fecha.length(); i++){
+        if(fecha[i]=='-'){
+            fecha.erase(fecha.begin()+i);
+        }
+    }
+
     string origen = datos[1];
     string turno = nombreArchivo;
 
-   return ""+datos[0]+origen[0]+turno[0];
+   return ""+fecha+origen[0]+turno[0];
 }
 
 
