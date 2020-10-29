@@ -66,15 +66,15 @@ public:
         int n = select (client, &fds, NULL, NULL, &tv) ;
 
         if (n == 0){
-          printf("Timeout..\n");
-        // Cerrar sesion
+            cout<<"Timeout: cliente desconectado"<<endl;
+            Enviar("Timeout");
         }
         recv(client, buffer, sizeof(buffer), 0);
 
         string buff = buffer;
 
         memset(buffer, 0, sizeof(buffer));
-      return buff;
+        return buff;
     }
 
     void Enviar(string respuesta)
@@ -105,8 +105,8 @@ void mostrarRegistro(string userName, Server *&Servidor);
 string checkUser(Server *&Servidor);
 void gestionarAsiento(string nombreArchivo,Server *&Servidor, string userName, bool reservar);
 void liberar(Server *&Servidor, string userName);
-string verificarSolicitud_Y_Responder(Server *&Servidor,vector <string> vectorButacas, string userName, bool reservar);
+string verificarSolicitud_Y_Responder(Server *&Servidor,vector <string> vectorButacas, string userName, bool reservar, string nombreArchivo);
 int numeroDeSentencias(string file);
-void manejarPeticion(string nombreArchivo,string userName, Server *&Servidor);
+void manejarPeticion(string userName, Server *&Servidor);
 
 #endif // SERVERCLASS_H_INCLUDED

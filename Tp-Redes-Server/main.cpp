@@ -30,11 +30,8 @@ int main()
     renovacionDeMicrosDisponibles();//Pasa a un archivo general y borra archivos los individuales de los servicios de fechas anteriores a la actual y carga el nombre del archivo de los servicios ACTIVOS en el vector por si el sistema se cerro de forma inesperada
 
     string userName = checkUser(Servidor);
-    string nombreArchivo = "Registro_de_butacas";
-    string tituloArchivo = ">>> REGISTRO DE BUTACAS VACIAS Y OCUPADA <<<";
-    crearArchivoButacas(nombreArchivo,tituloArchivo);
 
-    manejarPeticion(nombreArchivo,userName, Servidor);
+    manejarPeticion(userName, Servidor);
 
     Servidor->CerrarSocket();
 

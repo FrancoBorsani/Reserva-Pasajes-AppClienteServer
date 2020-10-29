@@ -2,6 +2,7 @@
 #include <winsock2.h>
 #include <conio.h>
 #include <string>
+#include <algorithm>
 #include <clocale>//es para usar ñ y acento
 #include <ctime>//para comparar la fecha con la fecha actual
 #include <cstdlib>
@@ -9,7 +10,7 @@
 
 #define TAMANIO_I  5
 #define TAMANIO_J  21
-#define GLOBAL_IP  "192.168.1.33"
+#define GLOBAL_IP  "192.168.0.71"
 #define PUERTO_GLOBAL 4747
 
 using namespace std;
@@ -37,22 +38,27 @@ public:
     }
     void Enviar(string respuesta)
     {
-         for(int i=0;i<respuesta.length();i++){
-           this->buffer[i]= respuesta[i];
-         }
+        for(int i=0;i<respuesta.length();i++){
+            this->buffer[i]= respuesta[i];
+        }
 
         send(server, buffer, sizeof(buffer), 0);
         memset(buffer, 0, sizeof(buffer));
-        //cout << "Mensaje enviado!" << endl;
+
     }
 
      string Recibir()
     {
-      recv(server, buffer, sizeof(buffer), 0);
-   //   cout << "El servidor dice: " << buffer << endl;
-      string buff = buffer;
-      memset(buffer, 0, sizeof(buffer));
-      return buff;
+        recv(server, buffer, sizeof(buffer), 0);
+
+        string buff = buffer;
+
+        if(buff=="Timeout"){
+            cout<<"Sesion expirada"<<endl;
+            CerrarSocket();
+        }
+        memset(buffer, 0, sizeof(buffer));
+        return buff;
     }
 
     void CerrarSocket()
@@ -66,13 +72,14 @@ public:
 void altaServicio(Client*& cliente);
 bool compararFecha_con_fechaActual(int a ,int m , int d);
 bool verificarFecha(int a , int m , int d);
-
+vector<string> elegirServicio();
 void mostrarButacasCliente();
 vector <string> recibirButacas_Y_separar(string butacas);
 bool verificarPosicion(int pos_I, int pos_J);
 bool verificarCoordenadas(int numero,char letra);
 int asignarValorPosI_A_Letra(char letra);
 void determinarAccion_A_Seguir(Client *&Cliente,bool posicionDisponible,int pos_I,int pos_J, bool reservar);
+string autobusAUsar();
 
 string elegirButaca(Client *&Cliente, bool reservar);
 void menuCliente(Client *&Cliente);
@@ -158,9 +165,10 @@ bool verificarFecha(int a , int m , int d){
 }
 /***********************************************************************/
 
+vector<string> elegirServicio(){
 
-/***********************************************************************/
-void altaServicio(Client*& cliente){
+    vector<string> servicioOutput;
+
     int dia,mes,anio;
     bool fechaValida = false;
     while(!fechaValida){
@@ -173,32 +181,57 @@ void altaServicio(Client*& cliente){
 
         if(verificarFecha(anio,mes,dia)){
             fechaValida = true;
+            servicioOutput.push_back(std::to_string(dia));
+            servicioOutput.push_back(std::to_string(mes));
+            servicioOutput.push_back(std::to_string(anio));
         }
         else{
             cout<<"La fecha ingresada no es valida"<<endl;
             system("pause"); system("cls");
         }
     }
+
     string origen,turno;
     bool datosValidos =false;
+
     while(!datosValidos){
         cin.ignore(); //limpio el buffer
-        cout<<"Ingrese el origen(Mar del Plata, Buenos Aires): ";
+        cout<<"Ingrese el origen(Mar del Plata | Buenos Aires): ";
         getline(cin , origen);
-        cout<<"Ingrese el turno(Maniana , Tarde, Noche): ";
+        cout<<"Ingrese el turno(Maniana | Tarde | Noche): ";
         getline(cin , turno);
 
-        if( (origen=="Mar del Plata" || origen=="Buenos Aires")
-                                && (turno=="Maniana" || turno=="Tarde" || turno=="Noche") ){
+        std::for_each(origen.begin(), origen.end(), [](char & c) {
+            c = ::tolower(c);
+        });
+
+        std::for_each(turno.begin(), turno.end(), [](char & c) {
+            c = ::tolower(c);
+        });
+
+        if( (origen=="mar del plata" || origen=="buenos aires")
+                                && (turno=="maniana" || turno=="tarde" || turno=="noche") ){
+                            servicioOutput.push_back(origen);
+                            servicioOutput.push_back(turno);
                             datosValidos=true;
         }
         else{cout<<"Datos erroneos"<<endl; system("pause"); system("cls");}
     }
 
+    return servicioOutput;
+}
+
+
+
+/***********************************************************************/
+void altaServicio(Client*& cliente){
+
+    vector<string> datos = elegirServicio();
+
     //Se le envian los datos al server
-    cliente->Enviar(std::to_string(dia)+"-"+std::to_string(mes)+"-"+std::to_string(anio)) ;
-    cliente->Enviar(origen);
-    cliente->Enviar(turno);
+    cliente->Enviar(datos[0]+"-"+datos[1]+"-"+datos[2]) ; //Fecha
+    cliente->Enviar(datos[3]);//Origen
+    cliente->Enviar(datos[4]);//Turno
 
     //El cliente recibe el resultado de la operacion
     system("cls");
@@ -324,7 +357,7 @@ void determinarAccion_A_Seguir(Client *&Cliente,bool posicionDisponible, int pos
           mostrarButacasCliente();
           cout<<"************************************"<<endl;
           cout<<"** Butaca "<<peticionButaca<<" exitosamente. **"<<endl;
-          cout<<"************************************"<<endl<<endl<<"Precione cualquier tecla para continuar..."<<endl;
+          cout<<"************************************"<<endl<<endl<<"Pulse cualquier tecla para continuar..."<<endl;
           if(estadoButaca=='O'){_getch();}
     }
     else{
@@ -395,7 +428,7 @@ string elegirButaca(Client *&Cliente, bool reservar){
         determinarAccion_A_Seguir(Cliente, posicionDisponible, pos_I, numero, reservar);
     }
     else{
-        cout<<"Precione cualquier tecla para continuar...";
+        cout<<"Pulse cualquier tecla para continuar...";
         Cliente->Enviar("true");
     }
 
@@ -417,7 +450,7 @@ void menuCliente(Client *&Cliente){
        respuesta = verificarIpYPuerto(GLOBAL_IP,PUERTO_GLOBAL);
     }
 
-
+    bool printTO = false;
     int servicioElegido = 0;
 
     while(servicioElegido!=4){
@@ -502,43 +535,115 @@ bool verificarIpYPuerto(std::string ipReal, int puertoReal){
 }
 /***********************************************************************/
 
+string autobusAUsar(){
+
+    vector<string> datosServicio = elegirServicio();
+
+    string origen = datosServicio[3];
+    string turno = datosServicio[4];
+
+    if(origen=="buenos aires"){
+        origen = "Buenos_Aires";
+    }
+    else{
+        origen = "Mar_Del_Plata";
+    }
+
+    turno[0] = toupper(turno[0]);
+
+    return datosServicio[0]+"-"+datosServicio[1]+"-"+datosServicio[2]+";"+origen+";"+turno;
+}
+
 
 /***********************************************************************/
 void gestionarPasajes(Client *&Cliente){
     int opcionElegida = 0;
 
-    while(opcionElegida!=4){
+    int gestionarCnt = 0; //Es por la estrategia que usamos en manejarPeticion en la parte del servidor.
 
-        cout<<"1-Reservar un asiento"<<endl;
-        cout<<"2-Liberar un asiento"<<endl;
-        cout<<"3-Elegir otro servicio"<<endl;
-        cout<<"4-Volver al menu anterior"<<endl;
-        cin>>opcionElegida;
-        Cliente->Enviar("Gestionar");
-        switch(opcionElegida){
-            case 1: system("CLS");
-                    Cliente->Enviar("ReservarAsiento");
-                    reservarAsiento(Cliente, true);
-                    _getch();
-                    system("CLS");
-                    break;
-            case 2: system("CLS");
-                    Cliente->Enviar("LiberarAsiento");
-                    reservarAsiento(Cliente, false);
-                    system("CLS");
-                    break;
-            case 3: system("CLS");
-                    Cliente->Enviar("false");
-                    //Elegir otro servicio
-                    system("CLS");
-                    break;
-            case 4: Cliente->Enviar("false");system("CLS");
-                    break;
-            default: Cliente->Enviar("false");
-                    cout<<"Ingreso una opcion incorrecta."<<endl<<endl<<"Pulse cualqier tecla para continuar..."<<endl;
-                     _getch();  system("CLS");  gestionarPasajes(Cliente);
-                     break;
+    /**Solo en la primera vuelta**/
+
+    Cliente->Enviar("Gestionar");
+
+    string autobusAPedir = autobusAUsar();
+
+    Cliente->Enviar(autobusAPedir);
+
+    string butacas = Cliente->Recibir();
+    /**Solo en la primera vuelta**/
+
+    _getch();
+
+    if(butacas!="ServicioInexistente"){
+
+        vector <string> vectorButacas = recibirButacas_Y_separar(butacas);
+
+        LINEA_A_GLOBAL=vectorButacas[0]; LINEA_B_GLOBAL=vectorButacas[1];  LINEA_C_GLOBAL=vectorButacas[2];
+
+        while(opcionElegida!=4){
+            system("cls");
+            mostrarButacasCliente();
+
+            cout<<"1-Reservar un asiento"<<endl;
+            cout<<"2-Liberar un asiento"<<endl;
+            cout<<"3-Elegir otro servicio"<<endl;
+            cout<<"4-Volver al menu anterior"<<endl;
+            cin>>opcionElegida;
+
+            if(gestionarCnt!=0){
+
+                Cliente->Enviar("Gestionar");
+
+                Cliente->Enviar(autobusAPedir);
+
+                string butacas = Cliente->Recibir();
+            }
+            gestionarCnt = 1;
+
+            switch(opcionElegida){
+                case 1: system("CLS");
+                        Cliente->Enviar("ReservarAsiento");
+                        reservarAsiento(Cliente, true);
+                        _getch();
+                        system("CLS");
+                        break;
+                case 2: system("CLS");
+                        Cliente->Enviar("LiberarAsiento");
+                        reservarAsiento(Cliente, false);
+                        system("CLS");
+                        break;
+                case 3:{ system("CLS");
+                        Cliente->Enviar("ElegirOtroServicio");
+                        string autobusAPedirAux = autobusAUsar();
+                        Cliente->Enviar(autobusAPedirAux);
+                        string butacasAux = Cliente->Recibir();
+                        if(butacasAux!="ServicioInexistente"){
+                            autobusAPedir = autobusAPedirAux;
+                            vectorButacas = recibirButacas_Y_separar(butacasAux);
+                            LINEA_A_GLOBAL=vectorButacas[0]; LINEA_B_GLOBAL=vectorButacas[1];  LINEA_C_GLOBAL=vectorButacas[2];
+                        }
+                        else{
+                            cout<<"No existe ningun servicio con esas caracteristicas. Presione enter para continuar."<<endl;
+                            _getch();  system("CLS");
+                        }
+
+                        system("CLS");
+                        break;
+                        }
+                case 4: Cliente->Enviar("false");system("CLS");
+                        break;
+                default: Cliente->Enviar("false");
+                        cout<<"Ingreso una opcion incorrecta."<<endl<<endl<<"Pulse cualquier tecla para continuar..."<<endl;
+                         _getch();  system("CLS");//  gestionarPasajes(Cliente);
+                         break;
+            }
+
         }
+    }
+    else{
+        cout<<"No existe ningun servicio con esas caracteristicas. Presione enter para continuar."<<endl;
+        _getch();  system("CLS");
+
     }
 }
 /***********************************************************************/
