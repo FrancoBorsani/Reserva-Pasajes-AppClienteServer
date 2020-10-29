@@ -90,7 +90,7 @@ void crearServicio(string userName , Server*& servidor){
 /***********************************************************************/
 
 
-void registrarServerLog(string evento, string aRegistrar){
+void registrarServerLog(string evento){
     std::ofstream serverLog("server.log", std::ios::ate | std::ios::in);
     if(serverLog.fail()){ //Si el archivo no se encuentra o no esta disponible o presenta errores
             cout<<"No se pudo abrir el archivo server log"; //Muestra el error
@@ -100,9 +100,16 @@ void registrarServerLog(string evento, string aRegistrar){
     char       buf[80];
     tstruct = *localtime(&now);
     strftime(buf, sizeof(buf), "%Y-%m-%d.%X", &tstruct);
+
+    if(evento == "Inicia servidor"){
+        serverLog<<endl<<buf<<": ==================================="<<endl;
+        serverLog<<buf<<": "<<evento<<endl;
+        serverLog<<buf<<": ==================================="<<endl;
+    }else{
     serverLog<<buf;
-    serverLog<<": "<<evento<<" - "<<aRegistrar<<endl;
-    serverLog<<": ==================================="<<endl;
+    serverLog<<": "<<evento<<endl;
+    }
+
     serverLog.close();
 }
 
@@ -170,7 +177,7 @@ string checkUser(Server *&Servidor)
                 if(resultados[0] == userAndPass[0] && resultados[1] == userAndPass[1]){
                         usuarioEncontrado = "true";
                         verificarArchivoServerLog();
-                        registrarServerLog("Usuario autenticado", resultados[0]);
+                        registrarServerLog("Usuario autenticado" + resultados[0]);
                         crearArchivoUserLog(resultados[0]);
                         registrarUserLog("Inicia sesion", resultados[0]);
                         loggedUser = resultados[0];
