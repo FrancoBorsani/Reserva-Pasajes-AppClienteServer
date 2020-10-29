@@ -40,15 +40,14 @@ public:
         bind(server, (SOCKADDR *)&serverAddr, sizeof(serverAddr));
         listen(server, 0);
 
-        verificarArchivoServerLog();
-        registrarServerLog("Inicia servidor");
-
         cout << "Escuchando para conexiones entrantes." << endl;
 
         int clientAddrSize = sizeof(clientAddr);
         if((client = accept(server, (SOCKADDR *)&clientAddr, &clientAddrSize)) != INVALID_SOCKET)
         {
             cout << "Cliente conectado!" << endl;
+            verificarArchivoServerLog();
+            registrarServerLog("Cliente conectado");
         }
     }
 
@@ -92,7 +91,7 @@ public:
         closesocket(client);
         WSACleanup();
         verificarArchivoServerLog();
-        registrarServerLog("Socket cerrado, cliente desconectado");
+        registrarServerLog("Cliente desconectado");
         cout << "Socket cerrado, cliente desconectado." << endl;
     }
 };

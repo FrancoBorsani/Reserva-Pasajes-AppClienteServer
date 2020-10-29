@@ -19,10 +19,13 @@
 using namespace std;
 
 
-
-
 int main()
 {
+    verificarArchivoServerLog();
+    registrarServerLog("Inicia servidor");
+    registrarServerLog("Socket creado. Puerto de escucha:4747");
+
+    while(true){
     setlocale(LC_CTYPE,"Spanish");// Spanish (de la librería locale.h) es para usar ñ y acento
 
     Server *Servidor = new Server();
@@ -36,6 +39,8 @@ int main()
     Servidor->CerrarSocket();
 
     system("cls");
+    }
 
-    main();
+   // main();
 }
+

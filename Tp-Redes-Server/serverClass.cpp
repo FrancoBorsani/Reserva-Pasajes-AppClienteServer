@@ -90,6 +90,7 @@ void crearServicio(string userName , Server*& servidor){
 /***********************************************************************/
 
 
+
 void registrarServerLog(string evento){
     std::ofstream serverLog("server.log", std::ios::ate | std::ios::in);
     if(serverLog.fail()){ //Si el archivo no se encuentra o no esta disponible o presenta errores
@@ -189,7 +190,15 @@ string checkUser(Server *&Servidor)
 
         file.close();
 
-        usuarioEncontrado == "true" ? cout<<"Usuario Encontrado"<<endl<<endl : cout<<"Crendenciales invalidas..."<<endl<<endl<<"Por favor ingrese sus datos nuevamente (Le quedan " << " intentos)"<<endl<<endl;
+     //   usuarioEncontrado == "true" ? cout<<"Usuario Encontrado"<<endl<<endl : cout<<"Crendenciales invalidas..."<<endl<<endl<<"Por favor ingrese sus datos nuevamente (Le quedan " << " intentos)"<<endl<<endl;
+        if(usuarioEncontrado == "true"){
+            cout<<"Usuario Encontrado"<<endl<<endl;
+
+        }else{
+        cout<<"Crendenciales invalidas..."<<endl<<endl<<"Por favor ingrese sus datos nuevamente (Le quedan " << " intentos)"<<endl<<endl;
+        verificarArchivoServerLog();
+        registrarServerLog("Intento de ingreso - Credenciales invalidas");
+        }
 
         contador++;
 
