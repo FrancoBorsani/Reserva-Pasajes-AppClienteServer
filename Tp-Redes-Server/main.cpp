@@ -21,6 +21,7 @@ using namespace std;
 
 int main()
 {
+    renovacionDeMicrosDisponibles();//Pasa a un archivo general y borra archivos los individuales de los servicios de fechas anteriores a la actual y carga el nombre del archivo de los servicios ACTIVOS en el vector por si el sistema se cerro de forma inesperada
     verificarArchivoServerLog();
     registrarServerLog("Inicia servidor");
     registrarServerLog("Socket creado. Puerto de escucha:4747");
@@ -30,7 +31,7 @@ int main()
 
     Server *Servidor = new Server();
 
-    renovacionDeMicrosDisponibles();//Pasa a un archivo general y borra archivos los individuales de los servicios de fechas anteriores a la actual y carga el nombre del archivo de los servicios ACTIVOS en el vector por si el sistema se cerro de forma inesperada
+
 
     string userName = checkUser(Servidor);
 

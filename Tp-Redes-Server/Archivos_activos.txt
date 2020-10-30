@@ -1,5 +1,9 @@
-12-12-2020;Buenos_Aires;Tarde
+26-10-2020;Buenos_Aires;Tarde
+26-10-2020;Mar_Del_Plata;Noche
+27-10-2020;Mar_Del_Plata;Noche
+31-12-2020;Buenos_Aires;Tarde
+1-1-2024;Mar_Del_Plata;Tarde
 12-12-2020;Buenos_Aires;Noche
+12-12-2020;Buenos_Aires;Tarde
 12-12-2020;Mar_Del_Plata;Tarde
 27-7-2021;Mar_Del_Plata;Noche
-1-1-2024;Mar_Del_Plata;Tarde
