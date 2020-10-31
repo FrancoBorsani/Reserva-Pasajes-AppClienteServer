@@ -23,6 +23,7 @@ using namespace std;
 
 
 void registrarServerLog(string evento);
+void registrarUserLog(string evento, string aRegistrar);
 void verificarArchivoServerLog();
 
 class Server{
@@ -43,15 +44,14 @@ public:
         bind(server, (SOCKADDR *)&serverAddr, sizeof(serverAddr));
         listen(server, 0);
 
-        verificarArchivoServerLog();
-        registrarServerLog("Inicia servidor");
-
         cout << "Escuchando para conexiones entrantes." << endl;
 
         int clientAddrSize = sizeof(clientAddr);
         if((client = accept(server, (SOCKADDR *)&clientAddr, &clientAddrSize)) != INVALID_SOCKET)
         {
             cout << "Cliente conectado!" << endl;
+            verificarArchivoServerLog();
+            registrarServerLog("Cliente conectado");
         }
     }
 
@@ -90,13 +90,15 @@ public:
         memset(buffer, 0, sizeof(buffer));
     }
 
-    void CerrarSocket()
+    void CerrarSocket(string username)
     {
         closesocket(client);
         WSACleanup();
         verificarArchivoServerLog();
-        registrarServerLog("Socket cerrado, cliente desconectado");
+        registrarServerLog("Cliente desconectado");
         cout << "Socket cerrado, cliente desconectado." << endl;
+        registrarUserLog("Cierra sesion", username);
+
     }
 };
 

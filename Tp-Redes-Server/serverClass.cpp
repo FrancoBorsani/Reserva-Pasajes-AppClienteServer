@@ -80,14 +80,17 @@ void crearServicio(string userName , Server*& servidor){
 
         msg = "El Servicio ("+tituloArchivo+") fue creado correctamente";
         archivos_servicios.push_back(nombreArchivo); ///agrego el nombre del archivo en el vector
+
     }
     else{
             msg = "El Servicio ("+tituloArchivo+") que quiere crear ya existe";
+
     }
 
         servidor->Enviar(msg); ///le informa al usuario el resultado de la operacion
 }
 /***********************************************************************/
+
 
 
 void registrarServerLog(string evento){
@@ -177,7 +180,7 @@ string checkUser(Server *&Servidor)
                 if(resultados[0] == userAndPass[0] && resultados[1] == userAndPass[1]){
                         usuarioEncontrado = "true";
                         verificarArchivoServerLog();
-                        registrarServerLog("Usuario autenticado" + resultados[0]);
+                        registrarServerLog("Usuario autenticado -" + resultados[0]);
                         crearArchivoUserLog(resultados[0]);
                         registrarUserLog("Inicia sesion", resultados[0]);
                         loggedUser = resultados[0];
@@ -189,7 +192,15 @@ string checkUser(Server *&Servidor)
 
         file.close();
 
-        usuarioEncontrado == "true" ? cout<<"Usuario Encontrado"<<endl<<endl : cout<<"Crendenciales invalidas..."<<endl<<endl<<"Por favor ingrese sus datos nuevamente (Le quedan " << " intentos)"<<endl<<endl;
+     //   usuarioEncontrado == "true" ? cout<<"Usuario Encontrado"<<endl<<endl : cout<<"Crendenciales invalidas..."<<endl<<endl<<"Por favor ingrese sus datos nuevamente (Le quedan " << " intentos)"<<endl<<endl;
+        if(usuarioEncontrado == "true"){
+            cout<<"Usuario Encontrado"<<endl<<endl;
+
+        }else{
+        cout<<"Crendenciales invalidas..."<<endl<<endl<<"Por favor ingrese sus datos nuevamente (Le quedan " << " intentos)"<<endl<<endl;
+        verificarArchivoServerLog();
+        registrarServerLog("Intento de ingreso - Credenciales invalidas");
+        }
 
         contador++;
 

@@ -19,15 +19,19 @@
 using namespace std;
 
 
-
-
 int main()
 {
+    renovacionDeMicrosDisponibles();//Pasa a un archivo general y borra archivos los individuales de los servicios de fechas anteriores a la actual y carga el nombre del archivo de los servicios ACTIVOS en el vector por si el sistema se cerro de forma inesperada
+    verificarArchivoServerLog();
+    registrarServerLog("Inicia servidor");
+    registrarServerLog("Socket creado. Puerto de escucha:4747");
+
+    while(true){
     setlocale(LC_CTYPE,"Spanish");// Spanish (de la librería locale.h) es para usar ñ y acento
 
     Server *Servidor = new Server();
 
-    renovacionDeMicrosDisponibles();//Pasa a un archivo general y borra archivos los individuales de los servicios de fechas anteriores a la actual y carga el nombre del archivo de los servicios ACTIVOS en el vector por si el sistema se cerro de forma inesperada
+
 
     string respuesta = checkData(Servidor);
 
@@ -43,9 +47,11 @@ int main()
 
     manejarPeticion(userName, Servidor);
 
-    Servidor->CerrarSocket();
+    Servidor->CerrarSocket(userName);
 
     system("cls");
+    }
 
-    main();
+   // main();
 }
+

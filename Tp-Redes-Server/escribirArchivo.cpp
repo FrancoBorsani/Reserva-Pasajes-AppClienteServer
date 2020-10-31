@@ -48,7 +48,7 @@ void registrarViajesEnArchivo(string nombreArchivo){
         }
    }//for i
    butacasReservadas.pop_back();//saco el último guion que le queda (no se puede igualar directamente a un string)
-   guardarEnArchivoSinFormato(destinoFechaTurno+" "+butacasReservadas,"INFO_Servicios");
+   guardarEnArchivoBinario(destinoFechaTurno+" "+butacasReservadas,"INFO_Servicios");
 }
 /***********************************************************************/
 
