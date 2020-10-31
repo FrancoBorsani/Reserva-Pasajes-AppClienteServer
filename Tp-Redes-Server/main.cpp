@@ -33,6 +33,16 @@ int main()
 
 
 
+    string respuesta = checkData(Servidor);
+
+    Servidor->Enviar(respuesta);
+
+    while(respuesta!="true"){
+        respuesta = checkData(Servidor);
+        Servidor->Enviar(respuesta);
+    }
+
+
     string userName = checkUser(Servidor);
 
     manejarPeticion(userName, Servidor);

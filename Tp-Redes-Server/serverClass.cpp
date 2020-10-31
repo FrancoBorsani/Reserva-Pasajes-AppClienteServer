@@ -244,6 +244,22 @@ void gestionarAsiento(string nombreArchivo,Server *&Servidor, string userName, b
 }
 /***********************************************************************/
 
+string checkData(Server *&Servidor){
+    string ipInput= Servidor->Recibir();
+    string portInput = Servidor->Recibir();
+
+    string ip = inet_ntoa(Servidor->serverAddr.sin_addr);
+    string port = std::to_string(htons(Servidor->serverAddr.sin_port));
+
+
+    if(ipInput==ip && portInput==port){
+        return "true";
+    }
+    else{
+        return "false";
+    }
+}
+
 
 /***********************************************************************/
 string verificarSolicitud_Y_Responder(Server *&Servidor,vector <string> vectorButacas, string userName, bool reservar, string nombreArchivo){

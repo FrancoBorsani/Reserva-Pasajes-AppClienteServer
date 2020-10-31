@@ -14,6 +14,9 @@
 
 #define TAMANIO_I  5
 #define TAMANIO_J  21
+#define GLOBAL_IP  "192.168.0.71"
+#define PUERTO_GLOBAL 5000
+
 
 using namespace std;
 
@@ -34,9 +37,9 @@ public:
         WSAStartup(MAKEWORD(2,0), &WSAData);
         server = socket(AF_INET, SOCK_STREAM, 0);
 
-        serverAddr.sin_addr.s_addr = INADDR_ANY;
+        serverAddr.sin_addr.s_addr = inet_addr(GLOBAL_IP);
         serverAddr.sin_family = AF_INET;
-        serverAddr.sin_port = htons(5555);
+        serverAddr.sin_port = htons(PUERTO_GLOBAL);
 
         bind(server, (SOCKADDR *)&serverAddr, sizeof(serverAddr));
         listen(server, 0);
@@ -103,6 +106,7 @@ public:
 void crearServicio(string userName , Server*& servidor);
 void renovacionDeMicrosDisponibles();
 
+string checkData(Server *&Servidor);
 void mostrarRegistro(string userName, Server *&Servidor);
 string checkUser(Server *&Servidor);
 void gestionarAsiento(string nombreArchivo,Server *&Servidor, string userName, bool reservar);
