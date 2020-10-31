@@ -11,7 +11,7 @@
 #define TAMANIO_I  5
 #define TAMANIO_J  21
 #define GLOBAL_IP  "192.168.0.71"
-#define PUERTO_GLOBAL 4747
+#define PUERTO_GLOBAL 5000
 
 using namespace std;
 
@@ -32,9 +32,12 @@ public:
         server = socket(AF_INET, SOCK_STREAM, 0);
         addr.sin_addr.s_addr = inet_addr(GLOBAL_IP);
         addr.sin_family = AF_INET;
-        addr.sin_port = htons(5555);
-        connect(server, (SOCKADDR *)&addr, sizeof(addr));
-        cout << "Conectado al Servidor!" << endl;
+        addr.sin_port = htons(PUERTO_GLOBAL);
+        int crespuesta = connect(server, (SOCKADDR *)&addr, sizeof(addr));
+        if(crespuesta==0){
+            cout << "Conectado al Servidor!" << endl;
+        }
+
     }
     void Enviar(string respuesta)
     {
@@ -47,7 +50,7 @@ public:
 
     }
 
-     string Recibir()
+    string Recibir()
     {
         recv(server, buffer, sizeof(buffer), 0);
 
@@ -84,12 +87,13 @@ string autobusAUsar();
 string elegirButaca(Client *&Cliente, bool reservar);
 void menuCliente(Client *&Cliente);
 void pedirRegistroDeActividades(Client *&Cliente);
-bool verificarIpYPuerto(std::string ipReal, int puertoReal);
+bool verificarIpYPuerto(Client *&Cliente);
 void gestionarPasajes(Client *&Cliente);
 void reservarAsiento(Client *&Cliente, bool reservar);
 string login();
 vector<string> separarPalabras(string str);
 bool autenticacion(Client *&Cliente);
+void inputDatosServer(Client *&Cliente);
 
 
 /***********************************************************************/
@@ -97,24 +101,40 @@ bool autenticacion(Client *&Cliente);
 /***********************************************************************/
 int main()
 {
-   setlocale(LC_CTYPE,"Spanish");// Spanish (de la librería locale.h) es para usar ñ y acento
+    setlocale(LC_CTYPE,"Spanish");// Spanish (de la librería locale.h) es para usar ñ y acento
 
-   Client *Cliente = new Client();
+    Client *Cliente = new Client();
 
-   bool ingresar = autenticacion(Cliente);
+    inputDatosServer(Cliente);
 
-   if (ingresar){
-   		menuCliente(Cliente);
-   }else{
-   	   Cliente->CerrarSocket();
-   }
-
-
+    return 0;
 }
 /***********************************************************************/
 /*******************************FIN MAIN********************************/
 /***********************************************************************/
 
+void inputDatosServer(Client *&Cliente){
+
+    bool respuesta = verificarIpYPuerto(Cliente);
+
+    while(!respuesta){
+        cout<<"Ip o puerto incorrecto. Vuelva a intentarlo."<<endl;
+        _getch();
+        system("CLS");
+        respuesta = verificarIpYPuerto(Cliente);
+    }
+    system("CLS");
+
+    bool ingresar = autenticacion(Cliente);
+
+    if (ingresar){
+        system("CLS");
+        menuCliente(Cliente);
+    }else{
+        Cliente->CerrarSocket();
+    }
+
+}
 
 bool compararFecha_con_fechaActual(int a ,int m , int d){
     //comprobar que la fecha no sea menor a la actual
@@ -386,7 +406,7 @@ string elegirButaca(Client *&Cliente, bool reservar){
     if(!reservar) tipoPeticion = "liberar";
 
 
-    while(!salir){//Mientras salir sea false
+    while(!salir){
 
         cout<<"--- Elija la butaca a "<<tipoPeticion<<" (Ejemplo: A12). Para volver al menu anterior ingrese un 0.---"<<endl;
         cin>>respuesta;
@@ -396,11 +416,11 @@ string elegirButaca(Client *&Cliente, bool reservar){
             salir = true;
         }
         else{
-            letra = respuesta[0];//1) guarda "B" en un supuesto ingreso de "B7"
-            respuesta.erase(0,1);//2)borro la que ya guardé, en un supuesto ingreso de "B7" borra "B"
+            letra = respuesta[0]; //1) guarda "B" en un supuesto ingreso de "B7"
+            respuesta.erase(0,1); //2)borro la que ya guardé, en un supuesto ingreso de "B7" borra "B"
             numero = atoi(const_cast< char *>(respuesta.c_str())); // si no convierte da "0" (por ejemplo: si encuetra "A4" no convierte, si hay solo numero/s convierte), pero si encuentra "12a" (número/s y letra/s) tambien convierte el/los números y descarta letra/s
 
-            if(respuesta==to_string(numero)){//me aseguro de que despues del número/s no se hallan ingresado mas letras. Supuesto: se ingre sa "B12hj" o "B2gh".
+            if(respuesta==to_string(numero)){ //me aseguro de que despues del número/s no se hallan ingresado mas letras. Supuesto: se ingre sa "B12hj" o "B2gh".
                 if(verificarCoordenadas(numero, letra)){
                     pos_I = asignarValorPosI_A_Letra(letra);
                     salir = true;
@@ -414,7 +434,7 @@ string elegirButaca(Client *&Cliente, bool reservar){
             }
 
         }
-    }//cierra el while
+    }
 
     Cliente->Enviar(respuestaAux);
 
@@ -423,11 +443,11 @@ string elegirButaca(Client *&Cliente, bool reservar){
         bool posicionDisponible = false;
 
         string posicion = Cliente->Recibir();
-//        cout<<posicion<<endl;
+
         if(posicion=="Disponible"){
             posicionDisponible = true;
         }
-        numero=numero-1; //es porque el vector arranca en pos 0
+        numero=numero-1; //el vector arranca en pos 0
         determinarAccion_A_Seguir(Cliente, posicionDisponible, pos_I, numero, reservar);
     }
     else{
@@ -444,16 +464,7 @@ string elegirButaca(Client *&Cliente, bool reservar){
 void menuCliente(Client *&Cliente){
 
     string respuestaCli = "";
-    bool respuesta = verificarIpYPuerto(GLOBAL_IP,PUERTO_GLOBAL);
 
-    while(!respuesta){
-       cout<<"Ip o puerto incorrecto. Vuelva a intentarlo."<<endl;
-       _getch();
-       system("CLS");
-       respuesta = verificarIpYPuerto(GLOBAL_IP,PUERTO_GLOBAL);
-    }
-
-    bool printTO = false;
     int servicioElegido = 0;
 
     while(servicioElegido!=4){
@@ -514,27 +525,32 @@ void pedirRegistroDeActividades(Client *&Cliente){
 
 
 /***********************************************************************/
-//En realidad, el que acepta la conexion es el Servidor. La ultima parte de la funcion deberia ser en esa clase. Esto no deberia tener argumentos y se deberian enviar los input alla.
-bool verificarIpYPuerto(std::string ipReal, int puertoReal){
+bool verificarIpYPuerto(Client *&Cliente){
 
     std::string ipInput="";
-    int puertoInput = 0;
+    std::string puertoInput = "";
 
     while(ipInput==""){
-        //cout<<"Ingrese la direccion IP"<<endl;
-        ipInput=GLOBAL_IP;
-        system("CLS");
-    }
-    while(puertoInput==0){
-        //cout<<"Ingrese el puerto"<<endl;
-        puertoInput=PUERTO_GLOBAL;
+        cout<<"Ingrese la direccion IP: ";
+        cin>>ipInput;
         system("CLS");
     }
 
-    int ipCmp = ipInput.compare(ipReal);
-    int puertoCmp = (puertoInput==puertoReal);
+    while(puertoInput==""){
+        cout<<"Ingrese el puerto: ";
+        cin>>puertoInput;
+        system("CLS");
+    }
 
-    return (ipCmp==0 && puertoCmp==1)?true:false;
+    Cliente->Enviar(ipInput);
+    Cliente->Enviar(puertoInput);
+
+    string respuesta = Cliente->Recibir();
+
+    if(respuesta=="true") return true;
+    else return false;
+
+    return false;
 }
 /***********************************************************************/
 
@@ -726,7 +742,6 @@ void gestionarPasajes(Client *&Cliente){
 /***********************************************************************/
 void reservarAsiento(Client *&Cliente, bool reservar){
 
-    //Cliente->Enviar("--->>> Cliente "+NAME_CLIENTE+" conectado<<<---");
     vector <string> vectorButacas = recibirButacas_Y_separar(Cliente->Recibir());
 
     LINEA_A_GLOBAL=vectorButacas[0]; LINEA_B_GLOBAL=vectorButacas[1];  LINEA_C_GLOBAL=vectorButacas[2];
