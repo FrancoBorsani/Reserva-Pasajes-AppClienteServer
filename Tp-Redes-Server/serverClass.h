@@ -53,6 +53,7 @@ public:
             verificarArchivoServerLog();
             registrarServerLog("Cliente conectado");
         }
+
     }
 
     string Recibir()

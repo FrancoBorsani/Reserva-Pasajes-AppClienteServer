@@ -25,33 +25,39 @@ vector<string> archivos_servicios;
 /**********************************************************************/
 void renovacionDeMicrosDisponibles(){
     vector <string> vecStringAux;
+
     if(verificarSiExisteArchivo("Archivos_activos")){
             string servicio = "";
             ifstream archivoServiciosRespaldo;
             archivoServiciosRespaldo.open("Archivos_activos.txt" ,ios::in);
-            while(!archivoServiciosRespaldo.eof()){ ///el archivo  puede contener hasta 6 lineas , cada linea hace refencia a un servicio
+
+            while(!archivoServiciosRespaldo.eof()){
                 getline(archivoServiciosRespaldo , servicio);
+
                 if(servicio != ""){
-                   if(siFechaActualEsMayor(servicio)==false){//si los servicios tienen fechas que son igual o mayor a la fecha actual
-                      archivos_servicios.push_back(servicio);//guardo el  servicio en el vector GLOBAL
+                   registrarViajesEnArchivo(servicio);
+
+                   if(!siFechaActualEsMayor(servicio)){
+                      archivos_servicios.push_back(servicio);
                       vecStringAux.push_back(servicio);//guardo el  servicio en el vector que uso en el if (vecStringAux.size()>0)
-                   }else{//si la fecha actual es mayor
-                     registrarViajesEnArchivo(servicio);//los paso a un archivo general (servicio realizado)
+                   }
+                   else{
                      servicio=servicio+".txt";
                      remove(servicio.c_str());//borro el archivo individual
                    }
+
                 }
 
                 //limpiamos la cadena para la prox iteracion
                 servicio.clear();
             }
             archivoServiciosRespaldo.close();
+            if(vecStringAux.size()>0){//si quedó para dejar en el archivo "Archivos_activos"
+               actualizarCambiosEnArchivo(vecStringAux,"Archivos_activos");//saco lo que pasé al archivo definitivo
+            }
 
-             if(vecStringAux.size()>0){//si quedó para dejar en el archivo "Archivos_activos"
-                   actualizarCambiosEnArchivo(vecStringAux,"Archivos_activos");//saco lo que pasé al archivo definitivo
-            }else if(vecStringAux.size()==0){ remove("Archivos_activos.txt"); }//Si no quedó ni un registro con fecha igual o superior a la actual BORRO EL ARCHIVO y se generará cuado sea necesario
-
-    }else{
+    }
+    else{
        cout << "Error, no existe el archivo: Archivos_activos.txt"<< endl;
        exit(1);
     }
