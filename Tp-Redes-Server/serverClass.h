@@ -15,11 +15,11 @@
 #define TAMANIO_I  5
 #define TAMANIO_J  21
 #define GLOBAL_IP  "192.168.0.71"
-#define PUERTO_GLOBAL 5000
-
+#define PUERTO_GLOBAL 5010
 
 using namespace std;
 
+extern string usuarioConectado;
 
 
 void registrarServerLog(string evento);
@@ -71,7 +71,7 @@ public:
 
         if (n == 0){
             cout<<"Timeout: cliente desconectado"<<endl;
-            Enviar("Timeout");
+            CerrarSocket(usuarioConectado);
         }
         recv(client, buffer, sizeof(buffer), 0);
 

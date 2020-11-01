@@ -20,8 +20,7 @@
 using namespace std;
 
 vector<string> archivos_servicios;
-
-
+string usuarioConectado;
 /**********************************************************************/
 void renovacionDeMicrosDisponibles(){
     vector <string> vecStringAux;
@@ -190,6 +189,7 @@ string checkUser(Server *&Servidor)
                         crearArchivoUserLog(resultados[0]);
                         registrarUserLog("Inicia sesion", resultados[0]);
                         loggedUser = resultados[0];
+                        usuarioConectado = loggedUser;
                 }
 
 
@@ -203,7 +203,7 @@ string checkUser(Server *&Servidor)
             cout<<"Usuario Encontrado"<<endl<<endl;
 
         }else{
-        cout<<"Crendenciales invalidas..."<<endl<<endl<<"Por favor ingrese sus datos nuevamente (Le quedan " << " intentos)"<<endl<<endl;
+        cout<<"Crendenciales invalidas..."<<endl<<endl<<"Por favor ingrese sus datos nuevamente (Le quedan " << 3 - 1 - contador << " intentos)"<<endl<<endl;
         verificarArchivoServerLog();
         registrarServerLog("Intento de ingreso - Credenciales invalidas");
         }
@@ -407,7 +407,9 @@ string changeNameIfMultipleBus(string nombreArchivoAutobus, Server *&Servidor){
     if(checkIfMultipleBus(nombreArchivoAutobus)){
 
         vector<string> autobusesDisponibles = elegirAutobus(nombreArchivoAutobus);
-        Servidor->Enviar( std::to_string(autobusesDisponibles.size()) );
+        if(autobusesDisponibles.size()==0) Servidor->Enviar("0");
+        else Servidor->Enviar( std::to_string(autobusesDisponibles.size()) );
+
         for(int i = 0 ; i < autobusesDisponibles.size(); i++){
             Servidor->Enviar(autobusesDisponibles[i]);
         }

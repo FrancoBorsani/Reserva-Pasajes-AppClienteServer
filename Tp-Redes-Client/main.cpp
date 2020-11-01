@@ -122,8 +122,15 @@ int main()
     setlocale(LC_CTYPE,"Spanish");// Spanish (de la librería locale.h) es para usar ñ y acento
 
     Client *Cliente = new Client();
+    try {
+         inputDatosServer(Cliente);
+    }
+    catch(...) {
+        cout << "La sesion se ha cerrado por tiempo de inactividad..." << endl;
+        system("pause");
+        exit(0);
+    }
 
-    inputDatosServer(Cliente);
 
     return 0;
 }
@@ -628,23 +635,31 @@ string doIfMultipleBuses(Client *&Cliente, string autobusAPedir){
 
         string numero = Cliente->Recibir();
         vector<string> autobusesDisponibles;
+        if(numero!="0"){
+            cout<<numero<<endl;
+            _getch();
+            for(int i = 0; i < stoi(numero) ; i++){
+                autobusesDisponibles.push_back(Cliente->Recibir());
+            }
 
-        for(int i = 0; i < stoi(numero) ; i++){
-            autobusesDisponibles.push_back(Cliente->Recibir());
+            int numeroAutobusElegido=0;
+            system("cls");
+            cout<<"Seleccione el autobus que quiere usar."<<endl<<endl;
+            for(int i = 0 ; i < autobusesDisponibles.size(); i++){
+
+                cout<<(i+1)<<"- "<<autobusesDisponibles[i]<<endl;
+            }
+            cin>>numeroAutobusElegido;
+
+            Cliente->Enviar( autobusesDisponibles[numeroAutobusElegido-1] );
+
+            return autobusesDisponibles[numeroAutobusElegido-1];
+        }
+        else{
+            Cliente->Enviar("Vacio");
+            return "";
         }
 
-        int numeroAutobusElegido=0;
-        system("cls");
-        cout<<"Seleccione el autobus que quiere usar."<<endl<<endl;
-        for(int i = 0 ; i < autobusesDisponibles.size(); i++){
-
-            cout<<(i+1)<<"- "<<autobusesDisponibles[i]<<endl;
-        }
-        cin>>numeroAutobusElegido;
-
-        Cliente->Enviar( autobusesDisponibles[numeroAutobusElegido-1] );
-
-        return autobusesDisponibles[numeroAutobusElegido-1];
     }
     else{
         return autobusAPedir;

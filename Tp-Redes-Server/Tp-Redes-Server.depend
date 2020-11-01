@@ -633,7 +633,7 @@
 	<stdio.h>
 	<windns.h>
 
-1604212655 c:\users\diego\desktop\reserva-pasajes-appclienteserver\tp-redes-server\serverclass.h
+1604220795 c:\users\diego\desktop\reserva-pasajes-appclienteserver\tp-redes-server\serverclass.h
 	<iostream>
 	<winsock2.h>
 	<string>
@@ -672,7 +672,7 @@
 	<stdio.h>
 	<windns.h>
 
-1604211885 source:c:\users\diego\desktop\reserva-pasajes-appclienteserver\tp-redes-server\serverclass.cpp
+1604219430 source:c:\users\diego\desktop\reserva-pasajes-appclienteserver\tp-redes-server\serverclass.cpp
 	"serverClass.h"
 	"leerArchivo.h"
 	"escribirArchivo.h"
