@@ -14,7 +14,7 @@
 
 #define TAMANIO_I  5
 #define TAMANIO_J  21
-#define GLOBAL_IP  "192.168.88.9"
+#define GLOBAL_IP  "192.168.0.71"
 #define PUERTO_GLOBAL 5000
 
 

@@ -5,28 +5,14 @@ using namespace std;
 
 int main()
 {
-    //EJEMPLO DE ESCRITURA EN BINARIO
-    //VARIABLE A GUARDAR
-    //  char buffer2 [] = "Hola";
-
-    // ESCRITURA EN BINARIO
-    //ofstream myFile ("escribirBin.bin", std::ios::ate | std::ios::in | ios :: binary);
-    //myFile << buffer2;
-
-    //myFile.close();
-
-
-
-
-
     //LEER DEL ARCHIVO BINARIO
     string mensaje;
     ifstream leerArchivo ("info_servicios.bin", ios::in | ios::out | ios::binary);
 
     while (true) {
-       leerArchivo >> mensaje;
-       if( leerArchivo.eof() ) break;
-       cout << mensaje << endl;
+        getline(leerArchivo,mensaje);
+        cout<<mensaje<<endl;
+        if( leerArchivo.eof() ) break;
     }
 
 

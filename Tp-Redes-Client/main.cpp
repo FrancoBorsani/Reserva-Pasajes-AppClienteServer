@@ -28,7 +28,6 @@ public:
     char buffer[1024];
     Client()
     {
-
         cout<<"Conectando al servidor..."<<endl<<endl;
 
         WSAStartup(MAKEWORD(2,0), &WSAData);
@@ -554,17 +553,11 @@ vector<string> verificarIpYPuerto(){
         system("CLS");
     }
 
-    //Cliente->Enviar(ipInput);
-    //Cliente->Enviar(puertoInput);
 
     datos.push_back(ipInput);
     datos.push_back(puertoInput);
 
-    //string respuesta = Cliente->Recibir();
     return datos;
-    //if(respuesta=="true") return true;
-    //else return false;
-
 }
 /***********************************************************************/
 

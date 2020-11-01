@@ -617,7 +617,7 @@
 	<stdio.h>
 	<windns.h>
 
-1604182919 source:c:\users\diego\desktop\reserva-pasajes-appclienteserver\tp-redes-server\leerarchivo.cpp
+1604211918 source:c:\users\diego\desktop\reserva-pasajes-appclienteserver\tp-redes-server\leerarchivo.cpp
 	"serverClass.h"
 	"leerArchivo.h"
 	"escribirArchivo.h"
@@ -633,7 +633,7 @@
 	<stdio.h>
 	<windns.h>
 
-1604185444 c:\users\diego\desktop\reserva-pasajes-appclienteserver\tp-redes-server\serverclass.h
+1604212655 c:\users\diego\desktop\reserva-pasajes-appclienteserver\tp-redes-server\serverclass.h
 	<iostream>
 	<winsock2.h>
 	<string>
@@ -646,7 +646,7 @@
 	<stdio.h>
 	<windns.h>
 
-1604161918 c:\users\diego\desktop\reserva-pasajes-appclienteserver\tp-redes-server\leerarchivo.h
+1604211918 c:\users\diego\desktop\reserva-pasajes-appclienteserver\tp-redes-server\leerarchivo.h
 	<iostream>
 	<winsock2.h>
 	<string>
@@ -659,7 +659,7 @@
 	<stdio.h>
 	<windns.h>
 
-1604161918 c:\users\diego\desktop\reserva-pasajes-appclienteserver\tp-redes-server\escribirarchivo.h
+1604211918 c:\users\diego\desktop\reserva-pasajes-appclienteserver\tp-redes-server\escribirarchivo.h
 	<iostream>
 	<winsock2.h>
 	<string>
@@ -672,7 +672,7 @@
 	<stdio.h>
 	<windns.h>
 
-1604191727 source:c:\users\diego\desktop\reserva-pasajes-appclienteserver\tp-redes-server\serverclass.cpp
+1604211885 source:c:\users\diego\desktop\reserva-pasajes-appclienteserver\tp-redes-server\serverclass.cpp
 	"serverClass.h"
 	"leerArchivo.h"
 	"escribirArchivo.h"
@@ -689,7 +689,7 @@
 	<stdio.h>
 	<windns.h>
 
-1604190769 source:c:\users\diego\desktop\reserva-pasajes-appclienteserver\tp-redes-server\escribirarchivo.cpp
+1604211918 source:c:\users\diego\desktop\reserva-pasajes-appclienteserver\tp-redes-server\escribirarchivo.cpp
 	"serverClass.h"
 	"leerArchivo.h"
 	"escribirArchivo.h"
@@ -705,7 +705,7 @@
 	<stdio.h>
 	<windns.h>
 
-1604188988 source:c:\users\diego\desktop\reserva-pasajes-appclienteserver\tp-redes-server\main.cpp
+1604212497 source:c:\users\diego\desktop\reserva-pasajes-appclienteserver\tp-redes-server\main.cpp
 	"serverClass.h"
 	"leerArchivo.h"
 	"escribirArchivo.h"
