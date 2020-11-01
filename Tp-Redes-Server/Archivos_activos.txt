@@ -1,2 +1,8 @@
-12-12-2020;Buenos_Aires;Tarde
-12-3-2021;Buenos_Aires;Noche
+1-11-2020;Buenos_Aires;Noche
+2-11-2020;Buenos_Aires;Noche
+3-11-2020;Buenos_Aires;Noche
+4-11-2020;Buenos_Aires;Noche
+6-11-2020;Buenos_Aires;Noche
+5-11-2020;Buenos_Aires;Noche
+7-11-2020;Buenos_Aires;Noche
+8-11-2020;Buenos_Aires;Noche

@@ -47,10 +47,29 @@ void registrarViajesEnArchivo(string nombreArchivo){
           butacasReservadas = butacasReservadas+"C"+to_string(i-39)+"_";
         }
    }//for i
-   butacasReservadas.pop_back();//saco el último guion que le queda (no se puede igualar directamente a un string)
-   guardarEnArchivoBinario(destinoFechaTurno+" "+butacasReservadas,"info_servicios");
+   if(butacasReservadas.size()!=0){
+       butacasReservadas.pop_back();//saco el último guion que le queda (no se puede igualar directamente a un string)
+   }
+   if(!verificarSiDuplicaDato(destinoFechaTurno,butacasReservadas)){
+       guardarEnArchivoBinario(destinoFechaTurno+" "+butacasReservadas,"info_servicios");
+   }
 }
 /***********************************************************************/
+
+bool verificarSiDuplicaDato(string destinoFechaTurno ,string butacasReservadas){
+     bool duplicado = false;
+     string datoAGuardar = destinoFechaTurno+" "+butacasReservadas;
+     if(verificarSiExisteArchivoBinario("info_servicios")){//es para que no duplique datos
+          vector <string> datosExistentes = leerArchivoBinarioGuardarEnVectorString("info_servicios");
+          for(int i=0;i<(int)datosExistentes.size();i++){
+              if(datoAGuardar==datosExistentes[i]){
+                duplicado=true;
+              }
+           }
+     }
+    return duplicado;
+}
+
 
 /***********************************************************************/
 void darFormato_y_GuardarButacasEnArchivo(string nombreArchivo, string titulo,char butacas[TAMANIO_I][TAMANIO_J]){
@@ -72,6 +91,7 @@ void darFormato_y_GuardarButacasEnArchivo(string nombreArchivo, string titulo,ch
 }
 /***********************************************************************/
 
+
 /***********************************************************************/
 void guardarEnArchivoConFormato(string lineaAGuardar, string nombreArchivo){
       bool NO_EsPrimeraCarga = verificarSiExisteArchivo(nombreArchivo);// Si no existe el archivo quiere decir que va a ser la primera cargaga de datos (ya que cuando lo creo cargo datos)
@@ -89,23 +109,30 @@ void guardarEnArchivoConFormato(string lineaAGuardar, string nombreArchivo){
 
 /***********************************************************************/
 void guardarEnArchivoSinFormato(string lineaAGuardar, string nombreArchivo){
-    nombreArchivo= nombreArchivo+".txt";
-    ofstream archivo(nombreArchivo.c_str(),ios::out | ios::app);
-
-    archivo<<lineaAGuardar<<"\n"; //solo pongo la linea
-
-    archivo.close();
+      bool NO_EsPrimeraCarga = verificarSiExisteArchivo(nombreArchivo);// Si no existe el archivo quiere decir que va a ser la primera cargaga de datos (ya que cuando lo creo cargo datos)
+   nombreArchivo= nombreArchivo+".txt";
+   ofstream archivo(nombreArchivo.c_str(),ios::out | ios::app);
+        if(NO_EsPrimeraCarga==false){//si es la primera carga
+          archivo<<lineaAGuardar; //solo pongo la linea
+        }else{//si NO es la primera carga, pongo salto de linea al comienzo
+          archivo<<"\n"<<lineaAGuardar;
+        }/*sin este if me generaba una linea demás, al comienzo del archivo, por el salto de linea. Si pusiese el salto de linea al final genería la linea demás al final del
+         archivo y no tengo forma manejarlo cuando... en ambos casos al mostrar los registros del archivo me mostraría uno demás en blanco arriba o abajo*/
+   archivo.close();
 }
 /***********************************************************************/
 
 
 /***********************************************************************/
 void guardarEnArchivoBinario(string lineaAGuardar, string nombreArchivo){
-
-    nombreArchivo=nombreArchivo+".bin";
-    ofstream archivoBin (nombreArchivo.c_str(), std::ios::out | std::ios::app | ios :: binary);
-
-    archivoBin<<lineaAGuardar<<"\n";
+   bool siExisteArchivo = verificarSiExisteArchivoBinario(nombreArchivo);
+   nombreArchivo=nombreArchivo+".bin";
+   ofstream archivoBin (nombreArchivo.c_str(), std::ios::out | std::ios::app | ios :: binary);
+    if(siExisteArchivo==false){
+        archivoBin<<lineaAGuardar;
+    }else{
+      archivoBin<<"\n"<<lineaAGuardar;
+    }
 
     archivoBin.close();
 }

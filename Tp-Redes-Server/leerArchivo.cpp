@@ -66,6 +66,31 @@ vector <string> leerArchivoGuardarEnVectorString(string nombreArchivo)
 
 
 /***********************************************************************/
+vector <string> leerArchivoBinarioGuardarEnVectorString(string nombreArchivo)
+{
+    vector <string> vecString;
+
+    nombreArchivo=nombreArchivo+".bin";
+
+    string texto = "";
+
+    ifstream archivo;//ifstream(tipo de variable para abrir un archivo)...  archivo (nombre de la variable)
+    archivo.open(nombreArchivo.c_str(),std::ios::in | ios :: binary);
+
+    if(archivo.is_open()){
+        while(!archivo.eof()){
+           getline(archivo,texto);//Tomo lo que va encontrando en "archivo" y lo copio en "texto"
+           vecString.push_back(texto);//guardo en una posición del vector la linea obtenida del archivo
+        }
+        archivo.close();
+    }
+
+    return vecString;
+}
+/***********************************************************************/
+
+
+/***********************************************************************/
 vector<string> separarPalabrasPuntoYComa(string str) {
 
         int posInit = 0;

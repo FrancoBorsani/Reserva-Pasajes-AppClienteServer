@@ -21,25 +21,33 @@ using namespace std;
 
 int main()
 {
-    verificarArchivoServerLog();
-    registrarServerLog("Inicia servidor");
-    registrarServerLog("Socket creado.");
+//    verificarArchivoServerLog();
+//    registrarServerLog("Inicia servidor");
+//    registrarServerLog("Socket creado.");
+//
+//    while(true){
+//        setlocale(LC_CTYPE,"Spanish");// Spanish (de la librería locale.h) es para usar ñ y acento
+//
+//        Server *Servidor = new Server();
+//
+//        string userName = checkUser(Servidor);
+//
+//        manejarPeticion(userName, Servidor);
+//
+//        Servidor->CerrarSocket(userName);
+//
+//        system("cls");
+     string fecha="8-11-2020";
+     string orig="Buenos_Aires";
+     string turno ="Noche";
+     string nombreArchivo =fecha+";"+orig+";"+turno;
+     string tituloArchivo =fecha+" "+orig+" "+turno;
 
-    while(true){
-        setlocale(LC_CTYPE,"Spanish");// Spanish (de la librería locale.h) es para usar ñ y acento
 
-        Server *Servidor = new Server();
-
-        string userName = checkUser(Servidor);
-
-        manejarPeticion(userName, Servidor);
-
-        Servidor->CerrarSocket(userName);
-
-        system("cls");
-
+        crearArchivoButacas(nombreArchivo , tituloArchivo); ///si el servicio no existe crea su registro con sus correspondientes datos
+        guardarEnArchivoSinFormato(nombreArchivo, "Archivos_activos");
         renovacionDeMicrosDisponibles();
-    }
+    //}
 
    // main();
 }

@@ -19,6 +19,7 @@ using namespace std;
 
 bool crearArchivoButacas(string nombreArchivo,string tituloArchivo);
 void registrarViajesEnArchivo(string nombreArchivo);
+bool verificarSiDuplicaDato(string destinoFechaTurno ,string butacasReservadas);
 void darFormato_y_GuardarButacasEnArchivo(string nombreArchivo, string titulo,char butacas[TAMANIO_I][TAMANIO_J]);
 void guardarEnArchivoConFormato(string lineaAGuardar, string nombreArchivo);
 void guardarEnArchivoSinFormato(string lineaAGuardar, string nombreArchivo);
