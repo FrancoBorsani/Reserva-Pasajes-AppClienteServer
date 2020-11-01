@@ -10,14 +10,15 @@
 
 #define TAMANIO_I  5
 #define TAMANIO_J  21
-#define GLOBAL_IP  "192.168.0.71"
-#define PUERTO_GLOBAL 5000
+
 
 using namespace std;
 
 string LINEA_A_GLOBAL = "";
 string LINEA_B_GLOBAL = "";
 string LINEA_C_GLOBAL = "";
+
+vector<string> verificarIpYPuerto();
 
 class Client{
 public:
@@ -27,15 +28,34 @@ public:
     char buffer[1024];
     Client()
     {
+
         cout<<"Conectando al servidor..."<<endl<<endl;
+
         WSAStartup(MAKEWORD(2,0), &WSAData);
         server = socket(AF_INET, SOCK_STREAM, 0);
-        addr.sin_addr.s_addr = inet_addr(GLOBAL_IP);
+
+        vector<string> datos = verificarIpYPuerto();
+
+        string s = datos[0];
+        int n = s.length();
+        char ip[n + 1];
+        strcpy(ip, s.c_str());
+
+        addr.sin_addr.s_addr = inet_addr(ip);
+
         addr.sin_family = AF_INET;
-        addr.sin_port = htons(PUERTO_GLOBAL);
+
+        addr.sin_port = htons(stol(datos[1]));
+
         int crespuesta = connect(server, (SOCKADDR *)&addr, sizeof(addr));
         if(crespuesta==0){
             cout << "Conectado al Servidor!" << endl;
+        }
+        else{
+            cout<<"Error al conectarse. Vuelva a intentarlo mas tarde."<<endl;
+            CerrarSocket();
+            system("pause");
+            exit(1);
         }
 
     }
@@ -87,7 +107,6 @@ string autobusAUsar();
 string elegirButaca(Client *&Cliente, bool reservar);
 void menuCliente(Client *&Cliente);
 void pedirRegistroDeActividades(Client *&Cliente);
-bool verificarIpYPuerto(Client *&Cliente);
 void gestionarPasajes(Client *&Cliente);
 void reservarAsiento(Client *&Cliente, bool reservar);
 string login();
@@ -115,14 +134,6 @@ int main()
 
 void inputDatosServer(Client *&Cliente){
 
-    bool respuesta = verificarIpYPuerto(Cliente);
-
-    while(!respuesta){
-        cout<<"Ip o puerto incorrecto. Vuelva a intentarlo."<<endl;
-        _getch();
-        system("CLS");
-        respuesta = verificarIpYPuerto(Cliente);
-    }
     system("CLS");
 
     bool ingresar = autenticacion(Cliente);
@@ -525,10 +536,11 @@ void pedirRegistroDeActividades(Client *&Cliente){
 
 
 /***********************************************************************/
-bool verificarIpYPuerto(Client *&Cliente){
+vector<string> verificarIpYPuerto(){
 
     std::string ipInput="";
     std::string puertoInput = "";
+    vector<string> datos;
 
     while(ipInput==""){
         cout<<"Ingrese la direccion IP: ";
@@ -542,15 +554,17 @@ bool verificarIpYPuerto(Client *&Cliente){
         system("CLS");
     }
 
-    Cliente->Enviar(ipInput);
-    Cliente->Enviar(puertoInput);
+    //Cliente->Enviar(ipInput);
+    //Cliente->Enviar(puertoInput);
 
-    string respuesta = Cliente->Recibir();
+    datos.push_back(ipInput);
+    datos.push_back(puertoInput);
 
-    if(respuesta=="true") return true;
-    else return false;
+    //string respuesta = Cliente->Recibir();
+    return datos;
+    //if(respuesta=="true") return true;
+    //else return false;
 
-    return false;
 }
 /***********************************************************************/
 

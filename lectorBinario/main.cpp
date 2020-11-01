@@ -21,7 +21,7 @@ int main()
 
     //LEER DEL ARCHIVO BINARIO
     string mensaje;
-    ifstream leerArchivo ("infoServicios.bin", ios::in | ios::out | ios::binary);
+    ifstream leerArchivo ("info_servicios.bin", ios::in | ios::out | ios::binary);
 
     while (true) {
        leerArchivo >> mensaje;
