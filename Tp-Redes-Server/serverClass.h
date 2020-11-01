@@ -14,7 +14,7 @@
 
 #define TAMANIO_I  5
 #define TAMANIO_J  21
-#define GLOBAL_IP  "192.168.0.71"
+#define GLOBAL_IP  "192.168.88.9"
 #define PUERTO_GLOBAL 5010
 
 using namespace std;
@@ -61,7 +61,7 @@ public:
         fd_set fds ;
         struct timeval tv ;
 
-        tv.tv_sec = 120 ;
+        tv.tv_sec = 30 ;
         tv.tv_usec = 0 ;
 
         FD_ZERO(&fds) ;
@@ -106,6 +106,7 @@ public:
 
 void crearServicio(string userName , Server*& servidor);
 void renovacionDeMicrosDisponibles();
+void paraCerrarSesionDelCliente(Server *&Servidor);
 
 string checkData(Server *&Servidor);
 void mostrarRegistro(string userName, Server *&Servidor);

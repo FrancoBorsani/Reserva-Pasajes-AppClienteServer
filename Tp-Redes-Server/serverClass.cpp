@@ -424,6 +424,13 @@ string changeNameIfMultipleBus(string nombreArchivoAutobus, Server *&Servidor){
     return nombreArchivoAutobus;
 }
 
+/************************************************************************/
+void paraCerrarSesionDelCliente(Server *&Servidor){
+    Servidor->Recibir();//Para cerrar
+    Servidor->Enviar("cerrar");//Para cerrar
+}
+/***********************************************************************/
+
 /***********************************************************************/
 void manejarPeticion(string userName, Server *&Servidor){
     string peticion="";
@@ -431,6 +438,7 @@ void manejarPeticion(string userName, Server *&Servidor){
     string opcionesPosibles=" ";
 
     while(!salir){
+        paraCerrarSesionDelCliente(Servidor);
 
         salir = true;
         peticion = Servidor->Recibir();

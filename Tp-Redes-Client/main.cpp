@@ -75,10 +75,6 @@ public:
 
         string buff = buffer;
 
-        if(buff=="Timeout"){
-            cout<<"Sesion expirada"<<endl;
-            CerrarSocket();
-        }
         memset(buffer, 0, sizeof(buffer));
         return buff;
     }
@@ -112,6 +108,8 @@ string login();
 vector<string> separarPalabras(string str);
 bool autenticacion(Client *&Cliente);
 void inputDatosServer(Client *&Cliente);
+void cerrarSesion();
+bool expiroLaSesion(Client *&Cliente);
 
 
 /***********************************************************************/
@@ -137,6 +135,25 @@ int main()
 /***********************************************************************/
 /*******************************FIN MAIN********************************/
 /***********************************************************************/
+
+bool expiroLaSesion(Client *&Cliente){
+     bool seCerro = false;
+            Cliente->Enviar("paraCerrar");
+            if(Cliente->Recibir().length()==0){
+                seCerro=true;
+            }
+   return seCerro;
+}
+
+
+
+void cerrarSesion(){
+        system("CLS");
+        cout << "La sesion se ha cerrado por tiempo de inactividad..." << endl;
+        system("pause");
+        exit(0);
+}
+
 
 void inputDatosServer(Client *&Cliente){
 
@@ -495,18 +512,24 @@ void menuCliente(Client *&Cliente){
         switch(servicioElegido){
             case 1: system("CLS");
                     Cliente->Enviar("AltaServicio");
-                    altaServicio(Cliente);
-                    _getch();
-                    system("CLS");
-                    break;
+                    if(!expiroLaSesion(Cliente)){
+                       altaServicio(Cliente);
+                       _getch();
+                       system("CLS");
+                       break;
+                     }else{cerrarSesion();}
             case 2: system("CLS");
-                    gestionarPasajes(Cliente);
-                    break;
+                   if(!expiroLaSesion(Cliente)){
+                      gestionarPasajes(Cliente);
+                      break;
+                    }else{cerrarSesion();}
             case 3: system("CLS");
-                    pedirRegistroDeActividades(Cliente);
-                    _getch();
-                    system("CLS");
-                    break;
+                    if(!expiroLaSesion(Cliente)){
+                      pedirRegistroDeActividades(Cliente);
+                      _getch();
+                      system("CLS");
+                      break;
+                    }else{cerrarSesion();}
             case 4: system("CLS");
                     Cliente->CerrarSocket();
                     cout<<"Sesion cerrada correctamente"<<endl;
@@ -514,11 +537,14 @@ void menuCliente(Client *&Cliente){
                     system("CLS");
                     break;
             default: system("CLS");
-                    cout<<"Ingreso una opcion incorrecta."<<endl;
-                    _getch();
-                    system("CLS");
-                    break;
+                   if(!expiroLaSesion(Cliente)){
+                      cout<<"Ingreso una opcion incorrecta."<<endl;
+                       _getch();
+                       system("CLS");
+                       break;
+                    }else{cerrarSesion();}
         }
+
     }
 }
 /***********************************************************************/
