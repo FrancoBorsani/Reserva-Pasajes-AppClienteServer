@@ -23,7 +23,9 @@ int main()
 {
     verificarArchivoServerLog();
     registrarServerLog("Inicia servidor");
-    registrarServerLog("Socket creado.");
+
+    string puertoEscucha = "Socket creado. Puerto de escucha: " + std::to_string(PUERTO_GLOBAL);
+    registrarServerLog(puertoEscucha);
 
     while(true){
         setlocale(LC_CTYPE,"Spanish");// Spanish (de la librería locale.h) es para usar ñ y acento

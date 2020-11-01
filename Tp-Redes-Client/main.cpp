@@ -604,11 +604,11 @@ string autobusAUsar(bool crear){
     if(origen=="buenos aires"){
         origen = "Buenos_Aires";
     }
-    else{
+    else if(origen=="mar del plata"){
         origen = "Mar_Del_Plata";
     }
 
-    turno[0] = toupper(turno[0]);
+    if(turno!="0") turno[0] = toupper(turno[0]);
 
     return datosServicio[0]+"-"+datosServicio[1]+"-"+datosServicio[2]+";"+origen+";"+turno;
 }
