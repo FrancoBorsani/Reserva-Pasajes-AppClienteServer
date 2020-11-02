@@ -578,11 +578,11 @@ string autobusAUsar(bool crear){
     if(origen=="buenos aires"){
         origen = "Buenos_Aires";
     }
-    else{
+    else if(origen=="mar del plata"){
         origen = "Mar_Del_Plata";
     }
 
-    turno[0] = toupper(turno[0]);
+    if(turno!="0") turno[0] = toupper(turno[0]);
 
     return datosServicio[0]+"-"+datosServicio[1]+"-"+datosServicio[2]+";"+origen+";"+turno;
 }
@@ -636,8 +636,6 @@ string doIfMultipleBuses(Client *&Cliente, string autobusAPedir){
         string numero = Cliente->Recibir();
         vector<string> autobusesDisponibles;
         if(numero!="0"){
-            cout<<numero<<endl;
-            _getch();
             for(int i = 0; i < stoi(numero) ; i++){
                 autobusesDisponibles.push_back(Cliente->Recibir());
             }

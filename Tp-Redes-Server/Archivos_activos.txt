@@ -6,8 +6,10 @@
 6-11-2020;Buenos_Aires;Noche
 3-11-2020;Mar_Del_Plata;Tarde
 3-11-2020;Mar_Del_Plata;Noche
+4-11-2020;Mar_Del_Plata;Maniana
 4-11-2020;Mar_Del_Plata;Tarde
 5-11-2020;Mar_Del_Plata;Noche
 6-11-2020;Mar_Del_Plata;Noche
 23-11-2020;Buenos_Aires;Maniana
 23-11-2020;Mar_Del_Plata;Noche
+24-11-2020;Buenos_Aires;Noche

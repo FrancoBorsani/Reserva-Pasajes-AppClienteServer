@@ -1,55 +1,46 @@
 
+2020-11-01.09:08:03: ===================================
+2020-11-01.09:08:03: Inicia servidor
+2020-11-01.09:08:03: ===================================
+2020-11-01.09:08:03: Socket creado. Puerto de escucha: 5000
+2020-11-01.09:08:30: Cliente conectado
+2020-11-01.09:08:37: Intento de ingreso - Credenciales invalidas
+2020-11-01.09:08:40: Intento de ingreso - Credenciales invalidas
+2020-11-01.09:08:40: Intento de ingreso - Credenciales invalidas
+2020-11-01.09:08:40: Cliente desconectado
+2020-11-01.09:08:48: Cliente conectado
+2020-11-01.09:08:55: Intento de ingreso - Credenciales invalidas
+2020-11-01.09:08:58: Intento de ingreso - Credenciales invalidas
+2020-11-01.09:09:02: Intento de ingreso - Credenciales invalidas
+2020-11-01.09:09:05: Cliente desconectado
+2020-11-01.09:09:15: Cliente conectado
+2020-11-01.09:09:21: Intento de ingreso - Credenciales invalidas
+2020-11-01.09:09:24: Intento de ingreso - Credenciales invalidas
+2020-11-01.09:09:34: Usuario autenticado -Gustavo
+2020-11-01.09:16:22: Cliente desconectado
+2020-11-01.09:16:35: Cliente conectado
+2020-11-01.09:16:44: Usuario autenticado -Josefina
+2020-11-01.09:19:55: Cliente desconectado
+2020-11-01.09:19:55: Cliente desconectado
+2020-11-01.09:20:18: Cliente conectado
+2020-11-01.09:20:23: Usuario autenticado -Josefina
+2020-11-01.09:20:38: Cliente desconectado
 
-2020-11-01.05:37:07: ===================================
-2020-11-01.05:37:07: Inicia servidor
-2020-11-01.05:37:07: ===================================
-2020-11-01.05:37:07: Socket creado.
-2020-11-01.05:37:29: Cliente conectado
-2020-11-01.05:37:37: Intento de ingreso - Credenciales invalidas
-2020-11-01.05:37:41: Intento de ingreso - Credenciales invalidas
-2020-11-01.05:37:41: Intento de ingreso - Credenciales invalidas
-2020-11-01.05:37:41: Cliente desconectado
-2020-11-01.05:37:52: Cliente conectado
-2020-11-01.05:38:05: Intento de ingreso - Credenciales invalidas
-2020-11-01.05:38:08: Intento de ingreso - Credenciales invalidas
-2020-11-01.05:38:13: Intento de ingreso - Credenciales invalidas
-2020-11-01.05:38:15: Cliente desconectado
-2020-11-01.05:38:26: Cliente conectado
-2020-11-01.05:38:31: Intento de ingreso - Credenciales invalidas
-2020-11-01.05:38:35: Intento de ingreso - Credenciales invalidas
-2020-11-01.05:38:46: Usuario autenticado -Gustavo
-2020-11-01.05:46:35: Cliente desconectado
-2020-11-01.05:46:47: Cliente conectado
-2020-11-01.05:46:59: Usuario autenticado -Josefina
-2020-11-01.05:50:23: Cliente desconectado
-2020-11-01.05:50:23: Cliente desconectado
-2020-11-01.05:50:54: Cliente conectado
-2020-11-01.05:51:01: Usuario autenticado -Josefina
-2020-11-01.05:51:20: Cliente desconectado
+2020-11-01.09:22:35: ===================================
+2020-11-01.09:22:35: Inicia servidor
+2020-11-01.09:22:35: ===================================
+2020-11-01.09:22:35: Socket creado. Puerto de escucha: 5010
+2020-11-01.09:22:54: Cliente conectado
+2020-11-01.09:23:01: Usuario autenticado -Juan_2
+2020-11-01.09:24:56: Cliente desconectado
+2020-11-01.09:25:07: Cliente conectado
+2020-11-01.09:25:17: Usuario autenticado -Gustavo
+2020-11-01.09:25:21: Cliente desconectado
 
-2020-11-01.05:53:28: ===================================
-2020-11-01.05:53:28: Inicia servidor
-2020-11-01.05:53:28: ===================================
-2020-11-01.05:53:28: Socket creado.
-2020-11-01.05:53:52: Cliente conectado
-2020-11-01.05:54:14: Usuario autenticado -Juan_2
-2020-11-01.05:56:19: Cliente desconectado
-2020-11-01.05:56:32: Cliente conectado
-2020-11-01.05:56:45: Usuario autenticado -Gustavo
-2020-11-01.05:56:56: Cliente desconectado
-
-2020-11-01.06:01:57: ===================================
-2020-11-01.06:01:57: Inicia servidor
-2020-11-01.06:01:57: ===================================
-2020-11-01.06:01:57: Socket creado.
-2020-11-01.06:02:10: Cliente conectado
-2020-11-01.06:02:20: Usuario autenticado -Josefina
-2020-11-01.06:02:39: Cliente desconectado
-
-2020-11-01.06:08:53: ===================================
-2020-11-01.06:08:53: Inicia servidor
-2020-11-01.06:08:53: ===================================
-2020-11-01.06:08:53: Socket creado.
-2020-11-01.06:09:17: Cliente conectado
-2020-11-01.06:09:27: Usuario autenticado -Josefina
-2020-11-01.06:09:45: Cliente desconectado
+2020-11-02.09:35:37: ===================================
+2020-11-02.09:35:37: Inicia servidor
+2020-11-02.09:35:37: ===================================
+2020-11-02.09:35:37: Socket creado. Puerto de escucha: 5000
+2020-11-02.09:35:46: Cliente conectado
+2020-11-02.09:35:56: Usuario autenticado -Josefina
+2020-11-02.09:40:09: Cliente desconectado

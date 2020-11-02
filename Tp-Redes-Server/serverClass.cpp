@@ -25,6 +25,10 @@ string usuarioConectado;
 void renovacionDeMicrosDisponibles(){
     vector <string> vecStringAux;
 
+    if(verificarSiExisteArchivoBinario("info_servicios")) remove("info_servicios.bin");
+
+    std::ifstream binaryFile("info_servicios.bin");
+
     if(verificarSiExisteArchivo("Archivos_activos")){
             string servicio = "";
             ifstream archivoServiciosRespaldo;

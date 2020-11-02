@@ -50,9 +50,9 @@ void registrarViajesEnArchivo(string nombreArchivo){
    if(butacasReservadas.size()!=0){
        butacasReservadas.pop_back();//saco el último guion que le queda (no se puede igualar directamente a un string)
    }
-   if(!verificarSiDuplicaDato(destinoFechaTurno,butacasReservadas)){
+   //if(!verificarSiDuplicaDato(destinoFechaTurno,butacasReservadas)){
        guardarEnArchivoBinario(destinoFechaTurno+" "+butacasReservadas,"info_servicios");
-   }
+   //}
 }
 /***********************************************************************/
 
