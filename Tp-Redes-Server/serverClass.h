@@ -14,8 +14,8 @@
 
 #define TAMANIO_I  5
 #define TAMANIO_J  21
-#define GLOBAL_IP  "192.168.0.71"
-#define PUERTO_GLOBAL 5000
+#define GLOBAL_IP  "192.168.88.9"
+#define PUERTO_GLOBAL 5010
 
 using namespace std;
 
@@ -106,6 +106,9 @@ public:
 
 void crearServicio(string userName , Server*& servidor);
 void renovacionDeMicrosDisponibles();
+bool verificarSiDuplicaDato(string destinoFechaTurnoA,string destinoFechaTurnoB);
+string separarDatosDatoExistente(string datoExistente);
+vector <string> traerUnicos(vector <string> activos,vector <string> existentes);
 
 string checkData(Server *&Servidor);
 void mostrarRegistro(string userName, Server *&Servidor);
@@ -114,6 +117,7 @@ void gestionarAsiento(string nombreArchivo,Server *&Servidor, string userName, b
 void liberar(Server *&Servidor, string userName);
 string verificarSolicitud_Y_Responder(Server *&Servidor,vector <string> vectorButacas, string userName, bool reservar, string nombreArchivo);
 int numeroDeSentencias(string file);
-void manejarPeticion(string userName, Server *&Servidor);
+void manejarPeticion(string userName,Server *&Servidor);
+string changeNameIfMultipleBus(string nombreArchivoAutobus, Server*& Servidor);
 
 #endif // SERVERCLASS_H_INCLUDED

@@ -21,7 +21,7 @@ using namespace std;
 /***********************************************************************/
 bool crearArchivoButacas(string nombreArchivo,string tituloArchivo){
     bool archivoCreado = false;
-    if(verificarSiExisteArchivo(nombreArchivo)==false){//solo es paracrear un archivo
+    if(verificarSiExisteArchivoBinario(nombreArchivo)==false){//solo es paracrear un archivo
         char butacas[TAMANIO_I][TAMANIO_J];
         iniciarButacas(butacas);
         darFormato_y_GuardarButacasEnArchivo(nombreArchivo,tituloArchivo,butacas);
@@ -33,8 +33,8 @@ bool crearArchivoButacas(string nombreArchivo,string tituloArchivo){
 
 
 /***********************************************************************/
-void registrarViajesEnArchivo(string nombreArchivo){
-   vector <string> vectorButacas = leerArchivoGuardarEnVectorString(nombreArchivo);
+string prepararParaActualizarViajesEnArchivo(string nombreArchivo){
+   vector <string> vectorButacas = leerArchivoBinarioGuardarEnVectorString(nombreArchivo);
    string destinoFechaTurno = vectorButacas[1];
    string butacas = traerSoloButacas(vectorButacas);
    string butacasReservadas="";
@@ -50,26 +50,36 @@ void registrarViajesEnArchivo(string nombreArchivo){
    if(butacasReservadas.size()!=0){
        butacasReservadas.pop_back();//saco el último guion que le queda (no se puede igualar directamente a un string)
    }
-   //if(!verificarSiDuplicaDato(destinoFechaTurno,butacasReservadas)){
-       guardarEnArchivoBinario(destinoFechaTurno+" "+butacasReservadas,"info_servicios");
-   //}
+
+   return destinoFechaTurno+" "+butacasReservadas;
 }
 /***********************************************************************/
 
-bool verificarSiDuplicaDato(string destinoFechaTurno ,string butacasReservadas){
-     bool duplicado = false;
-     string datoAGuardar = destinoFechaTurno+" "+butacasReservadas;
-     if(verificarSiExisteArchivoBinario("info_servicios")){//es para que no duplique datos
-          vector <string> datosExistentes = leerArchivoBinarioGuardarEnVectorString("info_servicios");
-          for(int i=0;i<(int)datosExistentes.size();i++){
-              if(datoAGuardar==datosExistentes[i]){
-                duplicado=true;
-              }
-           }
-     }
-    return duplicado;
-}
 
+string extraerNombreDeArchivo(string datoExistente)
+{
+    int cont =0;
+    for(int i=0;i<(int)datoExistente.size();i++){
+        if(datoExistente[i]==' '){
+            cont++;
+        }
+    }
+    vector <string> vecStr;
+    std::string delimiter = " ";
+    size_t posDelimiter = 0;
+     int i=0;
+    while ((posDelimiter = datoExistente.find(delimiter)) != std::string::npos)//mientras la posicion del espacio (delimiter) no sea la última de la linea
+    {
+        vecStr.push_back(datoExistente.substr(0, posDelimiter));
+
+        datoExistente.erase(0, posDelimiter + delimiter.length());
+       i++;
+    }
+    if(cont<3){
+     vecStr.push_back(datoExistente);
+    }
+  return vecStr[0]+";"+vecStr[1]+";"+vecStr[2];
+}
 
 /***********************************************************************/
 void darFormato_y_GuardarButacasEnArchivo(string nombreArchivo, string titulo,char butacas[TAMANIO_I][TAMANIO_J]){
@@ -94,26 +104,11 @@ void darFormato_y_GuardarButacasEnArchivo(string nombreArchivo, string titulo,ch
 
 /***********************************************************************/
 void guardarEnArchivoConFormato(string lineaAGuardar, string nombreArchivo){
-      bool NO_EsPrimeraCarga = verificarSiExisteArchivo(nombreArchivo);// Si no existe el archivo quiere decir que va a ser la primera cargaga de datos (ya que cuando lo creo cargo datos)
-   nombreArchivo= nombreArchivo+".txt";
-   ofstream archivo(nombreArchivo.c_str(),ios::out | ios::app);
+      bool NO_EsPrimeraCarga = verificarSiExisteArchivoBinario(nombreArchivo);// Si no existe el archivo quiere decir que va a ser la primera cargaga de datos (ya que cuando lo creo cargo datos)
+   nombreArchivo= nombreArchivo+".bin";
+   ofstream archivo (nombreArchivo.c_str(), std::ios::out | std::ios::app | ios :: binary);
         if(NO_EsPrimeraCarga==false){//si es la primera carga
           archivo<<"\n"<<lineaAGuardar<<"\n\n"; //pongo título y salto de linea al final para dejar un reglón vacio
-        }else{//si NO es la primera carga, pongo salto de linea al comienzo
-          archivo<<"\n"<<lineaAGuardar;
-        }/*sin este if me generaba una linea demás, al comienzo del archivo, por el salto de linea. Si pusiese el salto de linea al final genería la linea demás al final del
-         archivo y no tengo forma manejarlo cuando... en ambos casos al mostrar los registros del archivo me mostraría uno demás en blanco arriba o abajo*/
-   archivo.close();
-}
-/***********************************************************************/
-
-/***********************************************************************/
-void guardarEnArchivoSinFormato(string lineaAGuardar, string nombreArchivo){
-      bool NO_EsPrimeraCarga = verificarSiExisteArchivo(nombreArchivo);// Si no existe el archivo quiere decir que va a ser la primera cargaga de datos (ya que cuando lo creo cargo datos)
-   nombreArchivo= nombreArchivo+".txt";
-   ofstream archivo(nombreArchivo.c_str(),ios::out | ios::app);
-        if(NO_EsPrimeraCarga==false){//si es la primera carga
-          archivo<<lineaAGuardar; //solo pongo la linea
         }else{//si NO es la primera carga, pongo salto de linea al comienzo
           archivo<<"\n"<<lineaAGuardar;
         }/*sin este if me generaba una linea demás, al comienzo del archivo, por el salto de linea. Si pusiese el salto de linea al final genería la linea demás al final del
@@ -137,23 +132,6 @@ void guardarEnArchivoBinario(string lineaAGuardar, string nombreArchivo){
     archivoBin.close();
 }
 /***********************************************************************/
-
-
-/***********************************************************************/
-bool verificarSiExisteArchivo(string nombreArchivo){
-    nombreArchivo= nombreArchivo+".txt";
-    bool yaExisteArchivo = true;
-    ifstream archivo;//ifstream(tipo de variable para abrir un archivo)...  archivo (nombre de la variable)
-    archivo.open(nombreArchivo.c_str(),ios::in);// con archivo.open le digo que quiero abrir un archivo y con ios::in le digo que abro para leerlo
-    if(archivo.fail())//si hay un error y no se abre el arvhivo
-    {
-        yaExisteArchivo = false;
-    }
-    archivo.close();//cerramos archivo
- return yaExisteArchivo;
-}
-/***********************************************************************/
-
 
 
 /***********************************************************************/
@@ -254,7 +232,7 @@ string getIdServicio(string nombreArchivo){
 
     string fecha = datos[0];
 
-    for(int i = 0 ; i < fecha.length(); i++){
+    for(int i = 0 ; i < (int)fecha.length(); i++){
         if(fecha[i]=='-'){
             fecha.erase(fecha.begin()+i);
         }
@@ -270,7 +248,7 @@ string getIdServicio(string nombreArchivo){
 /***********************************************************************/
 void marcarButacaComoOcupada(vector <string> vectorButacas, int pos_I, int pos_J, string userName, string nombreArchivo){
         vectorButacas[pos_I][pos_J] = 'X';
-        actualizarCambiosEnArchivo(vectorButacas, nombreArchivo);
+        actualizarCambiosEnArchivoBinario(vectorButacas, nombreArchivo);
 
         string idServicio = getIdServicio(nombreArchivo);
 
@@ -287,11 +265,11 @@ void marcarButacaComoOcupada(vector <string> vectorButacas, int pos_I, int pos_J
 /**********************************************************************/
 
 
-/**********************************************************************/
- void actualizarCambiosEnArchivo(vector <string> vecString,string nombreArchivo){
-    nombreArchivo= nombreArchivo+".txt";
-    ofstream archivoAuxiliar;
-    archivoAuxiliar.open("auxiliar.txt",ios::out);
+ /**********************************************************************/
+ void actualizarCambiosEnArchivoBinario(vector <string> vecString,string nombreArchivo){
+    nombreArchivo=nombreArchivo+".bin";
+   ofstream archivoAuxiliar;
+    archivoAuxiliar.open("auxiliar.bin", std::ios::out | std::ios::app | ios :: binary);
     if(archivoAuxiliar.is_open()){
        for(int i=0;i<(int)vecString.size();i++){
            if(i==0){
@@ -305,7 +283,7 @@ void marcarButacaComoOcupada(vector <string> vectorButacas, int pos_I, int pos_J
     }
     archivoAuxiliar.close();
     remove(nombreArchivo.c_str());
-    rename("auxiliar.txt",nombreArchivo.c_str());
+    rename("auxiliar.bin",nombreArchivo.c_str());
 }
  /**********************************************************************/
 
@@ -313,7 +291,7 @@ void marcarButacaComoOcupada(vector <string> vectorButacas, int pos_I, int pos_J
 /**********************************************************************/
  void marcarButacaComoLiberada(vector <string> vectorButacas, int pos_I, int pos_J, string userName, string nombreArchivo){
         vectorButacas[pos_I][pos_J] = 'O';
-        actualizarCambiosEnArchivo(vectorButacas, nombreArchivo);
+        actualizarCambiosEnArchivoBinario(vectorButacas, nombreArchivo);
 
         string idServicio = getIdServicio(nombreArchivo);
 

@@ -675,7 +675,7 @@ void gestionarPasajes(Client *&Cliente){
     Cliente->Enviar(autobusAPedir);
 
     autobusAPedir = doIfMultipleBuses(Cliente,autobusAPedir);
-
+             cout<<"Pulse cualquier tecla para continuar...";
     string butacas = Cliente->Recibir();
 
     _getch();
