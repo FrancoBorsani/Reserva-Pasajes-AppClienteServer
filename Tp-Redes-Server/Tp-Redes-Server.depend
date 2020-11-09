@@ -1137,3 +1137,107 @@
 	<stdio.h>
 	<windns.h>
 
+1604780677 source:c:\users\tomas\desktop\github\reserva-pasajes-appclienteserver\tp-redes-server\escribirarchivo.cpp
+	"serverClass.h"
+	"leerArchivo.h"
+	"escribirArchivo.h"
+	<iostream>
+	<winsock2.h>
+	<string>
+	<conio.h>
+	<clocale>
+	<fstream>
+	<ctime>
+	<cstdlib>
+	<vector>
+	<stdio.h>
+	<windns.h>
+
+1604786822 c:\users\tomas\desktop\github\reserva-pasajes-appclienteserver\tp-redes-server\serverclass.h
+	<iostream>
+	<winsock2.h>
+	<string>
+	<conio.h>
+	<clocale>
+	<fstream>
+	<ctime>
+	<cstdlib>
+	<vector>
+	<stdio.h>
+	<windns.h>
+
+1604780677 c:\users\tomas\desktop\github\reserva-pasajes-appclienteserver\tp-redes-server\leerarchivo.h
+	<iostream>
+	<winsock2.h>
+	<string>
+	<conio.h>
+	<clocale>
+	<fstream>
+	<ctime>
+	<cstdlib>
+	<vector>
+	<stdio.h>
+	<windns.h>
+
+1604780677 c:\users\tomas\desktop\github\reserva-pasajes-appclienteserver\tp-redes-server\escribirarchivo.h
+	<iostream>
+	<winsock2.h>
+	<string>
+	<conio.h>
+	<clocale>
+	<fstream>
+	<ctime>
+	<cstdlib>
+	<vector>
+	<stdio.h>
+	<windns.h>
+
+1604780677 source:c:\users\tomas\desktop\github\reserva-pasajes-appclienteserver\tp-redes-server\leerarchivo.cpp
+	"serverClass.h"
+	"leerArchivo.h"
+	"escribirArchivo.h"
+	<iostream>
+	<winsock2.h>
+	<string>
+	<conio.h>
+	<clocale>
+	<fstream>
+	<ctime>
+	<cstdlib>
+	<vector>
+	<stdio.h>
+	<windns.h>
+
+1604784162 source:c:\users\tomas\desktop\github\reserva-pasajes-appclienteserver\tp-redes-server\serverclass.cpp
+	"serverClass.h"
+	"leerArchivo.h"
+	"escribirArchivo.h"
+	<iostream>
+	<winsock2.h>
+	<algorithm>
+	<string>
+	<conio.h>
+	<clocale>
+	<fstream>
+	<ctime>
+	<cstdlib>
+	<vector>
+	<stdio.h>
+	<windns.h>
+
+1604786822 source:c:\users\tomas\desktop\github\reserva-pasajes-appclienteserver\tp-redes-server\main.cpp
+	"serverClass.h"
+	"leerArchivo.h"
+	"escribirArchivo.h"
+	<iostream>
+	<winsock2.h>
+	<string>
+	<conio.h>
+	<clocale>
+	<fstream>
+	<ctime>
+	<cstdlib>
+	<vector>
+	<stdio.h>
+	<windns.h>
+

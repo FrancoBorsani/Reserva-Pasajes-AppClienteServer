@@ -19,6 +19,10 @@
 
 using namespace std;
 
+bool serverIniciado = false;
+ string ip_global;
+ string puerto_global;
+
 vector<string> archivos_servicios;
 string usuarioConectado;
 /**********************************************************************/

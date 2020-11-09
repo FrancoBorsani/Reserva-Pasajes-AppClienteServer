@@ -1,5 +1,5 @@
 
-23-11-2020 Mar_Del_Plata Noche
+20-12-2020 Mar_Del_Plata Tarde
 
 
                       1 1 1 1 1 1 1 1 1 1 2 
@@ -8,4 +8,4 @@
  A |O O O O O O O O O O O O O O O O O O O O 
  B |O O O O O O O O O O O O O O O O O O O O 
 ===========================================
- C |O O O O O O O O O O O O O O X O O O O O 
+ C |O O O O O O O O O O O O O O O O O O O X 

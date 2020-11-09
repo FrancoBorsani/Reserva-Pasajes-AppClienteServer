@@ -44,3 +44,33 @@
 2020-11-02.09:35:46: Cliente conectado
 2020-11-02.09:35:56: Usuario autenticado -Josefina
 2020-11-02.09:40:09: Cliente desconectado
+
+2020-11-07.19:04:12: Intento de ingreso - Credenciales invalidas
+2020-11-07.19:04:12: Intento de ingreso - Credenciales invalidas
+2020-11-07.19:04:12: Intento de ingreso - Credenciales invalidas
+2020-11-07.19:04:12: Cliente desconectado
+
+2020-11-07.19:07:26: ===================================
+2020-11-07.19:07:26: Inicia servidor
+2020-11-07.19:07:26: ===================================
+2020-11-07.19:07:26: Socket creado. Puerto de escucha: 3232
+2020-11-07.19:07:50: Cliente conectado
+2020-11-07.19:08:36: Usuario autenticado -Juan
+2020-11-07.19:09:18: Cliente desconectado
+2020-11-07.19:10:39: Cliente conectado
+2020-11-07.19:10:53: Usuario autenticado -Juan_2
+2020-11-07.19:11:54: Cliente desconectado
+2020-11-07.19:12:23: Cliente conectado
+2020-11-07.19:12:27: Intento de ingreso - Credenciales invalidas
+2020-11-07.19:12:29: Intento de ingreso - Credenciales invalidas
+2020-11-07.19:12:31: Intento de ingreso - Credenciales invalidas
+2020-11-07.19:12:33: Cliente desconectado
+2020-11-07.19:13:16: Cliente conectado
+2020-11-07.19:13:19: Intento de ingreso - Credenciales invalidas
+2020-11-07.19:13:22: Intento de ingreso - Credenciales invalidas
+2020-11-07.19:13:26: Intento de ingreso - Credenciales invalidas
+2020-11-07.19:13:27: Cliente desconectado
+2020-11-07.19:13:36: Cliente conectado
+2020-11-07.19:13:39: Intento de ingreso - Credenciales invalidas
+2020-11-07.19:13:45: Usuario autenticado -Juan
+2020-11-07.19:13:48: Cliente desconectado
