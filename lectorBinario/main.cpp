@@ -7,7 +7,7 @@ int main()
 {
     //LEER DEL ARCHIVO BINARIO
     string mensaje;
-    ifstream leerArchivo ("info_servicios.bin", ios::in | ios::out | ios::binary);
+    ifstream leerArchivo ("../Tp-Redes-Server/info_servicios.bin", ios::in | ios::out | ios::binary);
 
     while (true) {
         getline(leerArchivo,mensaje);
