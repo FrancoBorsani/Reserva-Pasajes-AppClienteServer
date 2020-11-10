@@ -46,9 +46,8 @@ int main()
 
         system("cls");
 
-        renovacionDeMicrosDisponibles();
+        //renovacionDeMicrosDisponibles();
     }
 
    // main();
 }
-

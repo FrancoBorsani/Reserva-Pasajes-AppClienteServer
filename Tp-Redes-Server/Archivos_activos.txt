@@ -1,5 +1,0 @@
-23-11-2020;Buenos_Aires;Maniana
-23-11-2020;Mar_Del_Plata;Noche
-24-11-2020;Buenos_Aires;Noche
-20-10-2021;Buenos_Aires;Maniana
-20-12-2020;Mar_Del_Plata;Tarde

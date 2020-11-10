@@ -37,14 +37,3 @@
 	<cstdlib>
 	<vector>
 
-1604780677 source:c:\users\tomas\desktop\github\reserva-pasajes-appclienteserver\tp-redes-client\main.cpp
-	<iostream>
-	<winsock2.h>
-	<conio.h>
-	<string>
-	<algorithm>
-	<clocale>
-	<ctime>
-	<cstdlib>
-	<vector>
-

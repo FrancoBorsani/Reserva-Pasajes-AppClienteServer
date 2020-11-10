@@ -18,7 +18,6 @@
 using namespace std;
 
 string traerSoloButacas(vector <string> vectorButacas);
-vector <string> leerArchivoGuardarEnVectorString(string nombreArchivo);
 vector <string> leerArchivoBinarioGuardarEnVectorString(string nombreArchivo);
 vector<string> separarPalabrasPuntoYComa(string str);
 bool siFechaActualEsMayor(string str);

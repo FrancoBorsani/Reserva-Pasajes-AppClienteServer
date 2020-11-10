@@ -18,15 +18,13 @@
 using namespace std;
 
 bool crearArchivoButacas(string nombreArchivo,string tituloArchivo);
-void registrarViajesEnArchivo(string nombreArchivo);
-bool verificarSiDuplicaDato(string destinoFechaTurno ,string butacasReservadas);
+string extraerNombreDeArchivo(string datoExistente);
+string prepararParaActualizarViajesEnArchivo(string nombreArchivo);
 void darFormato_y_GuardarButacasEnArchivo(string nombreArchivo, string titulo,char butacas[TAMANIO_I][TAMANIO_J]);
 void guardarEnArchivoConFormato(string lineaAGuardar, string nombreArchivo);
-void guardarEnArchivoSinFormato(string lineaAGuardar, string nombreArchivo);
 void guardarEnArchivoBinario(string lineaAGuardar, string nombreArchivo);
-bool verificarSiExisteArchivo(string nombreArchivo);
 bool verificarSiExisteArchivoBinario(string nombreArchivo);
-void actualizarCambiosEnArchivo(vector <string> vecString,string nombreArchivo);
+void actualizarCambiosEnArchivoBinario(vector <string> vecString,string nombreArchivo);
 int asignarValorPosI_A_Letra(char letra);
 void iniciarButacas(char butacas[TAMANIO_I][TAMANIO_J]);
 void mostrarButacas(vector <string> vectorButacas);

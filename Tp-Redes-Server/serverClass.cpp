@@ -19,57 +19,101 @@
 
 using namespace std;
 
-bool serverIniciado = false;
- string ip_global;
- string puerto_global;
-
 vector<string> archivos_servicios;
 string usuarioConectado;
+bool serverIniciado = false;
+string ip_global;
+string puerto_global;
+
 /**********************************************************************/
 void renovacionDeMicrosDisponibles(){
-    vector <string> vecStringAux;
-
-    if(verificarSiExisteArchivoBinario("info_servicios")) remove("info_servicios.bin");
-
-    std::ifstream binaryFile("info_servicios.bin");
-
-    if(verificarSiExisteArchivo("Archivos_activos")){
-            string servicio = "";
-            ifstream archivoServiciosRespaldo;
-            archivoServiciosRespaldo.open("Archivos_activos.txt" ,ios::in);
-
-            while(!archivoServiciosRespaldo.eof()){
-                getline(archivoServiciosRespaldo , servicio);
-
-                if(servicio != ""){
-                   registrarViajesEnArchivo(servicio);
-
-                   if(!siFechaActualEsMayor(servicio)){
-                      archivos_servicios.push_back(servicio);
-                      vecStringAux.push_back(servicio);//guardo el  servicio en el vector que uso en el if (vecStringAux.size()>0)
-                   }
-                   else{
-                     servicio=servicio+".txt";
-                     remove(servicio.c_str());//borro el archivo individual
-                   }
-
-                }
-
-                //limpiamos la cadena para la prox iteracion
-                servicio.clear();
-            }
-            archivoServiciosRespaldo.close();
-            if(vecStringAux.size()>0){//si quedó para dejar en el archivo "Archivos_activos"
-               actualizarCambiosEnArchivo(vecStringAux,"Archivos_activos");//saco lo que pasé al archivo definitivo
-            }
-
-    }
-    else{
-       cout << "Error, no existe el archivo: Archivos_activos.txt"<< endl;
-       exit(1);
+    vector <string> datosExistentes;
+    vector <string> datosArchActivos;
+    string nombreArchivo;
+    if(verificarSiExisteArchivoBinario("info_servicios")){
+      datosExistentes = leerArchivoBinarioGuardarEnVectorString("info_servicios");
+      for(int i=0;i<(int)datosExistentes.size();i++){
+           nombreArchivo = extraerNombreDeArchivo(datosExistentes[i]);
+           if(siFechaActualEsMayor(nombreArchivo)){
+             nombreArchivo=nombreArchivo+".bin";
+             remove(nombreArchivo.c_str());//acá borro el archivo individual
+           }else{
+             datosArchActivos.push_back(prepararParaActualizarViajesEnArchivo(nombreArchivo));
+           }
+      }
+      vector <string> unicos = traerUnicos(datosArchActivos,datosExistentes);
+      actualizarCambiosEnArchivoBinario(unicos,"info_servicios");
     }
 }
 /************************************************************************/
+
+
+/************************************************************************/
+vector <string> traerUnicos(vector <string> activos,vector <string> existentes){
+      vector <string> vecDeUnicos;
+
+      for(int i=0;i<(int)existentes.size();i++){//primero guardo los fechas menores a la actual
+         bool esDuplicado=false;
+         for(int j=0;j<(int)activos.size();j++){
+            if(verificarSiDuplicaDato(existentes[i],activos[j])){
+                 esDuplicado=true;
+                 j=(int)activos.size();
+            }
+         }//for j 2
+         if(!esDuplicado){
+           vecDeUnicos.push_back(existentes[i]);
+         }
+      }//for I 2
+      for(int i=0;i<(int)activos.size();i++){//agrego los de fechas actuales o posteriores (los que pudieron ser modificados)
+         vecDeUnicos.push_back(activos[i]);
+      }
+
+  return vecDeUnicos;
+}
+/***********************************************************************/
+
+
+/***********************************************************************/
+bool verificarSiDuplicaDato(string destinoFechaTurnoA,string destinoFechaTurnoB){
+     bool duplicado = false;
+      string auxiliarA="";
+      auxiliarA = separarDatosDatoExistente(destinoFechaTurnoA);
+      string auxiliarB="";
+      auxiliarB = separarDatosDatoExistente(destinoFechaTurnoB);
+      if(auxiliarA==auxiliarB){
+         duplicado=true;
+      }
+
+    return duplicado;
+}
+/***********************************************************************/
+
+/***********************************************************************/
+string separarDatosDatoExistente(string datoExistente)
+{
+    int cont =0;
+    for(int i=0;i<(int)datoExistente.size();i++){
+        if(datoExistente[i]==' '){
+            cont++;
+        }
+    }
+    vector <string> vecStr;
+    std::string delimiter = " ";
+    size_t posDelimiter = 0;
+     int i=0;
+    while ((posDelimiter = datoExistente.find(delimiter)) != std::string::npos)//mientras la posicion del espacio (delimiter) no sea la última de la linea
+    {
+        vecStr.push_back(datoExistente.substr(0, posDelimiter));
+
+        datoExistente.erase(0, posDelimiter + delimiter.length());
+       i++;
+    }
+    if(cont<3){
+     vecStr.push_back(datoExistente);
+    }
+  return vecStr[0]+" "+vecStr[1]+" "+vecStr[2];
+}
+/***********************************************************************/
 
 
 /***********************************************************************/
@@ -89,7 +133,7 @@ void crearServicio(string userName , Server*& servidor){
 
     if(crearArchivoButacas(nombreArchivo , tituloArchivo)){ ///si el servicio no existe crea su registro con sus correspondientes datos
         registrarUserLog("Crea el servicio con los datos ("+tituloArchivo+")" , userName);///registro la accion del usuario en su archivo
-        guardarEnArchivoSinFormato(nombreArchivo, "Archivos_activos"); ///registro el servicio creado en un archivo de respaldo
+        guardarEnArchivoBinario(tituloArchivo, "info_servicios"); ///registro el servicio creado en un archivo
 
         msg = "El Servicio ("+tituloArchivo+") fue creado correctamente";
         archivos_servicios.push_back(nombreArchivo); ///agrego el nombre del archivo en el vector
@@ -232,7 +276,7 @@ string checkUser(Server *&Servidor)
 /***********************************************************************/
 void gestionarAsiento(string nombreArchivo,Server *&Servidor, string userName, bool reservar){
 
-    vector <string> vectorButacas = leerArchivoGuardarEnVectorString(nombreArchivo);
+    vector <string> vectorButacas = leerArchivoBinarioGuardarEnVectorString(nombreArchivo);
 
     Servidor->Enviar(traerSoloButacas(vectorButacas));
 
@@ -242,7 +286,7 @@ void gestionarAsiento(string nombreArchivo,Server *&Servidor, string userName, b
 
     while(!salirWhile){
 
-        vectorButacas = leerArchivoGuardarEnVectorString(nombreArchivo);
+        vectorButacas = leerArchivoBinarioGuardarEnVectorString(nombreArchivo);
         salir = verificarSolicitud_Y_Responder(Servidor,vectorButacas, userName, reservar, nombreArchivo);
 
         if(salir=="true"){
@@ -334,14 +378,12 @@ vector<string> separarDatos(string datosAutobus){
     }
 
     datos.push_back(datosAutobus);
-
     return datos;
 }
 
 bool checkIfMultipleBus(string datosAutobus){
 
     vector<string> datos = separarDatos(datosAutobus);
-
     bool fechaVacia = false;
     bool origenVacio = false;
     bool turnoVacio = false;
@@ -358,31 +400,19 @@ bool checkIfMultipleBus(string datosAutobus){
         turnoVacio = true;
     }
 
-
     return (fechaVacia || origenVacio ||turnoVacio);
 }
 
 /***********************************************************************/
 vector<string> leerArchivoGeneral(){
-    string archivoGeneral = "Archivos_activos.txt";
-
-    string texto = "";
-
-    fstream archivo;
-
-    archivo.open(archivoGeneral);
-
 
     vector<string> archivosActivos;
 
-    if(archivo.is_open()){
-        while(!archivo.eof()){
-           getline(archivo,texto);//Tomo lo que va encontrando en "archivo" y lo copio en "texto"
-           archivosActivos.push_back(texto);//guardo en una posición del vector la linea obtenida del archivo
-        }
-        archivo.close();
-    }
+    vector <string> vecAux = leerArchivoBinarioGuardarEnVectorString("info_servicios");
 
+    for(int i=0;i<(int)vecAux.size();i++){
+      archivosActivos.push_back(extraerNombreDeArchivo(vecAux[i]));
+    }
     return archivosActivos;
 }
 
@@ -395,7 +425,7 @@ vector<string> elegirAutobus(string datosAutobus){
 
     vector<string> archivosADevolver;
 
-    for(int i = 0 ; i < archivosActivos.size(); i++){
+    for(int i = 0 ; i < (int)archivosActivos.size(); i++){
         vector<string> currentBusData = separarDatos(archivosActivos[i]);
 
         if( (datos[0]=="0-0-0" || currentBusData[0]==datos[0]) &&
@@ -409,16 +439,16 @@ vector<string> elegirAutobus(string datosAutobus){
 
     return archivosADevolver;
 }
+
 /***********************************************************************/
-string changeNameIfMultipleBus(string nombreArchivoAutobus, Server *&Servidor){
+string changeNameIfMultipleBus(string nombreArchivoAutobus, Server*& Servidor){
 
     if(checkIfMultipleBus(nombreArchivoAutobus)){
-
         vector<string> autobusesDisponibles = elegirAutobus(nombreArchivoAutobus);
         if(autobusesDisponibles.size()==0) Servidor->Enviar("0");
         else Servidor->Enviar( std::to_string(autobusesDisponibles.size()) );
 
-        for(int i = 0 ; i < autobusesDisponibles.size(); i++){
+        for(int i = 0 ; i < (int)autobusesDisponibles.size(); i++){
             Servidor->Enviar(autobusesDisponibles[i]);
         }
         string autobusElegido = Servidor->Recibir();
@@ -433,7 +463,7 @@ string changeNameIfMultipleBus(string nombreArchivoAutobus, Server *&Servidor){
 }
 
 /***********************************************************************/
-void manejarPeticion(string userName, Server *&Servidor){
+void manejarPeticion(string userName, Server*& Servidor){
     string peticion="";
     bool salir = false;
     string opcionesPosibles=" ";
@@ -454,13 +484,13 @@ void manejarPeticion(string userName, Server *&Servidor){
         else if(peticion=="Gestionar"){
             salir = false;
 
-            string nombreArchivoAutobus = Servidor->Recibir();
+           string nombreArchivoAutobus = Servidor->Recibir();
 
-            nombreArchivoAutobus = changeNameIfMultipleBus(nombreArchivoAutobus, Servidor);
+            nombreArchivoAutobus = changeNameIfMultipleBus(nombreArchivoAutobus,Servidor);
 
-            vector <string> butacasAutobus = leerArchivoGuardarEnVectorString(nombreArchivoAutobus);
+            vector <string> butacasAutobus = leerArchivoBinarioGuardarEnVectorString(nombreArchivoAutobus);
 
-            if(!butacasAutobus.empty()){
+           if(!butacasAutobus.empty()){
 
                 Servidor->Enviar(traerSoloButacas(butacasAutobus));
 
@@ -468,10 +498,12 @@ void manejarPeticion(string userName, Server *&Servidor){
 
                 if(opcion=="ReservarAsiento"){
                     gestionarAsiento(nombreArchivoAutobus,Servidor, userName,true);
+                    renovacionDeMicrosDisponibles();
                     opcion = "";     salir = false;
                 }
                 else if(opcion=="LiberarAsiento"){
                     gestionarAsiento(nombreArchivoAutobus,Servidor, userName, false);
+                    renovacionDeMicrosDisponibles();
                     opcion = "";     salir = false;
                 }
                 else if(opcion=="ElegirOtroServicio"){
@@ -480,7 +512,7 @@ void manejarPeticion(string userName, Server *&Servidor){
 
                     nombreArchivoAutobusAux = changeNameIfMultipleBus(nombreArchivoAutobusAux, Servidor);
 
-                    vector <string> butacasAutobusAux = leerArchivoGuardarEnVectorString(nombreArchivoAutobusAux);
+                    vector <string> butacasAutobusAux = leerArchivoBinarioGuardarEnVectorString(nombreArchivoAutobusAux);
 
                     if(!butacasAutobusAux.empty()){
                          Servidor->Enviar(traerSoloButacas(butacasAutobusAux));

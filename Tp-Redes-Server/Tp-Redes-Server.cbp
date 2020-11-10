@@ -39,10 +39,6 @@
 		<Unit filename="main.cpp" />
 		<Unit filename="serverClass.cpp" />
 		<Unit filename="serverClass.h" />
-		<Extensions>
-			<code_completion />
-			<envvars />
-			<debugger />
-		</Extensions>
+		<Extensions />
 	</Project>
 </CodeBlocks_project_file>

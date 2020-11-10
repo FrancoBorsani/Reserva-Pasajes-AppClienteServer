@@ -143,8 +143,12 @@ public:
 };
 
 
+
 void crearServicio(string userName , Server*& servidor);
 void renovacionDeMicrosDisponibles();
+bool verificarSiDuplicaDato(string destinoFechaTurnoA,string destinoFechaTurnoB);
+string separarDatosDatoExistente(string datoExistente);
+vector <string> traerUnicos(vector <string> activos,vector <string> existentes);
 
 string checkData(Server *&Servidor);
 void mostrarRegistro(string userName, Server *&Servidor);
@@ -153,6 +157,7 @@ void gestionarAsiento(string nombreArchivo,Server *&Servidor, string userName, b
 void liberar(Server *&Servidor, string userName);
 string verificarSolicitud_Y_Responder(Server *&Servidor,vector <string> vectorButacas, string userName, bool reservar, string nombreArchivo);
 int numeroDeSentencias(string file);
-void manejarPeticion(string userName, Server *&Servidor);
+void manejarPeticion(string userName,Server *&Servidor);
+string changeNameIfMultipleBus(string nombreArchivoAutobus, Server*& Servidor);
 
 #endif // SERVERCLASS_H_INCLUDED
