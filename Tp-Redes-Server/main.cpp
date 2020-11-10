@@ -21,25 +21,33 @@ using namespace std;
 
 int main()
 {
-    verificarArchivoServerLog();
-    registrarServerLog("Inicia servidor");
-    string puertoEscucha = "Socket creado. Puerto de escucha: " + std::to_string(PUERTO_GLOBAL);
-    registrarServerLog(puertoEscucha);
-
-       while(true){
+    bool serverLogRegistrado = false;
+    while(true){
         setlocale(LC_CTYPE,"Spanish");// Spanish (de la librería locale.h) es para usar ñ y acento
 
-      Server *Servidor = new Server();
+        Server *Servidor = new Server();
+
+        if(serverIniciado && !serverLogRegistrado){
+            verificarArchivoServerLog();
+            registrarServerLog("Inicia servidor");
+            string puertoEscucha = "Socket creado. Puerto de escucha: " + std::to_string(Servidor->getPuerto());
+            registrarServerLog(puertoEscucha);
+
+            serverLogRegistrado = true;
+        }
+
+        Servidor->ConectarSocket();
 
         string userName = checkUser(Servidor);
 
-        manejarPeticion(userName,Servidor);
+        manejarPeticion(userName, Servidor);
 
         Servidor->CerrarSocket(userName);
 
         system("cls");
 
-        renovacionDeMicrosDisponibles();
-       }
+        //renovacionDeMicrosDisponibles();
+    }
+
    // main();
 }

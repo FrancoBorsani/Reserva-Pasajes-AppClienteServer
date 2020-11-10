@@ -21,7 +21,9 @@ using namespace std;
 
 vector<string> archivos_servicios;
 string usuarioConectado;
-
+bool serverIniciado = false;
+string ip_global;
+string puerto_global;
 
 /**********************************************************************/
 void renovacionDeMicrosDisponibles(){

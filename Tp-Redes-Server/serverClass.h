@@ -14,17 +14,19 @@
 
 #define TAMANIO_I  5
 #define TAMANIO_J  21
-#define GLOBAL_IP  "192.168.88.9"
-#define PUERTO_GLOBAL 5010
 
 using namespace std;
 
 extern string usuarioConectado;
 
+extern bool serverIniciado;
+extern string ip_global;
+extern string puerto_global;
 
 void registrarServerLog(string evento);
 void registrarUserLog(string evento, string aRegistrar);
 void verificarArchivoServerLog();
+
 
 class Server{
 public:
@@ -37,22 +39,35 @@ public:
         WSAStartup(MAKEWORD(2,0), &WSAData);
         server = socket(AF_INET, SOCK_STREAM, 0);
 
-        serverAddr.sin_addr.s_addr = inet_addr(GLOBAL_IP);
-        serverAddr.sin_family = AF_INET;
-        serverAddr.sin_port = htons(PUERTO_GLOBAL);
+        while(!serverIniciado){
+            std::string ipInput="";
+            std::string puertoInput = "";
+
+            cout<<"Configurando server..."<<endl;
+            cout<<endl;
+
+            while(ipInput==""){
+                cout<<"Ingrese la direccion IP: ";
+                cin>>ipInput;
+                system("CLS");
+            }
+               while(puertoInput==""){
+                cout<<"Ingrese el puerto: ";
+                cin>>puertoInput;
+                system("CLS");
+            }
+
+            serverIniciado = true;
+            ip_global = ipInput;
+            puerto_global = puertoInput;
+        }
+
+        IniciarServer();
 
         bind(server, (SOCKADDR *)&serverAddr, sizeof(serverAddr));
         listen(server, 0);
-
+        cout<<"El Server se encuentra inciado en el puerto "+puerto_global <<endl;
         cout << "Escuchando para conexiones entrantes." << endl;
-
-        int clientAddrSize = sizeof(clientAddr);
-        if((client = accept(server, (SOCKADDR *)&clientAddr, &clientAddrSize)) != INVALID_SOCKET)
-        {
-            cout << "Cliente conectado!" << endl;
-            verificarArchivoServerLog();
-            registrarServerLog("Cliente conectado");
-        }
 
     }
 
@@ -91,6 +106,16 @@ public:
         memset(buffer, 0, sizeof(buffer));
     }
 
+    void ConectarSocket(){
+        int clientAddrSize = sizeof(clientAddr);
+        if((client = accept(server, (SOCKADDR *)&clientAddr, &clientAddrSize)) != INVALID_SOCKET)
+        {
+            cout << "Cliente conectado!" << endl;
+            verificarArchivoServerLog();
+            registrarServerLog("Cliente conectado");
+        }
+    }
+
     void CerrarSocket(string username)
     {
         closesocket(client);
@@ -101,7 +126,22 @@ public:
         registrarUserLog("Cierra sesion", username);
 
     }
+
+    void IniciarServer()
+    {
+        int n = ip_global.length();
+        char ip[n + 1];
+        strcpy(ip, ip_global.c_str());
+        serverAddr.sin_addr.s_addr = inet_addr(ip);
+        serverAddr.sin_family = AF_INET;
+        serverAddr.sin_port = htons(stol(puerto_global));
+    }
+
+    int getPuerto(){
+        return (int) ntohs(serverAddr.sin_port);
+    }
 };
+
 
 
 void crearServicio(string userName , Server*& servidor);
