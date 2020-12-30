@@ -66,7 +66,7 @@ public:
 
         bind(server, (SOCKADDR *)&serverAddr, sizeof(serverAddr));
         listen(server, 0);
-        cout<<"El Server se encuentra inciado en el puerto "+puerto_global <<endl;
+        cout<<"El Server se encuentra iniciado en el puerto "+puerto_global <<endl;
         cout << "Escuchando para conexiones entrantes." << endl;
 
     }
