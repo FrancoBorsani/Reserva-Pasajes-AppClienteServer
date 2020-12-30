@@ -237,9 +237,10 @@ vector<string> elegirServicio(bool crear){
         system("cls");
         if(!crear) cout<<"Ingrese un 0 en el campo que no le interese."<<endl<<endl;
         cin.ignore(); //limpio el buffer
-        cout<<"Ingrese el origen(Mar del Plata | Buenos Aires): ";
+        cout<<" Elija el origen:"<<endl<<"  M (Mar del Plata)"<<endl<<"  B (Buenos Aires):"<<endl;
         getline(cin , origen);
-        cout<<"Ingrese el turno(Maniana | Tarde | Noche): ";
+        cout<<endl<<endl;
+        cout<<" Elija el turno:"<<endl<<"  M (Maniana) "<<endl<<"  T (Tarde) "<<endl<<"  N (Noche):"<<endl;
         getline(cin , turno);
 
         std::for_each(origen.begin(), origen.end(), [](char & c) {
@@ -250,9 +251,15 @@ vector<string> elegirServicio(bool crear){
             c = ::tolower(c);
         });
 
-        if( (origen=="mar del plata" || origen=="buenos aires" || (!crear && origen=="0") ) && (turno=="maniana" || turno=="tarde" || turno=="noche" || (!crear && turno=="0") ) ){
-                            servicioOutput.push_back(origen);
-                            servicioOutput.push_back(turno);
+        if( (origen=="m" || origen=="b" || (!crear && origen=="0") ) && (turno=="m" || turno=="t" || turno=="n" || (!crear && turno=="0") ) ){
+                            if(origen=="m"){servicioOutput.push_back("mar del plata");}
+                            else if(origen=="b"){servicioOutput.push_back("buenos aires");}
+                            else if(origen=="0"){servicioOutput.push_back("0");}
+
+                            if(turno=="m"){servicioOutput.push_back("maniana");}
+                            else if(turno=="t"){servicioOutput.push_back("tarde");}
+                            else if(turno=="n"){servicioOutput.push_back("noche");}
+                            else if(turno=="0"){servicioOutput.push_back("0");}
                             datosValidos=true;
         }
         else{cout<<"Datos erroneos"<<endl; system("pause"); system("cls");}
